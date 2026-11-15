@@ -46,9 +46,9 @@
 - [x] **4.4 Interior Studio**: Verified. Mapped interior meshes (seats, dash, steering wheel, trims) rendered only where geometry exists. Evidence: `src/components/customizer/CustomizationPanel.tsx`.
 
 ### Phase 5 — Geometry Integrity & Invariants
-- [ ] **5.1 Pristine Source Preservation**: Pending. No source geometry mutation; per-instance cloned materials; flawless Reset.
-- [ ] **5.2 Geometry Validation on Load**: Pending. NaN/degenerate face check, missing normals, unit scaling, bounding box calculator.
-- [ ] **5.3 Automated Invariants Test**: Pending. Pre/post configuration change comparison asserting wheelbase, track width, ground clearance, and bounding boxes.
+- [x] **5.1 Pristine Source Preservation**: Verified. No source geometry mutation; per-instance cloned materials; flawless Reset. Evidence: `tests/geometry-invariants.test.ts`.
+- [x] **5.2 Geometry Validation on Load**: Verified. NaN/degenerate face check, missing normals, unit scaling, bounding box calculator. Evidence: `packages/vehicle-generation-engine/src/validation/geometryDiagnostics.ts`.
+- [x] **5.3 Automated Invariants Test**: Verified. Pre/post configuration change comparison asserting wheelbase, track width, ground clearance, and bounding boxes. Evidence: `tests/geometry-invariants.test.ts` (3 tests).
 
 ### Phase 6 — Vehicle JSON Configuration Engine
 - [ ] **6.1 Versioned Schema & Validation**: Pending. Schema validator (Zod/Ajv) returning exact JSON paths; corrupted-input protection.
