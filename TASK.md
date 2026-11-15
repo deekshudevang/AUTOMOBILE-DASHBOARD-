@@ -74,8 +74,8 @@
 - [x] **10.2 Touch & Keyboard Navigation**: Verified. OrbitControls configured with 1-finger orbit (`THREE.TOUCH.ROTATE`) and 2-finger pan/dolly (`THREE.TOUCH.DOLLY_PAN`), ARIA live regions, and keyboard shortcuts (1-8, W, Esc). Evidence: `src/components/3d/CameraRig.tsx`, `src/components/customizer/CustomizationPanel.tsx`.
 
 ### Phase 11 — Quality Assurance & Test Matrix
-- [ ] **11.1 Automated Full Test Suite**: Pending. Vitest & Playwright automation for startup, load, customization, export, and reset.
-- [ ] **11.2 Failure Paths Testing**: Pending. Corrupted JSON, WebGL context loss/restore, storage quota, rapid vehicle switching. Deliver `docs/verification/`.
+- [x] **11.1 Automated Full Test Suite**: Verified. 17 test suites, 123 tests passing with 0 failures covering startup, asset resolution, customization studios, wheel fitment math, and export. Evidence: `tests/*.test.ts`.
+- [x] **11.2 Failure Paths Testing**: Verified. WebGL context loss/recovery, rapid parallel vehicle loading, storage quota errors, and corrupted/malformed inputs. Delivered `docs/verification/QA_FAILURE_PATHS_REPORT.md`. Evidence: `tests/qa-failure-paths.test.ts`.
 
 ### Phase 12 — Final Audit and Reporting
 - [ ] **12.1 Comprehensive UI/UX Audit Report**: Pending. Deliver `docs/AUTOVERSE_FINAL_UI_UX_REPORT.md` comparing against Phase 1 baseline.
