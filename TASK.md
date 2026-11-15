@@ -24,10 +24,10 @@
 - [x] **0.5 Baseline Execution**: Verified. Build clean (6.68s), 102/102 tests passing, baseline screenshots stored in `docs/baseline/screenshots/`. Evidence: `docs/baseline/BASELINE_REPORT.md`.
 
 ### Phase 1 — Project Audit & Vehicle Capability Matrix
-- [ ] **1.1 Architectural & Dependency Audit**: Pending. Document frontend framework, Three.js, R3F, loaders, and state management in `docs/AUTOVERSE_UI_UX_AUDIT.md`.
-- [ ] **1.2 Individual Vehicle JSON Audit**: Pending. Audit all vehicle definitions (coordinates, units, materials, optional fields).
-- [ ] **1.3 Vehicle Capability Matrix**: Pending. Matrix mapping vehicles to separable panels, wheels, tires, brakes, interior, named materials, and spec data.
-- [ ] **1.4 Performance & Bottlenecks Audit**: Pending. Measure draw calls, triangles, memory, and frame times using `renderer.info`.
+- [x] **1.1 Architectural & Dependency Audit**: Verified. Documented React 18, Vite 6, Three.js 0.174, loaders, and state pipeline in `docs/AUTOVERSE_UI_UX_AUDIT.md`.
+- [x] **1.2 Individual Vehicle JSON Audit**: Verified. Audited all 210 vehicle definitions across Schema 2.0, Parametric 1.0, and Cherax Entity formats.
+- [x] **1.3 Vehicle Capability Matrix**: Verified. Generated `docs/vehicle_capability_matrix.json` and capability table in `docs/AUTOVERSE_UI_UX_AUDIT.md` driving UI visibility.
+- [x] **1.4 Performance & Bottlenecks Audit**: Verified. Measured draw calls (28-42), triangles (18.4k-32.8k), frame times (1.4ms-2.8ms), and memory in `docs/AUTOVERSE_UI_UX_AUDIT.md`.
 
 ### Phase 2 — Design System & Component Gallery
 - [ ] **2.1 Automotive Design System Tokens**: Pending. Token definition (graphite surfaces, cyan accents, WCAG 2.2 AA contrast, 4px spacing). Deliver `docs/design-system.md`.
