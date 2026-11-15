@@ -34,10 +34,10 @@
 - [x] **2.2 Design System Component Gallery**: Verified. Component gallery in `src/components/gallery/ComponentGalleryModal.tsx` showing active/hover/disabled/touch states.
 
 ### Phase 3 — Main Configurator Interface
-- [ ] **3.1 Top Navigation Bar**: Pending. AUTOVERSE 3D logo, vehicle selector, editable config name, Save, Reset (with confirmation), Undo/Redo, Fullscreen, Settings.
-- [ ] **3.2 Hero Central Viewport**: Pending. Damped OrbitControls, bounding-box-derived framing & camera presets (front, rear, side, top, 3/4, interior if exists), contact shadows, studio environment.
-- [ ] **3.3 Capability-Driven Right Configuration Panel**: Pending. Categories appear ONLY if capability matrix indicates vehicle support; unsupported items collapsed with explanatory note.
-- [ ] **3.4 Serializable Configuration & Command Pattern**: Pending. Single `VehicleConfiguration` source of truth; pure rendering function; coalescing slider drag commands.
+- [x] **3.1 Top Navigation Bar**: Verified. AUTOVERSE 3D logo, vehicle selector, editable configuration name, Save, Reset (with modal confirmation), Undo/Redo, Fullscreen, Settings. Evidence: `docs/verification/phase3_configurator.png`.
+- [x] **3.2 Hero Central Viewport**: Verified. Damped OrbitControls, dynamic bounding-box-derived camera presets (front, rear, side, top, 3/4, interior if exists), contact shadows, studio environment. Evidence: `src/components/3d/CameraRig.tsx`.
+- [x] **3.3 Capability-Driven Right Configuration Panel**: Verified. Category tabs appear only if capability matrix indicates vehicle support; unsupported items collapsed with explanatory note. Evidence: `src/components/customizer/CustomizationPanel.tsx`.
+- [x] **3.4 Serializable Configuration & Command Pattern**: Verified. Single `VehicleConfiguration` and `componentOverrides` state; coalescing slider drag commands; undo/redo stack. Evidence: `src/hooks/useVehicleStore.ts`.
 
 ### Phase 4 — Vehicle Customization
 - [ ] **4.1 Exterior Components Engine**: Pending. Click-to-select, hierarchy list, highlight, per-component visibility/material/color, unmapped meshes listed cleanly.

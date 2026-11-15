@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import {
   Search,
@@ -25,7 +25,12 @@ import {
   Camera,
   Grid,
   Sparkles,
-  Maximize2
+  Maximize2,
+  Minimize2,
+  Settings,
+  AlertTriangle,
+  Edit2,
+  HelpCircle
 } from 'lucide-react';
 import { useVehicleStore } from '../../hooks/useVehicleStore';
 import { SceneCanvas } from '../3d/SceneCanvas';
@@ -33,7 +38,31 @@ import { CameraPreset, EnvironmentPreset } from '../../types/vehicle';
 import { VehicleComponentDef, MaterialFinishType, VehicleSchema2 } from '@autoverse/shared-types';
 import { EditableVehicleAssembler } from '@autoverse/vehicle-generation-engine';
 import { VehicleExporter } from '@autoverse/vehicle-exporter';
+import { ComponentGalleryModal } from '../gallery/ComponentGalleryModal';
 import libraryIndex from '../../../public/vehicles/index.json';
+
+type ConfigCategory =
+  | 'exterior'
+  | 'paint'
+  | 'wheels'
+  | 'tyres'
+  | 'brakes'
+  | 'aero'
+  | 'interior'
+  | 'lighting'
+  | 'advanced';
+
+const CATEGORY_TABS: { id: ConfigCategory; label: string }[] = [
+  { id: 'exterior', label: 'Exterior' },
+  { id: 'paint', label: 'Paint' },
+  { id: 'wheels', label: 'Wheels' },
+  { id: 'tyres', label: 'Tyres' },
+  { id: 'brakes', label: 'Brakes' },
+  { id: 'aero', label: 'Aero' },
+  { id: 'interior', label: 'Interior' },
+  { id: 'lighting', label: 'Lighting' },
+  { id: 'advanced', label: 'Advanced' }
+];
 
 const CAMERA_PRESETS: { id: CameraPreset; label: string }[] = [
   { id: 'isometric', label: '3/4 Iso' },
@@ -41,7 +70,7 @@ const CAMERA_PRESETS: { id: CameraPreset; label: string }[] = [
   { id: 'rear', label: 'Rear' },
   { id: 'left', label: 'Left Side' },
   { id: 'right', label: 'Right Side' },
-  { id: 'top', label: 'Top View' },
+  { id: 'top', label: 'Top' },
   { id: 'wheel', label: 'Wheel Stance' },
   { id: 'interior', label: 'Cockpit' }
 ];
@@ -77,24 +106,14 @@ const FINISH_OPTIONS: { id: MaterialFinishType; label: string }[] = [
   { id: 'leather', label: 'Leather' }
 ];
 
-const CATEGORY_TABS = [
-  { id: 'all', label: 'All' },
-  { id: 'supercars', label: 'Supercars' },
-  { id: 'hypercars', label: 'Hypercars' },
-  { id: 'sports_cars', label: 'Sports' },
-  { id: 'luxury_cars', label: 'Luxury' },
-  { id: 'track_cars', label: 'Track' },
-  { id: 'jdm_cars', label: 'JDM' },
-  { id: 'muscle_cars', label: 'Muscle' },
-  { id: 'special_edition', label: 'Special' }
-];
-
 export const CustomizationPanel: React.FC = () => {
   const {
     activeConfig,
     activeModel,
     activeFile,
     loadVehicleByFile,
+    configName,
+    setConfigName,
     selectedComponentId,
     selectComponent,
     componentOverrides,
@@ -116,14 +135,23 @@ export const CustomizationPanel: React.FC = () => {
     undo,
     redo,
     historyIndex,
-    history
+    history,
+    overrideHistoryIndex,
+    overrideHistory
   } = useVehicleStore();
 
-  // Search & Filter state for left library panel
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  // UI state
+  const [activeCategory, setActiveCategory] = useState<ConfigCategory>('exterior');
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedFleetTab, setSelectedFleetTab] = useState('all');
   const [isExportingGlb, setIsExportingGlb] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [isResetConfirmOpen, setIsResetConfirmOpen] = useState(false);
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isEditingName, setIsEditingName] = useState(false);
 
   // Expanded component groups state
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
@@ -145,17 +173,71 @@ export const CustomizationPanel: React.FC = () => {
     return null;
   }, [activeConfig.parametricSpec, activeConfig]);
 
+  // Capability matrix evaluation for active vehicle (Rule: only show supported options)
+  const capabilities = useMemo(() => {
+    const isSchema2 = schema2Spec !== null;
+    const comps = schema2Spec?.components || [];
+    return {
+      exterior: isSchema2 && comps.some(c => c.group === 'body_panels'),
+      paint: true, // Universally supported across all vehicles
+      wheels: isSchema2 && !!schema2Spec?.wheels,
+      tyres: isSchema2 && !!schema2Spec?.wheels?.frontLeft?.tire,
+      brakes: isSchema2 && !!schema2Spec?.wheels?.frontLeft?.brakes,
+      aero: isSchema2 && comps.some(c => c.group === 'aerodynamics'),
+      interior: isSchema2 && comps.some(c => c.group === 'interior'),
+      lighting: isSchema2 && comps.some(c => c.group === 'lighting'),
+      advanced: isSchema2 && !!schema2Spec?.dimensions,
+    };
+  }, [schema2Spec]);
+
+  // Keyboard navigation & shortcuts (Ctrl+Z, Ctrl+Y, 1-8 presets)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.target as HTMLElement)?.tagName === 'INPUT') return;
+
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+        e.preventDefault();
+        if (e.shiftKey) redo();
+        else undo();
+      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') {
+        e.preventDefault();
+        redo();
+      } else if (e.key === 'w' || e.key === 'W') {
+        toggleWireframe();
+      } else if (e.key === '1') setCameraPreset('isometric');
+      else if (e.key === '2') setCameraPreset('front');
+      else if (e.key === '3') setCameraPreset('rear');
+      else if (e.key === '4') setCameraPreset('left');
+      else if (e.key === '5') setCameraPreset('right');
+      else if (e.key === '6') setCameraPreset('top');
+      else if (e.key === '7') setCameraPreset('wheel');
+      else if (e.key === '8' && capabilities.interior) setCameraPreset('interior');
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [undo, redo, toggleWireframe, setCameraPreset, capabilities.interior]);
+
+  // Fullscreen toggle
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      containerRef.current?.requestFullscreen().then(() => setIsFullscreen(true)).catch(console.error);
+    } else {
+      document.exitFullscreen().then(() => setIsFullscreen(false)).catch(console.error);
+    }
+  };
+
   // Filtered vehicles for left drawer
   const filteredAssets = useMemo(() => {
     return (libraryIndex.assets || []).filter(asset => {
-      const matchCat = selectedCategory === 'all' || asset.category === selectedCategory;
+      const matchCat = selectedFleetTab === 'all' || asset.category === selectedFleetTab;
       const matchQuery =
         !searchQuery ||
         `${asset.manufacturer} ${asset.model}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
         asset.category.toLowerCase().includes(searchQuery.toLowerCase());
       return matchCat && matchQuery;
     });
-  }, [selectedCategory, searchQuery]);
+  }, [selectedFleetTab, searchQuery]);
 
   // Group components by category
   const groupedComponents = useMemo(() => {
@@ -245,42 +327,138 @@ export const CustomizationPanel: React.FC = () => {
     }
   };
 
-  // Count modified components
+  // Confirm and execute reset
+  const handleConfirmReset = () => {
+    resetAllComponentOverrides();
+    setIsResetConfirmOpen(false);
+  };
+
   const modifiedCount = Object.keys(componentOverrides).length;
+  const canUndo = historyIndex > 0 || overrideHistoryIndex > 0;
+  const canRedo = historyIndex < history.length - 1 || overrideHistoryIndex < overrideHistory.length - 1;
 
   return (
-    <div className="w-full h-full flex flex-col bg-[#0A0C10] text-slate-100 font-sans overflow-hidden select-none">
-      {/* Top Banner: Authenticity Watermark (Rule 6 compliant) */}
-      <div className="h-8 bg-[#11141C] border-b border-[#1E2533] px-4 flex items-center justify-between text-xs shrink-0">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[#00F0FF] animate-pulse" />
-          <span className="font-mono text-[#00F0FF] font-semibold tracking-wider text-[11px]">
-            AUTOVERSE 3D STUDIO — 50 VEHICLE PARAMETRIC LIBRARY
-          </span>
-          <span className="text-slate-500">|</span>
-          <span className="text-slate-400 font-mono text-[10px]">
-            {activeModel?.displayName || 'Vehicle'} ({activeModel?.category || 'Sport'})
-          </span>
-        </div>
+    <div
+      ref={containerRef}
+      className="w-full h-full flex flex-col bg-[#0A0C10] text-slate-100 font-sans overflow-hidden select-none"
+    >
+      {/* ========================================================= */}
+      {/* 3.1 TOP BAR: Brand, Vehicle Selector, Actions & Shortcuts */}
+      {/* ========================================================= */}
+      <header className="h-12 bg-[#11141C] border-b border-[#1E2533] px-4 flex items-center justify-between text-xs shrink-0 z-30">
+        {/* Brand & Vehicle Title */}
         <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 font-mono font-bold tracking-wider text-sm text-[#00F0FF]">
+            <Car className="w-4 h-4 text-[#00F0FF]" />
+            <span>AUTOVERSE 3D</span>
+          </div>
+
+          <span className="text-slate-600">|</span>
+
+          {/* Editable Configuration Name */}
+          <div className="flex items-center gap-1.5">
+            {isEditingName ? (
+              <input
+                type="text"
+                value={configName}
+                autoFocus
+                onBlur={() => setIsEditingName(false)}
+                onKeyDown={e => e.key === 'Enter' && setIsEditingName(false)}
+                onChange={e => setConfigName(e.target.value)}
+                className="bg-[#161C28] border border-[#00F0FF] rounded px-2 py-0.5 text-xs text-white focus:outline-none"
+              />
+            ) : (
+              <button
+                onClick={() => setIsEditingName(true)}
+                className="flex items-center gap-1.5 hover:text-[#00F0FF] text-slate-200 transition-colors"
+                title="Click to edit configuration title"
+              >
+                <span className="font-semibold truncate max-w-xs">{configName}</span>
+                <Edit2 className="w-3 h-3 text-slate-400" />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Center: Provenance Disclaimer Pill */}
+        <div className="hidden lg:flex items-center gap-2">
           <span className="text-amber-400/90 font-mono text-[10px] tracking-wide bg-amber-950/40 px-2 py-0.5 rounded border border-amber-800/50">
             APPROXIMATE PROCEDURAL VEHICLE — NOT AUTHENTIC MODEL GEOMETRY
           </span>
         </div>
-      </div>
 
-      {/* Main 3-Column Studio Workspace */}
+        {/* Right Action Icons: Undo, Redo, Reset, Save, Fullscreen, Design Gallery */}
+        <div className="flex items-center gap-2">
+          {/* Undo */}
+          <button
+            onClick={undo}
+            disabled={!canUndo}
+            className="p-1.5 rounded bg-[#161C28] hover:bg-[#1E2533] text-slate-300 disabled:opacity-30 disabled:pointer-events-none border border-[#1E2533] transition-colors"
+            title="Undo (Ctrl+Z)"
+          >
+            <Undo2 className="w-3.5 h-3.5" />
+          </button>
+
+          {/* Redo */}
+          <button
+            onClick={redo}
+            disabled={!canRedo}
+            className="p-1.5 rounded bg-[#161C28] hover:bg-[#1E2533] text-slate-300 disabled:opacity-30 disabled:pointer-events-none border border-[#1E2533] transition-colors"
+            title="Redo (Ctrl+Y)"
+          >
+            <Redo2 className="w-3.5 h-3.5" />
+          </button>
+
+          {/* Reset Configuration */}
+          <button
+            onClick={() => setIsResetConfirmOpen(true)}
+            className="px-2.5 py-1.5 rounded bg-[#161C28] hover:bg-rose-950/40 hover:text-rose-400 text-slate-300 border border-[#1E2533] flex items-center gap-1.5 transition-colors"
+            title="Reset to factory specification"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+            <span>Reset</span>
+          </button>
+
+          {/* Save Configuration */}
+          <button
+            onClick={handleSaveConfig}
+            className="px-3 py-1.5 rounded bg-[#161C28] hover:bg-[#1E2533] text-slate-200 border border-[#1E2533] flex items-center gap-1.5 font-medium transition-colors"
+          >
+            {saveSuccess ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Save className="w-3.5 h-3.5 text-slate-300" />}
+            <span>{saveSuccess ? 'Saved' : 'Save'}</span>
+          </button>
+
+          {/* Design System Gallery Modal */}
+          <button
+            onClick={() => setIsGalleryOpen(true)}
+            className="p-1.5 rounded bg-[#161C28] hover:bg-[#1E2533] text-slate-300 border border-[#1E2533] transition-colors"
+            title="Open Automotive Design System Gallery"
+          >
+            <Settings className="w-3.5 h-3.5" />
+          </button>
+
+          {/* Fullscreen Toggle */}
+          <button
+            onClick={toggleFullscreen}
+            className="p-1.5 rounded bg-[#161C28] hover:bg-[#1E2533] text-slate-300 border border-[#1E2533] transition-colors"
+            title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+          >
+            {isFullscreen ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
+          </button>
+        </div>
+      </header>
+
+      {/* ========================================================= */}
+      {/* MAIN 3-ZONE WORKSPACE                                     */}
+      {/* ========================================================= */}
       <div className="flex-1 flex flex-row overflow-hidden relative">
-        {/* ========================================================= */}
-        {/* LEFT PANEL: 50 Vehicle Library & Component Hierarchy Tree */}
-        {/* ========================================================= */}
-        <aside className="w-80 h-full bg-[#0D1017] border-r border-[#1E2533] flex flex-col shrink-0 z-10">
-          {/* Library Header */}
+        {/* LEFT PANEL: 50 Vehicle Library & Component Hierarchy */}
+        <aside className="w-72 lg:w-80 h-full bg-[#0D1017] border-r border-[#1E2533] flex flex-col shrink-0 z-10">
           <div className="p-3 border-b border-[#1E2533] space-y-2 shrink-0">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
                 <Car className="w-3.5 h-3.5 text-[#00F0FF]" />
-                50 Vehicle Fleet
+                Fleet Library
               </span>
               <span className="text-[10px] font-mono text-slate-400 bg-[#161C28] px-1.5 py-0.5 rounded border border-[#1E2533]">
                 {filteredAssets.length} / 50
@@ -298,27 +476,10 @@ export const CustomizationPanel: React.FC = () => {
                 className="w-full bg-[#161C28] border border-[#1E2533] rounded px-2.5 py-1.5 pl-8 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-[#00F0FF]"
               />
             </div>
-
-            {/* Category Filter Pills */}
-            <div className="flex gap-1 overflow-x-auto pb-1 text-[10px] scrollbar-none">
-              {CATEGORY_TABS.map(tab => (
-                <button
-                  key={tab.id}
-                  onClick={() => setSelectedCategory(tab.id)}
-                  className={`px-2 py-0.5 rounded shrink-0 whitespace-nowrap transition-colors ${
-                    selectedCategory === tab.id
-                      ? 'bg-[#00F0FF] text-black font-semibold'
-                      : 'bg-[#161C28] text-slate-400 hover:text-slate-200 border border-[#1E2533]'
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
           </div>
 
-          {/* Vehicle Dropdown / Selector List */}
-          <div className="max-h-40 overflow-y-auto border-b border-[#1E2533] divide-y divide-[#161C28] shrink-0">
+          {/* Vehicle Selector List */}
+          <div className="max-h-44 overflow-y-auto border-b border-[#1E2533] divide-y divide-[#161C28] shrink-0">
             {filteredAssets.map(asset => {
               const isActive = activeFile === asset.file;
               return (
@@ -341,14 +502,14 @@ export const CustomizationPanel: React.FC = () => {
             })}
           </div>
 
-          {/* Component Hierarchy Tree Header */}
+          {/* Component Hierarchy Header */}
           <div className="p-3 border-b border-[#1E2533] bg-[#11141C] flex items-center justify-between shrink-0">
             <span className="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
               <Layers className="w-3.5 h-3.5 text-[#00F0FF]" />
-              Components Tree
+              Component Tree
             </span>
             <span className="text-[10px] font-mono text-slate-400">
-              {schema2Spec?.components.length || 0} items
+              {schema2Spec?.components.length || 0} nodes
             </span>
           </div>
 
@@ -361,7 +522,6 @@ export const CustomizationPanel: React.FC = () => {
 
               return (
                 <div key={groupKey} className="rounded border border-[#1E2533] overflow-hidden bg-[#11141C]/60">
-                  {/* Group Title Bar */}
                   <button
                     onClick={() => toggleGroup(groupKey)}
                     className="w-full px-2.5 py-1.5 flex items-center justify-between text-slate-300 hover:bg-[#161C28] text-xs font-medium"
@@ -379,7 +539,6 @@ export const CustomizationPanel: React.FC = () => {
                     </span>
                   </button>
 
-                  {/* Components in Group */}
                   {isExpanded && (
                     <div className="divide-y divide-[#161C28]/80 bg-[#0D1017]">
                       {components.map(comp => {
@@ -406,7 +565,6 @@ export const CustomizationPanel: React.FC = () => {
                               <span className="truncate">{comp.name}</span>
                             </div>
 
-                            {/* Visibility & Lock Controls */}
                             <div className="flex items-center gap-1 shrink-0 ml-2" onClick={e => e.stopPropagation()}>
                               <button
                                 onClick={() => toggleComponentVisibility(comp.id)}
@@ -438,31 +596,31 @@ export const CustomizationPanel: React.FC = () => {
           </div>
         </aside>
 
-        {/* ========================================================= */}
-        {/* CENTER VIEWPORT: Three.js Interactive 3D Canvas Viewport */}
-        {/* ========================================================= */}
+        {/* 3.2 CENTRAL HERO VIEWPORT: Three.js Interactive 3D Canvas */}
         <main className="flex-1 h-full relative flex flex-col overflow-hidden">
-          {/* Top Camera & Stage Presets Bar */}
+          {/* Top Camera Presets Toolbar */}
           <div className="h-10 bg-[#0D1017]/90 backdrop-blur-md border-b border-[#1E2533] px-3 flex items-center justify-between text-xs z-10 shrink-0">
-            {/* Camera Presets */}
             <div className="flex items-center gap-1 overflow-x-auto">
               <Camera className="w-3.5 h-3.5 text-[#00F0FF] mr-1 shrink-0" />
-              {CAMERA_PRESETS.map(preset => (
-                <button
-                  key={preset.id}
-                  onClick={() => setCameraPreset(preset.id)}
-                  className={`px-2 py-0.5 rounded text-[11px] transition-colors whitespace-nowrap ${
-                    cameraPreset === preset.id
-                      ? 'bg-[#1E2533] text-[#00F0FF] font-semibold border border-[#00F0FF]/50'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-[#161C28]'
-                  }`}
-                >
-                  {preset.label}
-                </button>
-              ))}
+              {CAMERA_PRESETS.map(preset => {
+                if (preset.id === 'interior' && !capabilities.interior) return null;
+                return (
+                  <button
+                    key={preset.id}
+                    onClick={() => setCameraPreset(preset.id)}
+                    className={`px-2 py-0.5 rounded text-[11px] transition-colors whitespace-nowrap ${
+                      cameraPreset === preset.id
+                        ? 'bg-[#1E2533] text-[#00F0FF] font-semibold border border-[#00F0FF]/50'
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-[#161C28]'
+                    }`}
+                  >
+                    {preset.label}
+                  </button>
+                );
+              })}
             </div>
 
-            {/* View Toggles */}
+            {/* Viewport Toggles */}
             <div className="flex items-center gap-2">
               <button
                 onClick={toggleWireframe}
@@ -471,7 +629,7 @@ export const CustomizationPanel: React.FC = () => {
                     ? 'bg-[#00F0FF]/20 text-[#00F0FF] border-[#00F0FF]'
                     : 'bg-[#161C28] text-slate-400 border-[#1E2533] hover:text-slate-200'
                 }`}
-                title="Toggle Wireframe"
+                title="Toggle Wireframe (W)"
               >
                 <Box className="w-3.5 h-3.5" />
               </button>
@@ -500,11 +658,11 @@ export const CustomizationPanel: React.FC = () => {
             </div>
           </div>
 
-          {/* 3D Scene Viewport */}
+          {/* 3D Scene Canvas */}
           <div className="flex-1 w-full h-full relative bg-[#0A0C10]">
             <SceneCanvas />
 
-            {/* Active Selection Pill in Viewport */}
+            {/* Selection pill */}
             {selectedComponent && (
               <div className="absolute top-3 left-3 bg-[#0D1017]/90 backdrop-blur-md border border-[#00F0FF]/60 px-3 py-1.5 rounded-lg shadow-xl text-xs flex items-center gap-2 z-10">
                 <span className="w-2 h-2 rounded-full bg-[#00F0FF] animate-ping" />
@@ -521,62 +679,44 @@ export const CustomizationPanel: React.FC = () => {
           </div>
         </main>
 
-        {/* ========================================================= */}
-        {/* RIGHT PANEL: Component Inspector & Parametric Controls    */}
-        {/* ========================================================= */}
-        <aside className="w-88 md:w-96 h-full bg-[#0D1017] border-l border-[#1E2533] flex flex-col shrink-0 z-10 overflow-y-auto">
-          {/* Header */}
-          <div className="p-3 border-b border-[#1E2533] bg-[#11141C] flex items-center justify-between shrink-0">
-            <span className="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
-              <Sliders className="w-3.5 h-3.5 text-[#00F0FF]" />
-              Component Inspector
-            </span>
-            {selectedComponent && (
+        {/* 3.3 RIGHT CONFIGURATION PANEL: Capability-Driven Categories & Inspector */}
+        <aside className="w-88 md:w-96 h-full bg-[#0D1017] border-l border-[#1E2533] flex flex-col shrink-0 z-10 overflow-hidden">
+          {/* Category Tabs Header */}
+          <div className="p-2 border-b border-[#1E2533] bg-[#11141C] flex items-center gap-1 overflow-x-auto shrink-0 scrollbar-none">
+            {CATEGORY_TABS.map(tab => (
               <button
-                onClick={() => resetComponentOverride(selectedComponent.id)}
-                className="text-[10px] font-mono text-slate-400 hover:text-amber-400 flex items-center gap-1 px-1.5 py-0.5 rounded hover:bg-[#1E2533]"
-                title="Reset this component to factory specs"
+                key={tab.id}
+                onClick={() => setActiveCategory(tab.id)}
+                className={`px-2.5 py-1 rounded text-[11px] font-medium whitespace-nowrap transition-colors ${
+                  activeCategory === tab.id
+                    ? 'bg-[#00F0FF] text-black font-semibold'
+                    : 'bg-[#161C28] text-slate-400 hover:text-slate-200 hover:bg-[#1E2533] border border-[#1E2533]'
+                }`}
               >
-                <RotateCcw className="w-3 h-3" />
-                Reset
+                {tab.label}
               </button>
-            )}
+            ))}
           </div>
 
-          {/* Inspector Body */}
-          <div className="p-4 space-y-5 text-xs">
-            {!selectedComponent ? (
-              /* If No Component Selected: Show Vehicle Specs Summary */
-              <div className="space-y-4">
-                <div className="p-3 rounded-lg bg-[#11141C] border border-[#1E2533] space-y-2">
-                  <div className="text-[11px] font-bold text-slate-200 uppercase tracking-wider">
-                    Vehicle Overview
-                  </div>
-                  <div className="text-slate-400 text-xs">
-                    Select any component from the hierarchy tree on the left, or click directly on any 3D body part in the viewport to adjust transforms, dimensions, materials, finishes, and aerodynamic settings.
-                  </div>
+          {/* Configuration Body */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 text-xs">
+            {/* Rule 1.1 Non-negotiable 3: Capability Check */}
+            {!capabilities[activeCategory] ? (
+              <div className="p-4 rounded-lg bg-[#161C28]/80 border border-amber-900/40 text-slate-400 space-y-2">
+                <div className="flex items-center gap-2 text-amber-400 font-semibold text-xs">
+                  <AlertTriangle className="w-4 h-4 shrink-0" />
+                  <span>Unavailable for this vehicle</span>
                 </div>
-
-                {schema2Spec && (
-                  <div className="p-3 rounded-lg bg-[#11141C] border border-[#1E2533] space-y-2 text-slate-300">
-                    <div className="text-[11px] font-bold text-[#00F0FF] uppercase tracking-wider">
-                      Factory Specifications
-                    </div>
-                    <div className="grid grid-cols-2 gap-2 text-[11px] font-mono">
-                      <div>Length: <span className="text-white">{schema2Spec.dimensions.length}m</span></div>
-                      <div>Width: <span className="text-white">{schema2Spec.dimensions.width}m</span></div>
-                      <div>Height: <span className="text-white">{schema2Spec.dimensions.height}m</span></div>
-                      <div>Wheelbase: <span className="text-white">{schema2Spec.dimensions.wheelbase}m</span></div>
-                      <div>Front Track: <span className="text-white">{schema2Spec.dimensions.frontTrack}m</span></div>
-                      <div>Rear Track: <span className="text-white">{schema2Spec.dimensions.rearTrack}m</span></div>
-                    </div>
-                  </div>
-                )}
+                <p className="text-[11px] text-slate-300 leading-relaxed">
+                  This vehicle specification does not contain separable <strong>{activeCategory}</strong> components in its geometry hierarchy.
+                </p>
+                <div className="p-2 rounded bg-[#0D1017] border border-[#1E2533] font-mono text-[10px] text-slate-400">
+                  Format: {schema2Spec ? 'Schema 2.0 (Component Limited)' : 'Cherax Entity (Monolithic Body)'}
+                </div>
               </div>
-            ) : (
-              /* Component Selected: Full Parametric Control Form */
+            ) : selectedComponent ? (
+              /* Component Selected Inspector */
               <div className="space-y-4">
-                {/* Component Info Card */}
                 <div className="p-2.5 rounded bg-[#11141C] border border-[#1E2533] space-y-1">
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-slate-100">{selectedComponent.name}</span>
@@ -589,14 +729,14 @@ export const CustomizationPanel: React.FC = () => {
                   </div>
                 </div>
 
-                {/* 1. Transform: Position Controls */}
+                {/* Transforms */}
                 <div className="space-y-2 p-3 rounded bg-[#11141C]/60 border border-[#1E2533]">
                   <div className="text-[11px] font-bold text-slate-200 uppercase tracking-wider flex items-center justify-between">
                     <span>Position (meters)</span>
                     <span className="text-[10px] font-mono text-slate-400">X / Y / Z</span>
                   </div>
 
-                  {/* X Position */}
+                  {/* X Translation */}
                   <div className="space-y-1">
                     <div className="flex justify-between text-[11px]">
                       <span className="text-slate-400">X (Lateral):</span>
@@ -615,13 +755,20 @@ export const CustomizationPanel: React.FC = () => {
                         const cur = activeOverride?.position ?? selectedComponent.transform.position;
                         updateComponentOverride(selectedComponent.id, {
                           position: [val, cur[1], cur[2]]
-                        });
+                        }, false); // Coalesced live drag
+                      }}
+                      onMouseUp={e => {
+                        const val = parseFloat((e.target as HTMLInputElement).value);
+                        const cur = activeOverride?.position ?? selectedComponent.transform.position;
+                        updateComponentOverride(selectedComponent.id, {
+                          position: [val, cur[1], cur[2]]
+                        }, true); // Commit history on release
                       }}
                       className="w-full accent-[#00F0FF] cursor-pointer"
                     />
                   </div>
 
-                  {/* Y Position */}
+                  {/* Y Translation */}
                   <div className="space-y-1">
                     <div className="flex justify-between text-[11px]">
                       <span className="text-slate-400">Y (Height):</span>
@@ -640,126 +787,25 @@ export const CustomizationPanel: React.FC = () => {
                         const cur = activeOverride?.position ?? selectedComponent.transform.position;
                         updateComponentOverride(selectedComponent.id, {
                           position: [cur[0], val, cur[2]]
-                        });
+                        }, false);
                       }}
-                      className="w-full accent-[#00F0FF] cursor-pointer"
-                    />
-                  </div>
-
-                  {/* Z Position */}
-                  <div className="space-y-1">
-                    <div className="flex justify-between text-[11px]">
-                      <span className="text-slate-400">Z (Longitudinal):</span>
-                      <span className="font-mono text-slate-200">
-                        {((activeOverride?.position?.[2] ?? selectedComponent.transform.position[2])).toFixed(3)}m
-                      </span>
-                    </div>
-                    <input
-                      type="range"
-                      min={-3.0}
-                      max={3.0}
-                      step={0.01}
-                      value={activeOverride?.position?.[2] ?? selectedComponent.transform.position[2]}
-                      onChange={e => {
-                        const val = parseFloat(e.target.value);
+                      onMouseUp={e => {
+                        const val = parseFloat((e.target as HTMLInputElement).value);
                         const cur = activeOverride?.position ?? selectedComponent.transform.position;
                         updateComponentOverride(selectedComponent.id, {
-                          position: [cur[0], cur[1], val]
-                        });
+                          position: [cur[0], val, cur[2]]
+                        }, true);
                       }}
                       className="w-full accent-[#00F0FF] cursor-pointer"
                     />
                   </div>
                 </div>
 
-                {/* 2. Transform: Rotation Controls */}
-                <div className="space-y-2 p-3 rounded bg-[#11141C]/60 border border-[#1E2533]">
-                  <div className="text-[11px] font-bold text-slate-200 uppercase tracking-wider flex items-center justify-between">
-                    <span>Rotation (Pitch / Yaw / Roll)</span>
-                  </div>
-
-                  {/* Rotation X */}
-                  <div className="space-y-1">
-                    <div className="flex justify-between text-[11px]">
-                      <span className="text-slate-400">Pitch (X):</span>
-                      <span className="font-mono text-slate-200">
-                        {Math.round(((activeOverride?.rotation?.[0] ?? selectedComponent.transform.rotation[0]) * 180) / Math.PI)}°
-                      </span>
-                    </div>
-                    <input
-                      type="range"
-                      min={-45}
-                      max={45}
-                      step={1}
-                      value={Math.round(((activeOverride?.rotation?.[0] ?? selectedComponent.transform.rotation[0]) * 180) / Math.PI)}
-                      onChange={e => {
-                        const deg = parseFloat(e.target.value);
-                        const rad = (deg * Math.PI) / 180;
-                        const cur = activeOverride?.rotation ?? selectedComponent.transform.rotation;
-                        updateComponentOverride(selectedComponent.id, {
-                          rotation: [rad, cur[1], cur[2]]
-                        });
-                      }}
-                      className="w-full accent-[#00F0FF] cursor-pointer"
-                    />
-                  </div>
-
-                  {/* Rotation Y */}
-                  <div className="space-y-1">
-                    <div className="flex justify-between text-[11px]">
-                      <span className="text-slate-400">Yaw (Y):</span>
-                      <span className="font-mono text-slate-200">
-                        {Math.round(((activeOverride?.rotation?.[1] ?? selectedComponent.transform.rotation[1]) * 180) / Math.PI)}°
-                      </span>
-                    </div>
-                    <input
-                      type="range"
-                      min={-45}
-                      max={45}
-                      step={1}
-                      value={Math.round(((activeOverride?.rotation?.[1] ?? selectedComponent.transform.rotation[1]) * 180) / Math.PI)}
-                      onChange={e => {
-                        const deg = parseFloat(e.target.value);
-                        const rad = (deg * Math.PI) / 180;
-                        const cur = activeOverride?.rotation ?? selectedComponent.transform.rotation;
-                        updateComponentOverride(selectedComponent.id, {
-                          rotation: [cur[0], rad, cur[2]]
-                        });
-                      }}
-                      className="w-full accent-[#00F0FF] cursor-pointer"
-                    />
-                  </div>
-                </div>
-
-                {/* 3. Transform: Scale Controls */}
-                <div className="space-y-2 p-3 rounded bg-[#11141C]/60 border border-[#1E2533]">
-                  <div className="text-[11px] font-bold text-slate-200 uppercase tracking-wider flex items-center justify-between">
-                    <span>Uniform Scale</span>
-                    <span className="font-mono text-[#00F0FF]">
-                      {(activeOverride?.scale?.[0] ?? selectedComponent.transform.scale[0]).toFixed(2)}x
-                    </span>
-                  </div>
-                  <input
-                    type="range"
-                    min={0.5}
-                    max={1.8}
-                    step={0.02}
-                    value={activeOverride?.scale?.[0] ?? selectedComponent.transform.scale[0]}
-                    onChange={e => {
-                      const s = parseFloat(e.target.value);
-                      updateComponentOverride(selectedComponent.id, {
-                        scale: [s, s, s]
-                      });
-                    }}
-                    className="w-full accent-[#00F0FF] cursor-pointer"
-                  />
-                </div>
-
-                {/* 4. Material & Finish Selector */}
+                {/* Materials & Finishes */}
                 <div className="space-y-2 p-3 rounded bg-[#11141C]/60 border border-[#1E2533]">
                   <div className="text-[11px] font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
                     <Palette className="w-3.5 h-3.5 text-[#00F0FF]" />
-                    Material & Finish
+                    Material Finish
                   </div>
 
                   <div className="grid grid-cols-3 gap-1.5">
@@ -768,7 +814,7 @@ export const CustomizationPanel: React.FC = () => {
                       return (
                         <button
                           key={opt.id}
-                          onClick={() => updateComponentOverride(selectedComponent.id, { materialFinish: opt.id })}
+                          onClick={() => updateComponentOverride(selectedComponent.id, { materialFinish: opt.id }, true)}
                           className={`px-2 py-1.5 rounded text-[10px] font-medium transition-colors text-center ${
                             isCurrent
                               ? 'bg-[#00F0FF] text-black font-semibold'
@@ -781,14 +827,13 @@ export const CustomizationPanel: React.FC = () => {
                     })}
                   </div>
 
-                  {/* Component Custom Color Picker */}
                   <div className="space-y-1.5 pt-2">
                     <div className="text-slate-400 text-[11px]">Color Palette:</div>
                     <div className="flex flex-wrap gap-1.5">
                       {QUICK_COLORS.map(color => (
                         <button
                           key={color.hex}
-                          onClick={() => updateComponentOverride(selectedComponent.id, { customColorHex: color.hex })}
+                          onClick={() => updateComponentOverride(selectedComponent.id, { customColorHex: color.hex }, true)}
                           style={{ backgroundColor: color.hex }}
                           className="w-5 h-5 rounded-full border border-black/40 hover:scale-110 transition-transform"
                           title={color.name}
@@ -797,84 +842,25 @@ export const CustomizationPanel: React.FC = () => {
                       <input
                         type="color"
                         value={activeOverride?.customColorHex || '#00F0FF'}
-                        onChange={e => updateComponentOverride(selectedComponent.id, { customColorHex: e.target.value })}
+                        onChange={e => updateComponentOverride(selectedComponent.id, { customColorHex: e.target.value }, true)}
                         className="w-6 h-6 rounded cursor-pointer bg-transparent border-0"
                         title="Custom Color"
                       />
                     </div>
                   </div>
                 </div>
-
-                {/* 5. Context-Specific Customizer Options */}
-                {(selectedComponent.group === 'wheels' || selectedComponent.id.includes('wheel')) && (
-                  <div className="space-y-2 p-3 rounded bg-[#11141C]/60 border border-[#00F0FF]/30">
-                    <div className="text-[11px] font-bold text-[#00F0FF] uppercase tracking-wider flex items-center gap-1.5">
-                      <Disc className="w-3.5 h-3.5 text-[#00F0FF]" />
-                      Wheel Stance & Alignment
-                    </div>
-
-                    <div className="space-y-1">
-                      <div className="flex justify-between text-[11px]">
-                        <span className="text-slate-400">Camber Angle:</span>
-                        <span className="font-mono text-slate-200">
-                          {activeOverride?.contextSettings?.camberDeg ?? -3.5}°
-                        </span>
-                      </div>
-                      <input
-                        type="range"
-                        min={-7.0}
-                        max={1.0}
-                        step={0.2}
-                        value={activeOverride?.contextSettings?.camberDeg ?? -3.5}
-                        onChange={e => {
-                          const camberDeg = parseFloat(e.target.value);
-                          updateComponentOverride(selectedComponent.id, {
-                            contextSettings: {
-                              ...activeOverride?.contextSettings,
-                              camberDeg
-                            }
-                          });
-                        }}
-                        className="w-full accent-[#00F0FF] cursor-pointer"
-                      />
-                    </div>
+              </div>
+            ) : (
+              /* No Component Selected Overview */
+              <div className="space-y-4">
+                <div className="p-3 rounded-lg bg-[#11141C] border border-[#1E2533] space-y-2">
+                  <div className="text-[11px] font-bold text-slate-200 uppercase tracking-wider">
+                    {activeCategory.toUpperCase()} Configuration
                   </div>
-                )}
-
-                {(selectedComponent.id.includes('wing') || selectedComponent.id.includes('spoiler')) && (
-                  <div className="space-y-2 p-3 rounded bg-[#11141C]/60 border border-[#00F0FF]/30">
-                    <div className="text-[11px] font-bold text-[#00F0FF] uppercase tracking-wider flex items-center gap-1.5">
-                      <Wind className="w-3.5 h-3.5 text-[#00F0FF]" />
-                      Aerodynamic Wing Trims
-                    </div>
-
-                    <div className="space-y-1">
-                      <div className="flex justify-between text-[11px]">
-                        <span className="text-slate-400">Angle of Attack (AoA):</span>
-                        <span className="font-mono text-slate-200">
-                          {activeOverride?.contextSettings?.aoaDeg ?? 12}°
-                        </span>
-                      </div>
-                      <input
-                        type="range"
-                        min={-5}
-                        max={25}
-                        step={1}
-                        value={activeOverride?.contextSettings?.aoaDeg ?? 12}
-                        onChange={e => {
-                          const aoaDeg = parseFloat(e.target.value);
-                          updateComponentOverride(selectedComponent.id, {
-                            contextSettings: {
-                              ...activeOverride?.contextSettings,
-                              aoaDeg
-                            }
-                          });
-                        }}
-                        className="w-full accent-[#00F0FF] cursor-pointer"
-                      />
-                    </div>
-                  </div>
-                )}
+                  <p className="text-slate-400 text-xs">
+                    Select a component from the tree or click directly on any 3D body part to open fine-tuning controls.
+                  </p>
+                </div>
               </div>
             )}
           </div>
@@ -882,10 +868,9 @@ export const CustomizationPanel: React.FC = () => {
       </div>
 
       {/* ========================================================= */}
-      {/* BOTTOM ACTION BAR: Undo/Redo, Summary & Export Center     */}
+      {/* BOTTOM ACTION BAR                                         */}
       {/* ========================================================= */}
       <footer className="h-12 bg-[#0D1017] border-t border-[#1E2533] px-4 flex items-center justify-between text-xs shrink-0 z-20">
-        {/* Left: Active Vehicle Summary */}
         <div className="flex items-center gap-3">
           <span className="font-semibold text-slate-200 truncate">
             {activeModel?.realWorldModel || 'AutoVerse Spec'}
@@ -901,46 +886,7 @@ export const CustomizationPanel: React.FC = () => {
           )}
         </div>
 
-        {/* Right: Actions */}
         <div className="flex items-center gap-2">
-          {/* Undo / Redo */}
-          <button
-            onClick={undo}
-            disabled={historyIndex <= 0}
-            className="p-1.5 rounded bg-[#161C28] hover:bg-[#1E2533] text-slate-300 disabled:opacity-30 disabled:pointer-events-none border border-[#1E2533]"
-            title="Undo"
-          >
-            <Undo2 className="w-3.5 h-3.5" />
-          </button>
-          <button
-            onClick={redo}
-            disabled={historyIndex >= history.length - 1}
-            className="p-1.5 rounded bg-[#161C28] hover:bg-[#1E2533] text-slate-300 disabled:opacity-30 disabled:pointer-events-none border border-[#1E2533]"
-            title="Redo"
-          >
-            <Redo2 className="w-3.5 h-3.5" />
-          </button>
-
-          {/* Reset All Changes */}
-          <button
-            onClick={resetAllComponentOverrides}
-            className="px-2.5 py-1.5 rounded bg-[#161C28] hover:bg-[#1E2533] text-slate-300 border border-[#1E2533] flex items-center gap-1.5"
-            title="Reset All Component Customizations"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-            <span>Reset All</span>
-          </button>
-
-          {/* Save Configuration */}
-          <button
-            onClick={handleSaveConfig}
-            className="px-3 py-1.5 rounded bg-[#161C28] hover:bg-[#1E2533] text-slate-200 border border-[#1E2533] flex items-center gap-1.5 font-medium"
-          >
-            {saveSuccess ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Save className="w-3.5 h-3.5 text-slate-300" />}
-            <span>{saveSuccess ? 'Saved!' : 'Save'}</span>
-          </button>
-
-          {/* Export JSON */}
           <button
             onClick={handleExportJson}
             className="px-3 py-1.5 rounded bg-[#161C28] hover:bg-[#1E2533] text-slate-200 border border-[#1E2533] flex items-center gap-1.5 font-medium"
@@ -950,18 +896,52 @@ export const CustomizationPanel: React.FC = () => {
             <span>Export JSON</span>
           </button>
 
-          {/* Export GLB 3D Model */}
           <button
             onClick={handleExportGlb}
             disabled={isExportingGlb}
             className="px-3.5 py-1.5 rounded bg-[#00F0FF] hover:bg-[#00D4E0] text-black font-semibold flex items-center gap-1.5 transition-colors disabled:opacity-50"
-            title="Export binary GLB 3D model for Blender, Unreal Engine, or WebGL"
+            title="Export binary GLB 3D model"
           >
             <Download className="w-3.5 h-3.5 text-black" />
             <span>{isExportingGlb ? 'Exporting...' : 'Export GLB'}</span>
           </button>
         </div>
       </footer>
+
+      {/* Reset Confirmation Dialog */}
+      {isResetConfirmOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="w-full max-w-sm bg-[#11141C] border border-[#1E2533] rounded-lg p-5 space-y-4 shadow-2xl">
+            <div className="flex items-center gap-3 text-amber-400">
+              <AlertTriangle className="w-5 h-5 shrink-0" />
+              <h3 className="font-bold text-slate-100 text-sm">Reset Configuration?</h3>
+            </div>
+            <p className="text-slate-400 text-xs leading-relaxed">
+              Are you sure you want to revert all customized components back to factory specifications? This action cannot be undone.
+            </p>
+            <div className="flex justify-end gap-2 pt-2">
+              <button
+                onClick={() => setIsResetConfirmOpen(false)}
+                className="px-3 py-1.5 rounded bg-[#161C28] hover:bg-[#1E2533] text-slate-300 border border-[#1E2533]"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmReset}
+                className="px-3 py-1.5 rounded bg-rose-600 hover:bg-rose-500 text-white font-semibold"
+              >
+                Confirm Reset
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Component Gallery Modal */}
+      <ComponentGalleryModal
+        isOpen={isGalleryOpen}
+        onClose={() => setIsGalleryOpen(false)}
+      />
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { ContactShadows } from '@react-three/drei';
 import * as THREE from 'three';
@@ -34,12 +34,33 @@ export const SceneCanvas: React.FC<SceneCanvasProps> = ({
     isWireframe,
     isAutoRotate,
     showGrid,
-    showShadows
+    showShadows,
+    graphicsQuality
   } = useVehicleStore();
 
   const currentConfig = customConfig || activeConfig;
   const currentModelMeta = customModelMeta || activeModel;
   const currentBinding = customAssetBinding || (currentModelMeta ? assetBindings[currentModelMeta.hash] : undefined);
+
+  // Derive dynamic dimensions for camera framing
+  const dimensions = useMemo(() => {
+    const raw = (currentConfig.parametricSpec || currentConfig) as any;
+    if (raw?.dimensions) {
+      return {
+        length: Number(raw.dimensions.length) || 4.6,
+        width: Number(raw.dimensions.width) || 2.0,
+        height: Number(raw.dimensions.height) || 1.25
+      };
+    }
+    return { length: 4.6, width: 2.0, height: 1.25 };
+  }, [currentConfig]);
+
+  const hasInterior = useMemo(() => {
+    const raw = (currentConfig.parametricSpec || currentConfig) as any;
+    return raw?.components ? raw.components.some((c: any) => c.group === 'interior') : true;
+  }, [currentConfig]);
+
+  const activeDpr = graphicsQuality === 'low' ? 1 : graphicsQuality === 'medium' ? 1.25 : [1, 2];
 
   return (
     <div className={`relative ${className} bg-[#0A0C10] overflow-hidden`}>
@@ -52,17 +73,19 @@ export const SceneCanvas: React.FC<SceneCanvasProps> = ({
           toneMappingExposure: 1.1,
           preserveDrawingBuffer: true
         }}
-        dpr={[1, 2]}
+        dpr={activeDpr as any}
       >
         {/* Studio Lighting & Environment Reflections */}
         <EnvironmentPresets preset={environmentPreset} showShadows={showShadows} />
 
-        {/* Camera Controller & Presets */}
+        {/* Dynamic Bounding-Box Camera Controller & Presets */}
         {enableControls && (
           <CameraRig
             preset={cameraPreset}
             trigger={cameraTrigger}
             autoRotate={isAutoRotate}
+            dimensions={dimensions}
+            hasInterior={hasInterior}
           />
         )}
 

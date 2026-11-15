@@ -36,10 +36,14 @@ interface VehicleStoreState {
   graphicsQuality: 'low' | 'medium' | 'high' | 'ultra';
 
   // Component Customization State (Schema 2.0)
+  configName: string;
+  setConfigName: (name: string) => void;
   selectedComponentId: string | null;
   componentOverrides: Record<string, ComponentOverride>;
+  overrideHistory: Record<string, ComponentOverride>[];
+  overrideHistoryIndex: number;
   selectComponent: (id: string | null) => void;
-  updateComponentOverride: (componentId: string, override: Partial<ComponentOverride>) => void;
+  updateComponentOverride: (componentId: string, override: Partial<ComponentOverride>, recordHistory?: boolean) => void;
   resetComponentOverride: (componentId: string) => void;
   resetAllComponentOverrides: () => void;
   toggleComponentVisibility: (componentId: string) => void;
@@ -212,14 +216,18 @@ export const useVehicleStore = create<VehicleStoreState>((set, get) => ({
   graphicsQuality: 'high',
 
   // Component Customization State (Schema 2.0)
+  configName: 'Porsche 911 GT3 RS Specification',
+  setConfigName: (name: string) => set({ configName: name }),
   selectedComponentId: null,
   componentOverrides: {},
+  overrideHistory: [{}],
+  overrideHistoryIndex: 0,
 
   selectComponent: (id: string | null) => {
     set({ selectedComponentId: id });
   },
 
-  updateComponentOverride: (componentId: string, override: Partial<ComponentOverride>) => {
+  updateComponentOverride: (componentId: string, override: Partial<ComponentOverride>, recordHistory = true) => {
     set(state => {
       const existing = state.componentOverrides[componentId] || { componentId };
       const updated: ComponentOverride = {
@@ -227,11 +235,25 @@ export const useVehicleStore = create<VehicleStoreState>((set, get) => ({
         ...override,
         componentId
       };
+      const nextOverrides = {
+        ...state.componentOverrides,
+        [componentId]: updated
+      };
+
+      let nextHistory = state.overrideHistory;
+      let nextIndex = state.overrideHistoryIndex;
+
+      if (recordHistory) {
+        nextHistory = state.overrideHistory.slice(0, state.overrideHistoryIndex + 1);
+        nextHistory.push(nextOverrides);
+        if (nextHistory.length > 50) nextHistory.shift();
+        nextIndex = nextHistory.length - 1;
+      }
+
       return {
-        componentOverrides: {
-          ...state.componentOverrides,
-          [componentId]: updated
-        },
+        componentOverrides: nextOverrides,
+        overrideHistory: nextHistory,
+        overrideHistoryIndex: nextIndex,
         isDirty: true
       };
     });
@@ -241,8 +263,12 @@ export const useVehicleStore = create<VehicleStoreState>((set, get) => ({
     set(state => {
       const rest = { ...state.componentOverrides };
       delete rest[componentId];
+      const nextHistory = state.overrideHistory.slice(0, state.overrideHistoryIndex + 1);
+      nextHistory.push(rest);
       return {
         componentOverrides: rest,
+        overrideHistory: nextHistory,
+        overrideHistoryIndex: nextHistory.length - 1,
         isDirty: Object.keys(rest).length > 0
       };
     });
@@ -251,6 +277,8 @@ export const useVehicleStore = create<VehicleStoreState>((set, get) => ({
   resetAllComponentOverrides: () => {
     set({
       componentOverrides: {},
+      overrideHistory: [{}],
+      overrideHistoryIndex: 0,
       selectedComponentId: null,
       isDirty: false
     });
@@ -299,11 +327,14 @@ export const useVehicleStore = create<VehicleStoreState>((set, get) => ({
           activeModel: porscheGt3RsModel,
           activeConfig: porscheInitialConfig,
           originalConfig: porscheInitialConfig,
+          configName: 'Porsche 911 GT3 RS Specification',
           isDirty: false,
           history: [porscheInitialConfig],
           historyIndex: 0,
           selectedComponentId: null,
           componentOverrides: {},
+          overrideHistory: [{}],
+          overrideHistoryIndex: 0,
           cameraTrigger: Date.now()
         });
         return true;
@@ -360,11 +391,14 @@ export const useVehicleStore = create<VehicleStoreState>((set, get) => ({
         activeModel: modelInfo,
         activeConfig: loadedConfig,
         originalConfig: loadedConfig,
+        configName: `${modelInfo?.displayName || 'Vehicle'} Custom Config`,
         isDirty: false,
         history: [loadedConfig],
         historyIndex: 0,
         selectedComponentId: null,
         componentOverrides: {},
+        overrideHistory: [{}],
+        overrideHistoryIndex: 0,
         cameraTrigger: Date.now()
       });
       return true;
@@ -482,23 +516,52 @@ export const useVehicleStore = create<VehicleStoreState>((set, get) => ({
 
   undo: () => {
     set(state => {
-      if (state.historyIndex <= 0) return {};
-      const prevIndex = state.historyIndex - 1;
+      let nextCfg = state.activeConfig;
+      let nextCfgIndex = state.historyIndex;
+      if (state.historyIndex > 0) {
+        nextCfgIndex = state.historyIndex - 1;
+        nextCfg = state.history[nextCfgIndex];
+      }
+
+      let nextOverrides = state.componentOverrides;
+      let nextOverrideIndex = state.overrideHistoryIndex;
+      if (state.overrideHistoryIndex > 0) {
+        nextOverrideIndex = state.overrideHistoryIndex - 1;
+        nextOverrides = state.overrideHistory[nextOverrideIndex];
+      }
+
+      const hasHistory = nextCfgIndex > 0 || nextOverrideIndex > 0;
       return {
-        activeConfig: state.history[prevIndex],
-        historyIndex: prevIndex,
-        isDirty: true
+        activeConfig: nextCfg,
+        historyIndex: nextCfgIndex,
+        componentOverrides: nextOverrides,
+        overrideHistoryIndex: nextOverrideIndex,
+        isDirty: hasHistory
       };
     });
   },
 
   redo: () => {
     set(state => {
-      if (state.historyIndex >= state.history.length - 1) return {};
-      const nextIndex = state.historyIndex + 1;
+      let nextCfg = state.activeConfig;
+      let nextCfgIndex = state.historyIndex;
+      if (state.historyIndex < state.history.length - 1) {
+        nextCfgIndex = state.historyIndex + 1;
+        nextCfg = state.history[nextCfgIndex];
+      }
+
+      let nextOverrides = state.componentOverrides;
+      let nextOverrideIndex = state.overrideHistoryIndex;
+      if (state.overrideHistoryIndex < state.overrideHistory.length - 1) {
+        nextOverrideIndex = state.overrideHistoryIndex + 1;
+        nextOverrides = state.overrideHistory[nextOverrideIndex];
+      }
+
       return {
-        activeConfig: state.history[nextIndex],
-        historyIndex: nextIndex,
+        activeConfig: nextCfg,
+        historyIndex: nextCfgIndex,
+        componentOverrides: nextOverrides,
+        overrideHistoryIndex: nextOverrideIndex,
         isDirty: true
       };
     });
@@ -511,7 +574,9 @@ export const useVehicleStore = create<VehicleStoreState>((set, get) => ({
       history: [state.originalConfig],
       historyIndex: 0,
       selectedComponentId: null,
-      componentOverrides: {}
+      componentOverrides: {},
+      overrideHistory: [{}],
+      overrideHistoryIndex: 0
     }));
   },
 
