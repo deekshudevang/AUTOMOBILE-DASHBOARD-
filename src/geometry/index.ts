@@ -5,3 +5,4 @@ export * from './wheels/wheelAssemblyGenerator';
 export * from './panelization/panelCutter';
 export * from './materials/pbrMaterialFactory';
 export * from './validation/qualityGates';
+export * from './migration/schemaV2Migrator';
