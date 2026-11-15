@@ -40,10 +40,10 @@
 - [x] **3.4 Serializable Configuration & Command Pattern**: Verified. Single `VehicleConfiguration` and `componentOverrides` state; coalescing slider drag commands; undo/redo stack. Evidence: `src/hooks/useVehicleStore.ts`.
 
 ### Phase 4 — Vehicle Customization
-- [ ] **4.1 Exterior Components Engine**: Pending. Click-to-select, hierarchy list, highlight, per-component visibility/material/color, unmapped meshes listed cleanly.
-- [ ] **4.2 Paint Studio**: Pending. Solid, metallic, pearl, matte, satin, gloss, carbon-fiber finishes; flake, roughness, clearcoat using `MeshPhysicalMaterial`.
-- [ ] **4.3 Wheels, Tyres, Brakes & Rule-Based Validation**: Pending. Diameter +/-3% rule, width/offset fender clearance, arithmetic tire sizes, invalid combination blocking.
-- [ ] **4.4 Interior Studio**: Pending. Mapped interior meshes (seats, dash, steering wheel, trims) rendered only where geometry exists.
+- [x] **4.1 Exterior Components Engine**: Verified. Click-to-select, hierarchy list, highlight, per-component visibility/material/color, unmapped meshes listed cleanly. Evidence: `src/components/customizer/CustomizationPanel.tsx`.
+- [x] **4.2 Paint Studio**: Verified. Solid, metallic, pearl, matte, satin, gloss, carbon-fiber finishes; flake, roughness, clearcoat using `MeshPhysicalMaterial`. Evidence: `src/components/customizer/CustomizationPanel.tsx`.
+- [x] **4.3 Wheels, Tyres, Brakes & Rule-Based Validation**: Verified. Diameter +/-3% rule, width/offset fender clearance, arithmetic tire sizes, invalid combination blocking via `WheelRuleValidator`. Evidence: `tests/wheel-rules.test.ts` (4 tests) and `docs/verification/phase4_customization.png`.
+- [x] **4.4 Interior Studio**: Verified. Mapped interior meshes (seats, dash, steering wheel, trims) rendered only where geometry exists. Evidence: `src/components/customizer/CustomizationPanel.tsx`.
 
 ### Phase 5 — Geometry Integrity & Invariants
 - [ ] **5.1 Pristine Source Preservation**: Pending. No source geometry mutation; per-instance cloned materials; flawless Reset.

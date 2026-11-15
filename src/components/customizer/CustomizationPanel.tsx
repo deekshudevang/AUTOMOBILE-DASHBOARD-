@@ -36,7 +36,7 @@ import { useVehicleStore } from '../../hooks/useVehicleStore';
 import { SceneCanvas } from '../3d/SceneCanvas';
 import { CameraPreset, EnvironmentPreset } from '../../types/vehicle';
 import { VehicleComponentDef, MaterialFinishType, VehicleSchema2 } from '@autoverse/shared-types';
-import { EditableVehicleAssembler } from '@autoverse/vehicle-generation-engine';
+import { EditableVehicleAssembler, WheelRuleValidator } from '@autoverse/vehicle-generation-engine';
 import { VehicleExporter } from '@autoverse/vehicle-exporter';
 import { ComponentGalleryModal } from '../gallery/ComponentGalleryModal';
 import libraryIndex from '../../../public/vehicles/index.json';
@@ -260,6 +260,29 @@ export const CustomizationPanel: React.FC = () => {
     }
     return groups;
   }, [schema2Spec]);
+
+  // Wheel Fitment calculation using WheelRuleValidator
+  const wheelFitmentReport = useMemo(() => {
+    const frontSpec = schema2Spec?.wheels?.frontLeft;
+    const baseline = {
+      rimDiameterInches: frontSpec?.tire.rim_diameter_in || 20,
+      nominalSectionWidthMm: frontSpec?.tire.nominal_section_width_mm || 265,
+      aspectRatio: frontSpec?.tire.aspect_ratio || 35,
+      rimWidthInches: frontSpec?.rim.width_m ? Math.round(frontSpec.rim.width_m * 39.37 * 10) / 10 : 9.5,
+      offsetMm: frontSpec?.rim.offset_mm || 42
+    };
+
+    const wheelOverride = componentOverrides['wheel_fl'] || componentOverrides['wheel_front_left'];
+    const proposed = {
+      rimDiameterInches: wheelOverride?.contextSettings?.rimDiameterInches ?? baseline.rimDiameterInches,
+      nominalSectionWidthMm: wheelOverride?.contextSettings?.nominalSectionWidthMm ?? baseline.nominalSectionWidthMm,
+      aspectRatio: wheelOverride?.contextSettings?.aspectRatio ?? baseline.aspectRatio,
+      rimWidthInches: wheelOverride?.contextSettings?.rimWidthInches ?? baseline.rimWidthInches,
+      offsetMm: wheelOverride?.contextSettings?.offsetMm ?? baseline.offsetMm
+    };
+
+    return WheelRuleValidator.validateFitment(proposed, baseline);
+  }, [schema2Spec, componentOverrides]);
 
   // Find currently selected component definition
   const selectedComponent = useMemo(() => {
@@ -851,16 +874,238 @@ export const CustomizationPanel: React.FC = () => {
                 </div>
               </div>
             ) : (
-              /* No Component Selected Overview */
+              /* Category Dedicated Studio Panes when no single component is selected */
               <div className="space-y-4">
-                <div className="p-3 rounded-lg bg-[#11141C] border border-[#1E2533] space-y-2">
-                  <div className="text-[11px] font-bold text-slate-200 uppercase tracking-wider">
-                    {activeCategory.toUpperCase()} Configuration
+                {activeCategory === 'paint' && (
+                  <div className="space-y-3">
+                    <div className="p-3 rounded-lg bg-[#11141C] border border-[#1E2533] space-y-2">
+                      <div className="text-[11px] font-bold text-[#00F0FF] uppercase tracking-wider flex items-center gap-1.5">
+                        <Palette className="w-3.5 h-3.5 text-[#00F0FF]" />
+                        Paint Studio
+                      </div>
+                      <p className="text-slate-400 text-xs">
+                        Configure exterior body finishes with calibrated physical clearcoat and metallic flakes.
+                      </p>
+                    </div>
+
+                    <div className="p-3 rounded bg-[#11141C]/60 border border-[#1E2533] space-y-2">
+                      <div className="text-[11px] font-bold text-slate-200 uppercase tracking-wider">
+                        Automotive Finishes
+                      </div>
+                      <div className="grid grid-cols-3 gap-1.5">
+                        {FINISH_OPTIONS.map(opt => (
+                          <button
+                            key={opt.id}
+                            onClick={() => {
+                              // Apply finish to body panels
+                              const bodyComps = schema2Spec?.components.filter(c => c.group === 'body_panels') || [];
+                              for (const comp of bodyComps) {
+                                updateComponentOverride(comp.id, { materialFinish: opt.id }, false);
+                              }
+                              if (bodyComps.length > 0) {
+                                updateComponentOverride(bodyComps[0].id, { materialFinish: opt.id }, true);
+                              }
+                            }}
+                            className="px-2 py-1.5 rounded text-[10px] font-medium bg-[#161C28] text-slate-300 hover:bg-[#1E2533] hover:text-[#00F0FF] border border-[#1E2533] transition-colors text-center"
+                          >
+                            {opt.label}
+                          </button>
+                        ))}
+                      </div>
+
+                      <div className="pt-2 space-y-1.5">
+                        <div className="text-slate-400 text-[11px]">Heritage Color Swatches:</div>
+                        <div className="flex flex-wrap gap-2">
+                          {QUICK_COLORS.map(color => (
+                            <button
+                              key={color.hex}
+                              onClick={() => {
+                                const bodyComps = schema2Spec?.components.filter(c => c.group === 'body_panels') || [];
+                                for (const comp of bodyComps) {
+                                  updateComponentOverride(comp.id, { customColorHex: color.hex }, false);
+                                }
+                                if (bodyComps.length > 0) {
+                                  updateComponentOverride(bodyComps[0].id, { customColorHex: color.hex }, true);
+                                }
+                              }}
+                              style={{ backgroundColor: color.hex }}
+                              className="w-6 h-6 rounded-full border border-black/40 hover:scale-110 transition-transform shadow"
+                              title={color.name}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-slate-400 text-xs">
-                    Select a component from the tree or click directly on any 3D body part to open fine-tuning controls.
-                  </p>
-                </div>
+                )}
+
+                {(activeCategory === 'wheels' || activeCategory === 'tyres') && (
+                  <div className="space-y-3">
+                    <div className="p-3 rounded-lg bg-[#11141C] border border-[#1E2533] space-y-2">
+                      <div className="text-[11px] font-bold text-[#00F0FF] uppercase tracking-wider flex items-center gap-1.5">
+                        <Disc className="w-3.5 h-3.5 text-[#00F0FF]" />
+                        Rule-Based Wheel & Tyre Studio
+                      </div>
+                      <p className="text-slate-400 text-xs">
+                        Overall rolling diameter is constrained within ±3.0% of OEM specification.
+                      </p>
+                    </div>
+
+                    {/* Fitment Validation Badge */}
+                    {wheelFitmentReport && (
+                      <div className={`p-3 rounded-lg border space-y-1.5 ${
+                        wheelFitmentReport.isValid
+                          ? 'bg-emerald-950/30 border-emerald-800/50 text-emerald-300'
+                          : 'bg-rose-950/30 border-rose-800/50 text-rose-300'
+                      }`}>
+                        <div className="flex items-center justify-between font-mono font-bold text-xs">
+                          <span>{wheelFitmentReport.isValid ? '✓ FITMENT VERIFIED' : '✗ FITMENT BLOCKED'}</span>
+                          <span>{wheelFitmentReport.diameterDeviationPercent > 0 ? '+' : ''}{wheelFitmentReport.diameterDeviationPercent.toFixed(1)}%</span>
+                        </div>
+                        <div className="text-[11px] font-mono opacity-90">
+                          Rolling Dia: {wheelFitmentReport.rollingDiameterMm}mm (OEM: {wheelFitmentReport.originalDiameterMm}mm)
+                        </div>
+                        {wheelFitmentReport.errors.map((err, i) => (
+                          <div key={i} className="text-[10px] text-rose-400 font-sans">
+                            • {err}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Wheel Stance Sliders */}
+                    <div className="p-3 rounded bg-[#11141C]/60 border border-[#1E2533] space-y-3">
+                      <div className="text-[11px] font-bold text-slate-200 uppercase tracking-wider">
+                        Wheel Stance & Camber
+                      </div>
+                      <div className="space-y-1">
+                        <div className="flex justify-between text-[11px]">
+                          <span className="text-slate-400">Front Camber Angle:</span>
+                          <span className="font-mono text-[#00F0FF]">
+                            {componentOverrides['wheel_fl']?.contextSettings?.camberDeg ?? -3.5}°
+                          </span>
+                        </div>
+                        <input
+                          type="range"
+                          min={-7.0}
+                          max={1.0}
+                          step={0.1}
+                          value={componentOverrides['wheel_fl']?.contextSettings?.camberDeg ?? -3.5}
+                          onChange={e => {
+                            const val = parseFloat(e.target.value);
+                            updateComponentOverride('wheel_fl', { contextSettings: { camberDeg: val } }, false);
+                            updateComponentOverride('wheel_fr', { contextSettings: { camberDeg: val } }, false);
+                          }}
+                          onMouseUp={e => {
+                            const val = parseFloat((e.target as HTMLInputElement).value);
+                            updateComponentOverride('wheel_fl', { contextSettings: { camberDeg: val } }, true);
+                            updateComponentOverride('wheel_fr', { contextSettings: { camberDeg: val } }, true);
+                          }}
+                          className="w-full accent-[#00F0FF] cursor-pointer"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {activeCategory === 'brakes' && (
+                  <div className="space-y-3">
+                    <div className="p-3 rounded-lg bg-[#11141C] border border-[#1E2533] space-y-2">
+                      <div className="text-[11px] font-bold text-[#00F0FF] uppercase tracking-wider flex items-center gap-1.5">
+                        <ShieldCheck className="w-3.5 h-3.5 text-[#00F0FF]" />
+                        Brake Assemblies & Calipers
+                      </div>
+                      <p className="text-slate-400 text-xs">
+                        High-performance carbon-ceramic discs with multi-piston monoblock calipers.
+                      </p>
+                    </div>
+
+                    <div className="p-3 rounded bg-[#11141C]/60 border border-[#1E2533] space-y-2">
+                      <div className="text-[11px] font-bold text-slate-200 uppercase tracking-wider">
+                        Caliper Finishes
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {[
+                          { name: 'Brembo Red', hex: '#DC2626' },
+                          { name: 'Acid Green', hex: '#84CC16' },
+                          { name: 'Carbon Gold', hex: '#EAB308' },
+                          { name: 'Electric Cyan', hex: '#00F0FF' },
+                          { name: 'Monochrome Silver', hex: '#E2E8F0' },
+                          { name: 'Gloss Black', hex: '#18181B' }
+                        ].map(c => (
+                          <button
+                            key={c.hex}
+                            onClick={() => {
+                              ['wheel_fl', 'wheel_fr', 'wheel_rl', 'wheel_rr'].forEach(id => {
+                                updateComponentOverride(id, { contextSettings: { caliperColor: c.hex } }, false);
+                              });
+                              updateComponentOverride('wheel_fl', { contextSettings: { caliperColor: c.hex } }, true);
+                            }}
+                            style={{ backgroundColor: c.hex }}
+                            className="w-7 h-7 rounded-full border border-black/50 hover:scale-110 transition-transform shadow"
+                            title={c.name}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {(activeCategory === 'exterior' || activeCategory === 'aero') && (
+                  <div className="space-y-3">
+                    <div className="p-3 rounded-lg bg-[#11141C] border border-[#1E2533] space-y-2">
+                      <div className="text-[11px] font-bold text-[#00F0FF] uppercase tracking-wider">
+                        {activeCategory === 'aero' ? 'Aerodynamics Kit' : 'Exterior Body Panels'}
+                      </div>
+                      <p className="text-slate-400 text-xs">
+                        Select a component from below to adjust position, angle of attack, or finish:
+                      </p>
+                    </div>
+
+                    <div className="divide-y divide-[#1E2533] rounded bg-[#11141C] border border-[#1E2533]">
+                      {(schema2Spec?.components || [])
+                        .filter(c => (activeCategory === 'aero' ? c.group === 'aerodynamics' : c.group === 'body_panels'))
+                        .map(comp => (
+                          <button
+                            key={comp.id}
+                            onClick={() => selectComponent(comp.id)}
+                            className="w-full text-left p-2.5 flex items-center justify-between hover:bg-[#161C28] text-slate-300 transition-colors"
+                          >
+                            <span className="font-medium text-xs">{comp.name}</span>
+                            <span className="text-[10px] font-mono text-slate-500">Edit →</span>
+                          </button>
+                        ))}
+                    </div>
+                  </div>
+                )}
+
+                {activeCategory === 'interior' && (
+                  <div className="space-y-3">
+                    <div className="p-3 rounded-lg bg-[#11141C] border border-[#1E2533] space-y-2">
+                      <div className="text-[11px] font-bold text-[#00F0FF] uppercase tracking-wider">
+                        Cockpit & Interior Studio
+                      </div>
+                      <p className="text-slate-400 text-xs">
+                        Custom upholstery, racing bucket seats, and dashboard trim.
+                      </p>
+                    </div>
+
+                    <div className="divide-y divide-[#1E2533] rounded bg-[#11141C] border border-[#1E2533]">
+                      {(schema2Spec?.components || [])
+                        .filter(c => c.group === 'interior')
+                        .map(comp => (
+                          <button
+                            key={comp.id}
+                            onClick={() => selectComponent(comp.id)}
+                            className="w-full text-left p-2.5 flex items-center justify-between hover:bg-[#161C28] text-slate-300 transition-colors"
+                          >
+                            <span className="font-medium text-xs">{comp.name}</span>
+                            <span className="text-[10px] font-mono text-slate-500">Edit →</span>
+                          </button>
+                        ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

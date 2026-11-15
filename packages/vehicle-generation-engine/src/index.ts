@@ -10,3 +10,4 @@ export * from './geometry/editableVehicleAssembler';
 export * from './templates/geometryProfiles';
 export * from './assembly/assemblyGraph';
 export * from './validation/geometryDiagnostics';
+export * from './rules/wheelRuleValidator';
