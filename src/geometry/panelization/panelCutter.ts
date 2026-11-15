@@ -104,21 +104,35 @@ export class PanelCutter {
     roofMesh.position.set(0, H - 0.015, 0);
     addNode(roofMesh, 'roof', 'roof', undefined, [0, H, 0]);
 
-    // 5. Windshield Glass (Transmissive, slopes seamlessly from cowl to roof)
-    const wsAngle = Math.PI / 4.2;
-    const windshieldGeo = new THREE.BoxGeometry(roofW * 0.95, 0.015, WB * 0.32);
+    // 5. Windshield Glass (Analytically connects cowl to front roof edge)
+    const cowlY = H * 0.62;
+    const cowlZ = frontAxleZ * 0.95;
+    const roofFrontZ = roofL / 2;
+    const wsDeltaY = H - cowlY;
+    const wsDeltaZ = Math.max(0.01, cowlZ - roofFrontZ);
+    const wsLength = Math.sqrt(wsDeltaY * wsDeltaY + wsDeltaZ * wsDeltaZ);
+    const wsAngle = Math.atan2(wsDeltaY, wsDeltaZ);
+
+    const windshieldGeo = new THREE.BoxGeometry(roofW * 0.95, 0.015, wsLength);
     windshieldGeo.rotateX(-wsAngle);
     const windshieldMesh = new THREE.Mesh(windshieldGeo, glassMat);
-    windshieldMesh.position.set(0, H * 0.79, WB * 0.36);
-    addNode(windshieldMesh, 'windshield', 'windshield', 'roof', [0, H * 0.79, WB * 0.36]);
+    windshieldMesh.position.set(0, (H + cowlY) / 2 - 0.008, (cowlZ + roofFrontZ) / 2);
+    addNode(windshieldMesh, 'windshield', 'windshield', 'roof', [0, (H + cowlY) / 2, (cowlZ + roofFrontZ) / 2]);
 
-    // 6. Rear Glass / Engine Cover (Slopes from roof to rear deck)
-    const rgAngle = Math.PI / 5.5;
-    const rearGlassGeo = new THREE.BoxGeometry(roofW * 0.92, 0.015, WB * 0.36);
+    // 6. Rear Glass / Engine Cover (Analytically connects rear roof edge to rear deck)
+    const deckY = H * 0.68;
+    const deckZ = -halfL * 0.68 + (WB * 0.42 / 2); // front edge of rear deck
+    const roofRearZ = -roofL / 2;
+    const rgDeltaY = H - deckY;
+    const rgDeltaZ = Math.max(0.01, Math.abs(roofRearZ - deckZ));
+    const rgLength = Math.sqrt(rgDeltaY * rgDeltaY + rgDeltaZ * rgDeltaZ);
+    const rgAngle = Math.atan2(rgDeltaY, rgDeltaZ);
+
+    const rearGlassGeo = new THREE.BoxGeometry(roofW * 0.92, 0.015, rgLength);
     rearGlassGeo.rotateX(rgAngle);
     const rearGlassMesh = new THREE.Mesh(rearGlassGeo, glassMat);
-    rearGlassMesh.position.set(0, H * 0.82, -WB * 0.38);
-    addNode(rearGlassMesh, 'rear_glass', 'rear_glass', 'roof', [0, H * 0.82, -WB * 0.38]);
+    rearGlassMesh.position.set(0, (H + deckY) / 2 - 0.008, (roofRearZ + deckZ) / 2);
+    addNode(rearGlassMesh, 'rear_glass', 'rear_glass', 'roof', [0, (H + deckY) / 2, (roofRearZ + deckZ) / 2]);
 
     // 7. Doors (Left & Right) with shutline clearance
     const doorL = WB * 0.58;

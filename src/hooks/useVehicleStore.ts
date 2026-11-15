@@ -766,3 +766,7 @@ export const useVehicleStore = create<VehicleStoreState>((set, get) => ({
   }))
 }));
 
+if (typeof window !== 'undefined') {
+  (window as any).__autoverse_store = useVehicleStore;
+}
+

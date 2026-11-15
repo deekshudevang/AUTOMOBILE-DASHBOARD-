@@ -253,7 +253,7 @@ export class SchemaV2Migrator {
         manufacturer,
         model: fallbackId,
         year: 2020,
-        archetype: 'front_engine_coupe',
+        archetype: 'front_engine_gt_coupe',
         provenanceLevel: 'unverified'
       },
       geometry: {
@@ -325,7 +325,7 @@ export class SchemaV2Migrator {
         manufacturer: 'AutoVerse',
         model: id,
         year: 2024,
-        archetype: 'front_engine_coupe',
+        archetype: 'front_engine_gt_coupe',
         provenanceLevel: 'unverified'
       },
       geometry: {
@@ -388,17 +388,20 @@ export class SchemaV2Migrator {
       return 'mid_engine_supercar';
     }
     if (s.includes('sedan') || s.includes('saloon')) {
-      return 'sports_sedan';
+      return 'luxury_super_sedan';
     }
     if (s.includes('suv') || s.includes('crossover')) {
-      return 'performance_suv';
+      return 'super_suv_crossover';
     }
     if (s.includes('muscle')) {
-      return 'front_engine_muscle';
+      return 'front_engine_gt_coupe';
+    }
+    if (s.includes('tuner') || s.includes('jdm') || s.includes('drift')) {
+      return 'jdm_tuner_performance';
     }
     if (s.includes('prototype') || s.includes('gt3') || s.includes('cup') || s.includes('track')) {
-      return 'track_prototype';
+      return 'track_special_prototype';
     }
-    return 'front_engine_coupe';
+    return 'front_engine_gt_coupe';
   }
 }

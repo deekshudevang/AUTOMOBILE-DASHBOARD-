@@ -37,7 +37,8 @@ const CAMERA_PRESETS: { id: CameraPreset; label: string }[] = [
   { id: 'right', label: 'Right Side' },
   { id: 'top', label: 'Top View' },
   { id: 'interior', label: 'Interior' },
-  { id: 'wheel', label: 'Wheel Stance' }
+  { id: 'wheel', label: 'Wheel Stance' },
+  { id: 'wing', label: 'Rear Wing' }
 ];
 
 const ENV_PRESETS: { id: EnvironmentPreset; label: string }[] = [

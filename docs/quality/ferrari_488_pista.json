@@ -1,0 +1,54 @@
+{
+  "vehicleId": "ferrari_488_pista",
+  "meta": {
+    "id": "ferrari_488_pista",
+    "manufacturer": "Ferrari",
+    "model": "488 Pista",
+    "generation": "F142M",
+    "year": 2019,
+    "archetype": "mid_engine_supercar",
+    "provenanceLevel": "derived"
+  },
+  "qualityReport": {
+    "overallDimensions": {
+      "pass": true,
+      "tolerance": "±1%",
+      "deltaMm": {
+        "length": 0,
+        "width": 15,
+        "height": 0
+      }
+    },
+    "groundContact": {
+      "pass": true,
+      "deltaYMm": 0
+    },
+    "symmetry": {
+      "pass": true,
+      "maxDeviationMm": 0
+    },
+    "noFloatingGeometry": {
+      "pass": true,
+      "orphanIslands": 0
+    },
+    "manifoldBody": {
+      "pass": true,
+      "openEdges": 0
+    },
+    "normalsAndShading": {
+      "pass": true,
+      "facetedPanels": 0
+    },
+    "componentization": {
+      "pass": true,
+      "componentCount": 33
+    },
+    "triangleBudget": {
+      "pass": true,
+      "count": 10036,
+      "budget": 150000
+    },
+    "allPassed": true
+  },
+  "components": 33
+}

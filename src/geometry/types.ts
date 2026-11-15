@@ -13,6 +13,8 @@ export type VehicleArchetypeId =
   | 'super_suv_crossover'
   | 'track_special_prototype';
 
+export type ChassisArchetype = VehicleArchetypeId;
+
 export type ComponentSemanticType =
   | 'front_bumper'
   | 'front_splitter'
@@ -91,9 +93,10 @@ export interface VehicleGeometryDefinition {
     id: string;
     manufacturer: string;
     model: string;
-    generation: string;
+    generation?: string;
     year: number;
     archetype: VehicleArchetypeId;
+    provenanceLevel?: 'verified' | 'derived' | 'estimated' | 'unverified';
   };
   geometry: {
     generatorId: string;
@@ -102,10 +105,10 @@ export interface VehicleGeometryDefinition {
     units: 'meters';
     origin: 'ground_center';
     dimensions: CoachworkDimensions;
-    stations: StationCrossSection[];
+    stations?: StationCrossSection[];
   };
   reference: {
-    specs: Record<string, { value: any; provenance: 'verified' | 'derived' | 'estimated' | 'unknown'; source?: string; url?: string; retrieved_at?: string }>;
+    specs: Record<string, { value: any; provenance: 'verified' | 'derived' | 'estimated' | 'unknown'; source?: string; url?: string; sourceUrl?: string; retrieved_at?: string }>;
     images?: { side?: string; front?: string; rear?: string; top?: string };
   };
   wheels: {
@@ -113,14 +116,14 @@ export interface VehicleGeometryDefinition {
     rear: WheelAssemblySpec;
   };
   materials: Record<string, MaterialDefinition>;
-  shutLineGapMm: number;
+  shutLineGapMm?: number;
 }
 
 export interface MaterialDefinition {
   type: 'clearcoat_paint' | 'tyre_rubber' | 'alloy_metal' | 'carbon_fiber' | 'transmissive_glass' | 'emissive_light' | 'interior_leather';
   color: string;
-  roughness: number;
-  metalness: number;
+  roughness?: number;
+  metalness?: number;
   clearcoat?: number;
   clearcoatRoughness?: number;
   transmission?: number;

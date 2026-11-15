@@ -48,7 +48,8 @@ export const CameraRig: React.FC<CameraRigProps> = ({
       right: [D * 1.08, H * 0.88, 0.0],
       top: [0.0, D * 1.45, 0.01],
       wheel: [-W * 0.75, H * 0.4, L * 0.28],
-      interior: [0.28, H * 0.78, 0.08]
+      interior: [0.28, H * 0.78, 0.08],
+      wing: [0.0, H * 1.35, -L * 0.58]
     };
 
     const look: Record<CameraPreset, [number, number, number]> = {
@@ -59,7 +60,8 @@ export const CameraRig: React.FC<CameraRigProps> = ({
       right: [0, centerY, 0],
       top: [0, 0, 0],
       wheel: [-W * 0.5, H * 0.25, L * 0.28],
-      interior: [-0.08, H * 0.65, 0.25]
+      interior: [-0.08, H * 0.65, 0.25],
+      wing: [0.0, H * 0.95, -L * 0.42]
     };
 
     return {
