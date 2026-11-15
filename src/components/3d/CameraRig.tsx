@@ -132,6 +132,11 @@ export const CameraRig: React.FC<CameraRigProps> = ({
       maxPolarAngle={Math.PI / 2 - 0.02}
       autoRotate={autoRotate}
       autoRotateSpeed={1.0}
+      enablePan={true}
+      touches={{
+        ONE: THREE.TOUCH.ROTATE,
+        TWO: THREE.TOUCH.DOLLY_PAN
+      }}
     />
   );
 };

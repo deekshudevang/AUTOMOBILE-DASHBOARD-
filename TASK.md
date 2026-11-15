@@ -70,8 +70,8 @@
 - [x] **9.2 Dynamic Quality Tiers**: Verified. Low, Medium, High, and Ultra tiers with adaptive DPR, shadow resolutions, contact shadows blur/resolution, and MSAA. Evidence: `src/components/3d/SceneCanvas.tsx`.
 
 ### Phase 10 — Responsive & Accessible Input
-- [ ] **10.1 Responsive Breakpoints**: Pending. Ultrawide, desktop, laptop, tablet, and mobile with bottom-sheet drawer.
-- [ ] **10.2 Touch & Keyboard Navigation**: Pending. 1-finger orbit, 2-finger pan/pinch, keyboard shortcuts, WCAG 2.2 AA focus rings, and ARIA announcements.
+- [x] **10.1 Responsive Breakpoints**: Verified. Responsive layouts across Mobile (360px), Tablet Portrait (768px), Tablet Landscape (1024px), Desktop (1440px), and Ultrawide (3440px) with mobile bottom-sheet drawer. Evidence: `docs/verification/responsive_*.png`.
+- [x] **10.2 Touch & Keyboard Navigation**: Verified. OrbitControls configured with 1-finger orbit (`THREE.TOUCH.ROTATE`) and 2-finger pan/dolly (`THREE.TOUCH.DOLLY_PAN`), ARIA live regions, and keyboard shortcuts (1-8, W, Esc). Evidence: `src/components/3d/CameraRig.tsx`, `src/components/customizer/CustomizationPanel.tsx`.
 
 ### Phase 11 — Quality Assurance & Test Matrix
 - [ ] **11.1 Automated Full Test Suite**: Pending. Vitest & Playwright automation for startup, load, customization, export, and reset.

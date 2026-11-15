@@ -525,12 +525,17 @@ export const CustomizationPanel: React.FC = () => {
       </header>
 
       {/* ========================================================= */}
-      {/* MAIN 3-ZONE WORKSPACE                                     */}
+      {/* MAIN 3-ZONE WORKSPACE (Responsive Mobile Bottom-Sheet)     */}
       {/* ========================================================= */}
-      <div className="flex-1 flex flex-row overflow-hidden relative">
+      <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
+        {/* ARIA Live Region for Accessibility Announcements */}
+        <div aria-live="polite" aria-atomic="true" className="sr-only">
+          {`AutoVerse Configurator: Active Vehicle is ${activeModel?.realWorldModel || 'Vehicle'}. Current mode is ${presentationMode}.`}
+        </div>
+
         {/* LEFT PANEL: 50 Vehicle Library & Component Hierarchy */}
         {presentationMode !== 'showroom' && (
-          <aside className="w-72 lg:w-80 h-full bg-[#0D1017] border-r border-[#1E2533] flex flex-col shrink-0 z-10">
+          <aside className="hidden lg:flex w-72 lg:w-80 h-full bg-[#0D1017] border-r border-[#1E2533] flex-col shrink-0 z-10">
           <div className="p-3 border-b border-[#1E2533] space-y-2 shrink-0">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
@@ -675,7 +680,7 @@ export const CustomizationPanel: React.FC = () => {
         )}
 
         {/* 3.2 CENTRAL HERO VIEWPORT: Three.js Interactive 3D Canvas */}
-        <main className="flex-1 h-full relative flex flex-col overflow-hidden">
+        <main className="flex-1 h-full relative flex flex-col overflow-hidden" role="main">
           {/* Top Camera Presets Toolbar */}
           <div className="h-10 bg-[#0D1017]/90 backdrop-blur-md border-b border-[#1E2533] px-3 flex items-center justify-between text-xs z-10 shrink-0">
             <div className="flex items-center gap-1 overflow-x-auto">
@@ -737,7 +742,7 @@ export const CustomizationPanel: React.FC = () => {
           </div>
 
           {/* 3D Scene Canvas */}
-          <div className="flex-1 w-full h-full relative bg-[#0A0C10]">
+          <div className="flex-1 w-full h-full relative bg-[#0A0C10]" role="region" aria-label="Interactive 3D Vehicle Viewport">
             <SceneCanvas />
 
             {/* Overlays for Presentation Modes */}
@@ -762,9 +767,9 @@ export const CustomizationPanel: React.FC = () => {
           </div>
         </main>
 
-        {/* 3.3 RIGHT CONFIGURATION PANEL: Capability-Driven Categories & Inspector */}
+        {/* 3.3 RIGHT CONFIGURATION PANEL: Capability-Driven Categories & Inspector (Mobile Bottom Sheet) */}
         {presentationMode !== 'showroom' && (
-          <aside className="w-88 md:w-96 h-full bg-[#0D1017] border-l border-[#1E2533] flex flex-col shrink-0 z-10 overflow-hidden">
+          <aside className="w-full md:w-88 lg:w-96 h-1/2 md:h-full bg-[#0D1017] border-t md:border-t-0 md:border-l border-[#1E2533] flex flex-col shrink-0 z-10 overflow-hidden">
           {/* Category Tabs Header */}
           <div className="p-2 border-b border-[#1E2533] bg-[#11141C] flex items-center gap-1 overflow-x-auto shrink-0 scrollbar-none">
             {CATEGORY_TABS.map(tab => (
