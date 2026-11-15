@@ -2,33 +2,78 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-bg: #0A0C10;
+  --color-surface-1: #11141C;
+  --color-surface-2: #161C28;
+  --color-surface-3: #1E2533;
+  --color-surface-overlay: #252E3F;
+
+  --color-text-primary: #F1F5F9;
+  --color-text-secondary: #94A3B8;
+  --color-text-tertiary: #64748B;
+  --color-text-disabled: #475569;
+
+  --color-accent: #00F0FF;
+  --color-accent-hover: #00D4E0;
+  --color-accent-dim: rgba(0, 240, 255, 0.12);
+  --color-border: #1E2533;
+
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, Menlo, monospace;
+}
+
 @layer base {
   * {
-    border-color: #262C3D;
+    border-color: var(--color-border);
   }
+
   body {
-    background-color: #0B0D11;
-    color: #F1F5F9;
+    background-color: var(--color-bg);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  code, kbd, samp, pre, .font-mono {
+    font-family: var(--font-mono);
+    font-feature-settings: "tnum" 1, "zero" 1;
+  }
+
+  /* Accessibility: Visible, high-contrast focus rings (WCAG 2.2 AA) */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  /* Reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
 /* Precision scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0B0D11;
+  background: var(--color-bg);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #202533;
-  border-radius: 3px;
+  background: var(--color-surface-3);
+  border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #00F0FF;
+  background: var(--color-accent);
 }
-

@@ -30,8 +30,8 @@
 - [x] **1.4 Performance & Bottlenecks Audit**: Verified. Measured draw calls (28-42), triangles (18.4k-32.8k), frame times (1.4ms-2.8ms), and memory in `docs/AUTOVERSE_UI_UX_AUDIT.md`.
 
 ### Phase 2 — Design System & Component Gallery
-- [ ] **2.1 Automotive Design System Tokens**: Pending. Token definition (graphite surfaces, cyan accents, WCAG 2.2 AA contrast, 4px spacing). Deliver `docs/design-system.md`.
-- [ ] **2.2 Design System Component Gallery**: Pending. Interactive in-app gallery showcasing buttons, sliders, color pickers, pills, inputs, and toggles.
+- [x] **2.1 Automotive Design System Tokens**: Verified. Token definition (graphite surfaces, cyan accents, WCAG 2.2 AA contrast, 4px spacing). Deliver `docs/design-system.md`.
+- [x] **2.2 Design System Component Gallery**: Verified. Component gallery in `src/components/gallery/ComponentGalleryModal.tsx` showing active/hover/disabled/touch states.
 
 ### Phase 3 — Main Configurator Interface
 - [ ] **3.1 Top Navigation Bar**: Pending. AUTOVERSE 3D logo, vehicle selector, editable config name, Save, Reset (with confirmation), Undo/Redo, Fullscreen, Settings.
