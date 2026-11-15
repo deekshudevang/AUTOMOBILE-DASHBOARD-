@@ -1,0 +1,656 @@
+import { create } from 'zustand';
+import { CheraxVehicleConfig, VehicleModelMetadata, VehicleFileSummary, CameraPreset, EnvironmentPreset, RGBColor, VehicleAssetBinding } from '../types/vehicle';
+import { ComponentOverride } from '@autoverse/shared-types';
+import vehicleDatabaseRaw from '../data/vehicleDatabase.json';
+import manifestRaw from '../../public/vehicle-assets/manifest.json';
+import porscheGt3RsRaw from '../../public/vehicles/porsche_911_gt3_rs_992_2022.json';
+import { parseVehicleJson } from '../utils/jsonParser';
+import { parametricFiles, parametricModels, parametricBindings } from '../data/parametricCatalog';
+
+interface VehicleStoreState {
+  // Database & Catalog
+  allFiles: VehicleFileSummary[];
+  allModels: VehicleModelMetadata[];
+  activeFile: string;
+  activeModel: VehicleModelMetadata | null;
+  activeConfig: CheraxVehicleConfig;
+  originalConfig: CheraxVehicleConfig;
+  isDirty: boolean;
+
+  // History & Undo/Redo
+  history: CheraxVehicleConfig[];
+  historyIndex: number;
+
+  // Navigation & View
+  activeView: 'dashboard' | 'library' | 'studio' | 'explorer' | 'customizer' | 'comparison' | 'assetManager' | 'history' | 'export' | 'settings';
+  
+  // 3D Scene Controls
+  cameraPreset: CameraPreset;
+  cameraTrigger: number;
+  environmentPreset: EnvironmentPreset;
+  isWireframe: boolean;
+  isAutoRotate: boolean;
+  showGrid: boolean;
+  showShadows: boolean;
+  showEngineSound: boolean;
+  graphicsQuality: 'low' | 'medium' | 'high' | 'ultra';
+
+  // Component Customization State (Schema 2.0)
+  selectedComponentId: string | null;
+  componentOverrides: Record<string, ComponentOverride>;
+  selectComponent: (id: string | null) => void;
+  updateComponentOverride: (componentId: string, override: Partial<ComponentOverride>) => void;
+  resetComponentOverride: (componentId: string) => void;
+  resetAllComponentOverrides: () => void;
+  toggleComponentVisibility: (componentId: string) => void;
+  toggleComponentLock: (componentId: string) => void;
+
+  // Asset Manager Bindings
+  assetBindings: Record<number, VehicleAssetBinding>;
+
+  // Actions
+  loadVehicleByFile: (fileName: string) => Promise<boolean>;
+  loadVehicleByModelHash: (hash: number) => void;
+  importCustomJson: (jsonString: string, fileName?: string) => { success: boolean; error?: string };
+  updateConfig: (updater: (prev: CheraxVehicleConfig) => CheraxVehicleConfig, recordHistory?: boolean) => void;
+  undo: () => void;
+  redo: () => void;
+  resetConfig: () => void;
+  
+  // Quick Customizer Actions
+  setPrimaryColorIndex: (index: number) => void;
+  setCustomPrimaryColor: (rgb: RGBColor) => void;
+  setSecondaryColorIndex: (index: number) => void;
+  setCustomSecondaryColor: (rgb: RGBColor) => void;
+  setWheelType: (type: number) => void;
+  setWheelColor: (colorIndex: number) => void;
+  setWindowTint: (tintIndex: number) => void;
+  setNeonToggle: (position: 'left' | 'right' | 'front' | 'back', enabled: boolean) => void;
+  setNeonColor: (rgb: RGBColor) => void;
+  setModSlot: (slot: string, index: number) => void;
+  setExtraToggle: (extraKey: string, enabled: boolean) => void;
+  setPlateText: (text: string) => void;
+  setPlateStyle: (index: number) => void;
+  setBulletproofTyres: (enabled: boolean) => void;
+  setDriftTyres: (enabled: boolean) => void;
+
+  // UI & View Setters
+  setActiveView: (view: VehicleStoreState['activeView']) => void;
+  setCameraPreset: (preset: CameraPreset) => void;
+  setEnvironmentPreset: (env: EnvironmentPreset) => void;
+  toggleWireframe: () => void;
+  toggleAutoRotate: () => void;
+  toggleGrid: () => void;
+  setGraphicsQuality: (quality: 'low' | 'medium' | 'high' | 'ultra') => void;
+  registerAssetBinding: (binding: VehicleAssetBinding) => void;
+}
+
+// Prepare initial manifest bindings
+const initialBindings: Record<number, VehicleAssetBinding> = {};
+manifestRaw.vehicles.forEach((v: any) => {
+  initialBindings[v.modelHash] = {
+    modelHash: v.modelHash,
+    assetPath: v.assetPath,
+    assetFormat: v.assetFormat as any,
+    assetName: v.displayName,
+    materialBindings: v.materialNames
+  };
+});
+
+// Porsche 911 GT3 RS (992, 2022) Parametric Specification Entry
+const porscheGt3RsFile: VehicleFileSummary = {
+  fileName: "porsche_911_gt3_rs_992_2022.json",
+  modelHash: 706080074,
+  modelCode: "comet_gt3rs",
+  displayName: "Porsche 911 GT3 RS (992)",
+  realWorldModel: "Porsche 911 GT3 RS (992, 2022)",
+  manufacturer: "Porsche",
+  category: "Supercar",
+  plateText: "GT3 RS",
+  plateTextIndex: 0,
+  primaryColor: 0,
+  secondaryColor: 0,
+  isPrimaryColorCustom: true,
+  customPrimaryColor: { r: 139, g: 146, b: 154 },
+  isSecondaryColorCustom: true,
+  customSecondaryColor: { r: 23, g: 25, b: 28 },
+  pearlescentColor: 0,
+  wheelType: 0,
+  wheelColor: 0,
+  windowTint: 3,
+  bulletproofTyres: true,
+  driftTyres: false,
+  neonKits: { left: false, right: false, front: false, back: false, color: { r: 0, g: 0, b: 0 } },
+  tyreSmokeColor: { r: 255, g: 255, b: 255 },
+  interiorColor: 0,
+  dashBoardColor: 0,
+  hasExtras: false,
+  extrasCount: 0,
+  modsCount: 0,
+  activeModsCount: 0,
+  hasAttachments: false,
+  attachmentsCount: 0
+};
+
+const porscheGt3RsModel: VehicleModelMetadata = {
+  hash: 706080074,
+  codeName: "comet_gt3rs",
+  displayName: "Porsche 911 GT3 RS (992)",
+  manufacturer: "Porsche",
+  realWorldModel: "Porsche 911 GT3 RS (992, 2022)",
+  category: "Supercar",
+  configurations: [porscheGt3RsFile]
+};
+
+const porscheInitialConfig: CheraxVehicleConfig = {
+  format: "Cherax Entity",
+  type: 1,
+  model: 706080074,
+  baseFlags: 1073808655,
+  mods: {},
+  extras: {},
+  wheelType: 0,
+  tyreSmokeColor: { r: 255, g: 255, b: 255 },
+  neonKits: { left: false, right: false, front: false, back: false, color: { r: 0, g: 0, b: 0 } },
+  primaryColor: 0,
+  secondaryColor: 0,
+  pearlescentColor: 0,
+  isPrimaryColorCustom: true,
+  customPrimaryColor: { r: 139, g: 146, b: 154 },
+  isSecondaryColorCustom: true,
+  customSecondaryColor: { r: 23, g: 25, b: 28 },
+  windowTint: 3,
+  wheelColor: 0,
+  interiorColor: 0,
+  dashBoardColor: 0,
+  plateText: "GT3 RS",
+  plateTextIndex: 0,
+  bulletproofTyres: true,
+  driftTyres: false,
+  parametricSpec: porscheGt3RsRaw
+};
+
+initialBindings[706080074] = {
+  modelHash: 706080074,
+  assetPath: "parametric_generator",
+  assetFormat: "json" as any,
+  assetName: "Porsche 911 GT3 RS (992)",
+  isCustomUpload: false,
+  qualityClass: "CLASS_D_APPROXIMATE",
+  parametricSpec: porscheGt3RsRaw
+};
+
+// Merge all 50 AutoVerse parametric vehicle library bindings
+Object.assign(initialBindings, parametricBindings);
+
+// Load default vehicle file
+const defaultFile = porscheGt3RsFile;
+const defaultModel = porscheGt3RsModel;
+const initialFallbackConfig: CheraxVehicleConfig = porscheInitialConfig;
+
+export const useVehicleStore = create<VehicleStoreState>((set, get) => ({
+  allFiles: [porscheGt3RsFile, ...parametricFiles.filter(f => f.fileName !== 'porsche_911_gt3_rs_2022.json'), ...(vehicleDatabaseRaw.files as any)],
+  allModels: [porscheGt3RsModel, ...parametricModels.filter(m => m.hash !== 706080074), ...(vehicleDatabaseRaw.models as any)],
+  activeFile: defaultFile.fileName,
+  activeModel: defaultModel as any,
+  activeConfig: initialFallbackConfig,
+  originalConfig: initialFallbackConfig,
+  isDirty: false,
+
+  history: [initialFallbackConfig],
+  historyIndex: 0,
+
+  activeView: 'studio',
+  cameraPreset: 'isometric',
+  cameraTrigger: Date.now(),
+  environmentPreset: 'studio-dark',
+  isWireframe: false,
+  isAutoRotate: false,
+  showGrid: true,
+  showShadows: true,
+  showEngineSound: false,
+  graphicsQuality: 'high',
+
+  // Component Customization State (Schema 2.0)
+  selectedComponentId: null,
+  componentOverrides: {},
+
+  selectComponent: (id: string | null) => {
+    set({ selectedComponentId: id });
+  },
+
+  updateComponentOverride: (componentId: string, override: Partial<ComponentOverride>) => {
+    set(state => {
+      const existing = state.componentOverrides[componentId] || { componentId };
+      const updated: ComponentOverride = {
+        ...existing,
+        ...override,
+        componentId
+      };
+      return {
+        componentOverrides: {
+          ...state.componentOverrides,
+          [componentId]: updated
+        },
+        isDirty: true
+      };
+    });
+  },
+
+  resetComponentOverride: (componentId: string) => {
+    set(state => {
+      const rest = { ...state.componentOverrides };
+      delete rest[componentId];
+      return {
+        componentOverrides: rest,
+        isDirty: Object.keys(rest).length > 0
+      };
+    });
+  },
+
+  resetAllComponentOverrides: () => {
+    set({
+      componentOverrides: {},
+      selectedComponentId: null,
+      isDirty: false
+    });
+  },
+
+  toggleComponentVisibility: (componentId: string) => {
+    set(state => {
+      const existing = state.componentOverrides[componentId] || { componentId };
+      const currentVisible = existing.visible !== false;
+      return {
+        componentOverrides: {
+          ...state.componentOverrides,
+          [componentId]: {
+            ...existing,
+            visible: !currentVisible
+          }
+        },
+        isDirty: true
+      };
+    });
+  },
+
+  toggleComponentLock: (componentId: string) => {
+    set(state => {
+      const existing = state.componentOverrides[componentId] || { componentId };
+      const currentLocked = !!existing.locked;
+      return {
+        componentOverrides: {
+          ...state.componentOverrides,
+          [componentId]: {
+            ...existing,
+            locked: !currentLocked
+          }
+        }
+      };
+    });
+  },
+
+  assetBindings: initialBindings,
+
+  loadVehicleByFile: async (fileName: string) => {
+    try {
+      if (fileName === 'porsche_911_gt3_rs_992_2022.json' || fileName === 'porsche_911_gt3_rs_2022.json') {
+        set({
+          activeFile: fileName,
+          activeModel: porscheGt3RsModel,
+          activeConfig: porscheInitialConfig,
+          originalConfig: porscheInitialConfig,
+          isDirty: false,
+          history: [porscheInitialConfig],
+          historyIndex: 0,
+          selectedComponentId: null,
+          componentOverrides: {},
+          cameraTrigger: Date.now()
+        });
+        return true;
+      }
+
+      const fileInfo = get().allFiles.find(f => f.fileName === fileName);
+      if (!fileInfo) return false;
+
+      const modelInfo = get().allModels.find(m => m.hash === fileInfo.modelHash) || null;
+
+      // Fetch the actual JSON file from public/vehicles/ (split by / so subdirectories like supercars/ are intact)
+      const filePath = fileName.split('/').map(segment => encodeURIComponent(segment)).join('/');
+      const res = await fetch(`/vehicles/${filePath}`);
+      let loadedConfig: CheraxVehicleConfig;
+      if (res.ok) {
+        const text = await res.text();
+        const parsed = parseVehicleJson(text);
+        if (parsed.success && parsed.config) {
+          loadedConfig = parsed.config;
+        } else {
+          throw new Error(parsed.error || 'Parse failed');
+        }
+      } else {
+        // Fallback to database summary
+        loadedConfig = {
+          format: "Cherax Entity",
+          type: 1,
+          model: fileInfo.modelHash,
+          baseFlags: 1073808655,
+          mods: {},
+          wheelType: fileInfo.wheelType,
+          tyreSmokeColor: fileInfo.tyreSmokeColor,
+          neonKits: fileInfo.neonKits,
+          primaryColor: fileInfo.primaryColor,
+          secondaryColor: fileInfo.secondaryColor,
+          pearlescentColor: fileInfo.pearlescentColor,
+          isPrimaryColorCustom: fileInfo.isPrimaryColorCustom,
+          customPrimaryColor: fileInfo.customPrimaryColor,
+          isSecondaryColorCustom: fileInfo.isSecondaryColorCustom,
+          customSecondaryColor: fileInfo.customSecondaryColor,
+          windowTint: fileInfo.windowTint,
+          wheelColor: fileInfo.wheelColor,
+          interiorColor: fileInfo.interiorColor,
+          dashBoardColor: fileInfo.dashBoardColor,
+          plateText: fileInfo.plateText,
+          plateTextIndex: fileInfo.plateTextIndex,
+          bulletproofTyres: fileInfo.bulletproofTyres,
+          driftTyres: fileInfo.driftTyres
+        };
+      }
+
+      set({
+        activeFile: fileName,
+        activeModel: modelInfo,
+        activeConfig: loadedConfig,
+        originalConfig: loadedConfig,
+        isDirty: false,
+        history: [loadedConfig],
+        historyIndex: 0,
+        selectedComponentId: null,
+        componentOverrides: {},
+        cameraTrigger: Date.now()
+      });
+      return true;
+    } catch (e) {
+      console.error('Failed to load vehicle file:', e);
+      return false;
+    }
+  },
+
+  loadVehicleByModelHash: (hash: number) => {
+    const model = get().allModels.find(m => m.hash === hash);
+    if (!model || model.configurations.length === 0) return;
+    get().loadVehicleByFile(model.configurations[0].fileName);
+  },
+
+  importCustomJson: (jsonString: string, fileName: string = 'imported_custom.json') => {
+    const parsed = parseVehicleJson(jsonString);
+    if (!parsed.success || !parsed.config) {
+      return { success: false, error: parsed.error || 'Failed to parse JSON' };
+    }
+
+    const cfg = parsed.config;
+    const modelHash = cfg.model >>> 0;
+    const existingModel = get().allModels.find(m => m.hash === modelHash);
+
+    const syntheticFile: VehicleFileSummary = {
+      fileName,
+      modelHash,
+      modelCode: existingModel ? existingModel.codeName : `custom_${modelHash}`,
+      displayName: existingModel ? existingModel.displayName : fileName.replace('.json', ''),
+      realWorldModel: existingModel ? existingModel.realWorldModel : 'User Imported Spec',
+      manufacturer: existingModel ? existingModel.manufacturer : 'Custom',
+      category: existingModel ? existingModel.category : 'Special / Concept',
+      plateText: cfg.plateText || 'IMPORT',
+      plateTextIndex: cfg.plateTextIndex ?? 0,
+      primaryColor: cfg.primaryColor ?? 0,
+      secondaryColor: cfg.secondaryColor ?? 0,
+      isPrimaryColorCustom: !!cfg.isPrimaryColorCustom,
+      customPrimaryColor: cfg.customPrimaryColor || { r: 0, g: 0, b: 0 },
+      isSecondaryColorCustom: !!cfg.isSecondaryColorCustom,
+      customSecondaryColor: cfg.customSecondaryColor || { r: 0, g: 0, b: 0 },
+      pearlescentColor: cfg.pearlescentColor ?? 0,
+      wheelType: cfg.wheelType ?? 0,
+      wheelColor: cfg.wheelColor ?? 0,
+      windowTint: cfg.windowTint ?? 0,
+      bulletproofTyres: cfg.bulletproofTyres ?? false,
+      driftTyres: cfg.driftTyres ?? false,
+      neonKits: cfg.neonKits || { left: false, right: false, front: false, back: false, color: { r: 0, g: 0, b: 0 } },
+      tyreSmokeColor: cfg.tyreSmokeColor || { r: 255, g: 255, b: 255 },
+      interiorColor: cfg.interiorColor ?? 0,
+      dashBoardColor: cfg.dashBoardColor ?? 0,
+      hasExtras: !!cfg.extras,
+      extrasCount: cfg.extras ? Object.values(cfg.extras).filter(Boolean).length : 0,
+      modsCount: cfg.mods ? Object.keys(cfg.mods).length : 0,
+      activeModsCount: cfg.mods ? Object.values(cfg.mods).filter(m => m.index > 0).length : 0,
+      hasAttachments: !!(cfg.attachments && cfg.attachments.length > 0),
+      attachmentsCount: cfg.attachments ? cfg.attachments.length : 0
+    };
+
+    if (cfg.parametricSpec?.vehicle) {
+      const v = cfg.parametricSpec.vehicle;
+      syntheticFile.displayName = `${v.manufacturer} ${v.model}`;
+      syntheticFile.realWorldModel = `${v.manufacturer} ${v.model} ${v.generation || ''} ${v.trim || ''}`.trim();
+      syntheticFile.manufacturer = v.manufacturer;
+      syntheticFile.category = 'Supercar';
+    }
+
+    set(state => ({
+      allFiles: [syntheticFile, ...state.allFiles],
+      activeFile: fileName,
+      activeModel: existingModel || {
+        hash: modelHash,
+        codeName: `custom_${modelHash}`,
+        displayName: syntheticFile.displayName,
+        manufacturer: syntheticFile.manufacturer,
+        realWorldModel: syntheticFile.realWorldModel,
+        category: (syntheticFile.category as any) || 'Special / Concept',
+        configurations: [syntheticFile]
+      },
+      activeConfig: cfg,
+      originalConfig: cfg,
+      isDirty: false,
+      history: [cfg],
+      historyIndex: 0,
+      selectedComponentId: null,
+      componentOverrides: {},
+      activeView: 'studio',
+      cameraTrigger: Date.now()
+    }));
+
+    return { success: true };
+  },
+
+  updateConfig: (updater, recordHistory = true) => {
+    set(state => {
+      const nextConfig = updater(state.activeConfig);
+      let nextHistory = state.history;
+      let nextIndex = state.historyIndex;
+
+      if (recordHistory) {
+        nextHistory = state.history.slice(0, state.historyIndex + 1);
+        nextHistory.push(nextConfig);
+        if (nextHistory.length > 50) nextHistory.shift();
+        nextIndex = nextHistory.length - 1;
+      }
+
+      return {
+        activeConfig: nextConfig,
+        isDirty: true,
+        history: nextHistory,
+        historyIndex: nextIndex
+      };
+    });
+  },
+
+  undo: () => {
+    set(state => {
+      if (state.historyIndex <= 0) return {};
+      const prevIndex = state.historyIndex - 1;
+      return {
+        activeConfig: state.history[prevIndex],
+        historyIndex: prevIndex,
+        isDirty: true
+      };
+    });
+  },
+
+  redo: () => {
+    set(state => {
+      if (state.historyIndex >= state.history.length - 1) return {};
+      const nextIndex = state.historyIndex + 1;
+      return {
+        activeConfig: state.history[nextIndex],
+        historyIndex: nextIndex,
+        isDirty: true
+      };
+    });
+  },
+
+  resetConfig: () => {
+    set(state => ({
+      activeConfig: state.originalConfig,
+      isDirty: false,
+      history: [state.originalConfig],
+      historyIndex: 0,
+      selectedComponentId: null,
+      componentOverrides: {}
+    }));
+  },
+
+  setPrimaryColorIndex: (index: number) => {
+    get().updateConfig(cfg => ({
+      ...cfg,
+      primaryColor: index,
+      isPrimaryColorCustom: false
+    }));
+  },
+
+  setCustomPrimaryColor: (rgb: RGBColor) => {
+    get().updateConfig(cfg => ({
+      ...cfg,
+      customPrimaryColor: rgb,
+      isPrimaryColorCustom: true
+    }));
+  },
+
+  setSecondaryColorIndex: (index: number) => {
+    get().updateConfig(cfg => ({
+      ...cfg,
+      secondaryColor: index,
+      isSecondaryColorCustom: false
+    }));
+  },
+
+  setCustomSecondaryColor: (rgb: RGBColor) => {
+    get().updateConfig(cfg => ({
+      ...cfg,
+      customSecondaryColor: rgb,
+      isSecondaryColorCustom: true
+    }));
+  },
+
+  setWheelType: (type: number) => {
+    get().updateConfig(cfg => ({
+      ...cfg,
+      wheelType: type
+    }));
+  },
+
+  setWheelColor: (colorIndex: number) => {
+    get().updateConfig(cfg => ({
+      ...cfg,
+      wheelColor: colorIndex
+    }));
+  },
+
+  setWindowTint: (tintIndex: number) => {
+    get().updateConfig(cfg => ({
+      ...cfg,
+      windowTint: tintIndex
+    }));
+  },
+
+  setNeonToggle: (position, enabled) => {
+    get().updateConfig(cfg => ({
+      ...cfg,
+      neonKits: {
+        ...cfg.neonKits,
+        [position]: enabled
+      }
+    }));
+  },
+
+  setNeonColor: (rgb: RGBColor) => {
+    get().updateConfig(cfg => ({
+      ...cfg,
+      neonKits: {
+        ...cfg.neonKits,
+        color: rgb
+      }
+    }));
+  },
+
+  setModSlot: (slot: string, index: number) => {
+    get().updateConfig(cfg => ({
+      ...cfg,
+      mods: {
+        ...cfg.mods,
+        [slot]: {
+          ...(cfg.mods[slot] || { variation: false }),
+          index
+        }
+      }
+    }));
+  },
+
+  setExtraToggle: (extraKey: string, enabled: boolean) => {
+    get().updateConfig(cfg => ({
+      ...cfg,
+      extras: {
+        ...(cfg.extras || {}),
+        [extraKey]: enabled
+      }
+    }));
+  },
+
+  setPlateText: (text: string) => {
+    get().updateConfig(cfg => ({
+      ...cfg,
+      plateText: text.toUpperCase().slice(0, 8)
+    }));
+  },
+
+  setPlateStyle: (index: number) => {
+    get().updateConfig(cfg => ({
+      ...cfg,
+      plateTextIndex: index
+    }));
+  },
+
+  setBulletproofTyres: (enabled: boolean) => {
+    get().updateConfig(cfg => ({
+      ...cfg,
+      bulletproofTyres: enabled
+    }));
+  },
+
+  setDriftTyres: (enabled: boolean) => {
+    get().updateConfig(cfg => ({
+      ...cfg,
+      driftTyres: enabled
+    }));
+  },
+
+  setActiveView: (view) => set({ activeView: view }),
+  setCameraPreset: (preset) => set({ cameraPreset: preset, cameraTrigger: Date.now() }),
+  setEnvironmentPreset: (env) => set({ environmentPreset: env }),
+  toggleWireframe: () => set(s => ({ isWireframe: !s.isWireframe })),
+  toggleAutoRotate: () => set(s => ({ isAutoRotate: !s.isAutoRotate })),
+  toggleGrid: () => set(s => ({ showGrid: !s.showGrid })),
+  setGraphicsQuality: (quality) => set({ graphicsQuality: quality }),
+  registerAssetBinding: (binding) => set(s => ({
+    assetBindings: {
+      ...s.assetBindings,
+      [binding.modelHash]: binding
+    }
+  }))
+}));
+

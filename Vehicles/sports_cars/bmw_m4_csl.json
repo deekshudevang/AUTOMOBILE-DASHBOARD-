@@ -1,0 +1,2553 @@
+{
+  "schemaVersion": "2.0",
+  "vehicle": {
+    "id": "bmw_m4_csl",
+    "manufacturer": "BMW",
+    "model": "M4 CSL",
+    "generation": "G82",
+    "year": 2023,
+    "category": "sports_cars",
+    "geometryClass": "procedural",
+    "geometrySource": "original_autoverse_parametric_design",
+    "units": "meters",
+    "bodyStyle": "Lightweight competition sports coupe with integrated ducktail",
+    "engineDescription": "3.0L twin-turbo S58 inline-six (550 hp)"
+  },
+  "dimensions": {
+    "length": 4.794,
+    "width": 1.921,
+    "height": 1.386,
+    "wheelbase": 2.857,
+    "frontTrack": 1.623,
+    "rearTrack": 1.611,
+    "frontOverhang": 0.93,
+    "rearOverhang": 1.007,
+    "groundClearance": 0.11
+  },
+  "bodyGeometry": {
+    "crossSections": [
+      {
+        "z_m": 2.397,
+        "half_width_m": 0.4322,
+        "lower_y_m": 0.22,
+        "shoulder_y_m": 0.4426,
+        "belt_y_m": 0.5626,
+        "upper_center_y_m": 0.6126,
+        "roof_half_width_m": 0,
+        "roof_crown_y_m": 0.6126
+      },
+      {
+        "z_m": 2.0974,
+        "half_width_m": 0.5699,
+        "lower_y_m": 0.1401,
+        "shoulder_y_m": 0.5073,
+        "belt_y_m": 0.6273,
+        "upper_center_y_m": 0.6773,
+        "roof_half_width_m": 0,
+        "roof_crown_y_m": 0.6773
+      },
+      {
+        "z_m": 1.7977,
+        "half_width_m": 0.6888,
+        "lower_y_m": 0.12,
+        "shoulder_y_m": 0.5684,
+        "belt_y_m": 0.6884,
+        "upper_center_y_m": 0.7384,
+        "roof_half_width_m": 0,
+        "roof_crown_y_m": 0.7384
+      },
+      {
+        "z_m": 1.4981,
+        "half_width_m": 0.7882,
+        "lower_y_m": 0.12,
+        "shoulder_y_m": 0.6256,
+        "belt_y_m": 0.7456,
+        "upper_center_y_m": 0.7956,
+        "roof_half_width_m": 0,
+        "roof_crown_y_m": 0.7956
+      },
+      {
+        "z_m": 1.1985,
+        "half_width_m": 0.867,
+        "lower_y_m": 0.12,
+        "shoulder_y_m": 0.678,
+        "belt_y_m": 0.798,
+        "upper_center_y_m": 0.848,
+        "roof_half_width_m": 0,
+        "roof_crown_y_m": 0.848
+      },
+      {
+        "z_m": 0.8989,
+        "half_width_m": 0.9237,
+        "lower_y_m": 0.12,
+        "shoulder_y_m": 0.7243,
+        "belt_y_m": 0.8443,
+        "upper_center_y_m": 0.8943,
+        "roof_half_width_m": 0,
+        "roof_crown_y_m": 0.8943
+      },
+      {
+        "z_m": 0.5993,
+        "half_width_m": 0.9557,
+        "lower_y_m": 0.12,
+        "shoulder_y_m": 0.7614,
+        "belt_y_m": 0.8814,
+        "upper_center_y_m": 0.9314,
+        "roof_half_width_m": 0,
+        "roof_crown_y_m": 0.9314
+      },
+      {
+        "z_m": 0.2996,
+        "half_width_m": 0.9188,
+        "lower_y_m": 0.12,
+        "shoulder_y_m": 0.7207,
+        "belt_y_m": 0.9009,
+        "upper_center_y_m": 0.9702,
+        "roof_half_width_m": 0.1697,
+        "roof_crown_y_m": 1.0791
+      },
+      {
+        "z_m": 0,
+        "half_width_m": 0.9446,
+        "lower_y_m": 0.12,
+        "shoulder_y_m": 0.7207,
+        "belt_y_m": 0.9009,
+        "upper_center_y_m": 0.9702,
+        "roof_half_width_m": 0.4587,
+        "roof_crown_y_m": 1.2565
+      },
+      {
+        "z_m": -0.2996,
+        "half_width_m": 0.959,
+        "lower_y_m": 0.12,
+        "shoulder_y_m": 0.7207,
+        "belt_y_m": 0.9009,
+        "upper_center_y_m": 0.9702,
+        "roof_half_width_m": 0.6258,
+        "roof_crown_y_m": 1.3549
+      },
+      {
+        "z_m": -0.5993,
+        "half_width_m": 0.9579,
+        "lower_y_m": 0.12,
+        "shoulder_y_m": 0.7207,
+        "belt_y_m": 0.9009,
+        "upper_center_y_m": 0.9702,
+        "roof_half_width_m": 0.6126,
+        "roof_crown_y_m": 1.3472
+      },
+      {
+        "z_m": -0.8989,
+        "half_width_m": 0.9416,
+        "lower_y_m": 0.12,
+        "shoulder_y_m": 0.7207,
+        "belt_y_m": 0.9009,
+        "upper_center_y_m": 0.9702,
+        "roof_half_width_m": 0.4238,
+        "roof_crown_y_m": 1.2356
+      },
+      {
+        "z_m": -1.1985,
+        "half_width_m": 0.9146,
+        "lower_y_m": 0.12,
+        "shoulder_y_m": 0.7207,
+        "belt_y_m": 0.9009,
+        "upper_center_y_m": 0.9702,
+        "roof_half_width_m": 0.1249,
+        "roof_crown_y_m": 1.0507
+      },
+      {
+        "z_m": -1.4981,
+        "half_width_m": 0.9404,
+        "lower_y_m": 0.12,
+        "shoulder_y_m": 0.6975,
+        "belt_y_m": 0.8375,
+        "upper_center_y_m": 0.8875,
+        "roof_half_width_m": 0,
+        "roof_crown_y_m": 0.8875
+      },
+      {
+        "z_m": -1.7978,
+        "half_width_m": 0.8828,
+        "lower_y_m": 0.12,
+        "shoulder_y_m": 0.6378,
+        "belt_y_m": 0.7778,
+        "upper_center_y_m": 0.8278,
+        "roof_half_width_m": 0,
+        "roof_crown_y_m": 0.8278
+      },
+      {
+        "z_m": -2.0974,
+        "half_width_m": 0.8079,
+        "lower_y_m": 0.1701,
+        "shoulder_y_m": 0.5697,
+        "belt_y_m": 0.7097,
+        "upper_center_y_m": 0.7597,
+        "roof_half_width_m": 0,
+        "roof_crown_y_m": 0.7597
+      },
+      {
+        "z_m": -2.397,
+        "half_width_m": 0.7204,
+        "lower_y_m": 0.26,
+        "shoulder_y_m": 0.4961,
+        "belt_y_m": 0.6361,
+        "upper_center_y_m": 0.6861,
+        "roof_half_width_m": 0,
+        "roof_crown_y_m": 0.6861
+      }
+    ],
+    "panels": [
+      "front_bumper",
+      "rear_bumper",
+      "hood",
+      "roof",
+      "front_left_fender",
+      "front_right_fender",
+      "rear_left_quarter",
+      "rear_right_quarter",
+      "front_left_door",
+      "front_right_door",
+      "side_skirts"
+    ]
+  },
+  "components": [
+    {
+      "id": "front_bumper",
+      "name": "Front Bumper Fascia",
+      "group": "body_panels",
+      "transform": {
+        "position": [
+          0,
+          0.4850999999999999,
+          2.247
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "dimensions": {
+        "width": 1.80574,
+        "height": 0.6236999999999999,
+        "length": 0.35,
+        "thickness": 0.03
+      },
+      "materialRef": "body_paint",
+      "editable": true,
+      "geometryType": "bumper_sculpt",
+      "customizationOptions": {
+        "allowPosition": true,
+        "allowRotation": true,
+        "allowScale": true,
+        "allowDimensions": true,
+        "allowMaterial": true,
+        "allowColor": true,
+        "ranges": {
+          "positionY": [
+            -0.1,
+            0.1
+          ],
+          "positionZ": [
+            -0.1,
+            0.1
+          ],
+          "width": [
+            1.5368000000000002,
+            2.1131
+          ]
+        }
+      }
+    },
+    {
+      "id": "rear_bumper",
+      "name": "Rear Bumper & Lower Fascia",
+      "group": "body_panels",
+      "transform": {
+        "position": [
+          0,
+          0.5544,
+          -2.247
+        ],
+        "rotation": [
+          0,
+          3.141592653589793,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "dimensions": {
+        "width": 1.84416,
+        "height": 0.6652799999999999,
+        "length": 0.38,
+        "thickness": 0.03
+      },
+      "materialRef": "body_paint",
+      "editable": true,
+      "geometryType": "bumper_sculpt",
+      "customizationOptions": {
+        "allowPosition": true,
+        "allowRotation": true,
+        "allowScale": true,
+        "allowDimensions": true,
+        "allowMaterial": true,
+        "allowColor": true
+      }
+    },
+    {
+      "id": "hood",
+      "name": "Front Engine/Luggage Hood",
+      "group": "body_panels",
+      "transform": {
+        "position": [
+          0,
+          0.85932,
+          1.0546799999999998
+        ],
+        "rotation": [
+          -0.12,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "dimensions": {
+        "width": 1.5752199999999998,
+        "height": 0.05,
+        "length": 1.5340799999999999,
+        "thickness": 0.02
+      },
+      "materialRef": "body_paint",
+      "editable": true,
+      "geometryType": "hood_panel",
+      "customizationOptions": {
+        "allowPosition": true,
+        "allowRotation": true,
+        "allowScale": true,
+        "allowDimensions": true,
+        "allowMaterial": true,
+        "allowColor": true
+      }
+    },
+    {
+      "id": "roof",
+      "name": "Cabin Roof Panel",
+      "group": "body_panels",
+      "transform": {
+        "position": [
+          0,
+          1.3305599999999997,
+          -0.28763999999999995
+        ],
+        "rotation": [
+          0.02,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "dimensions": {
+        "width": 1.30628,
+        "height": 0.04,
+        "length": 1.7258399999999998,
+        "thickness": 0.02
+      },
+      "materialRef": "body_paint",
+      "editable": true,
+      "geometryType": "roof_panel",
+      "customizationOptions": {
+        "allowPosition": true,
+        "allowRotation": true,
+        "allowScale": true,
+        "allowDimensions": true,
+        "allowMaterial": true,
+        "allowColor": true
+      }
+    },
+    {
+      "id": "front_left_fender",
+      "name": "Front Left Fender Flare",
+      "group": "body_panels",
+      "transform": {
+        "position": [
+          -0.8836600000000001,
+          0.72072,
+          1.4285
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "dimensions": {
+        "width": 0.18,
+        "height": 0.6652799999999999,
+        "length": 0.95,
+        "thickness": 0.02
+      },
+      "materialRef": "body_paint",
+      "editable": true,
+      "geometryType": "fender_flare",
+      "customizationOptions": {
+        "allowPosition": true,
+        "allowRotation": true,
+        "allowScale": true,
+        "allowDimensions": true,
+        "allowMaterial": true,
+        "allowColor": true
+      }
+    },
+    {
+      "id": "front_right_fender",
+      "name": "Front Right Fender Flare",
+      "group": "body_panels",
+      "transform": {
+        "position": [
+          0.8836600000000001,
+          0.72072,
+          1.4285
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "dimensions": {
+        "width": 0.18,
+        "height": 0.6652799999999999,
+        "length": 0.95,
+        "thickness": 0.02
+      },
+      "materialRef": "body_paint",
+      "editable": true,
+      "geometryType": "fender_flare",
+      "customizationOptions": {
+        "allowPosition": true,
+        "allowRotation": true,
+        "allowScale": true,
+        "allowDimensions": true,
+        "allowMaterial": true,
+        "allowColor": true
+      }
+    },
+    {
+      "id": "rear_left_quarter",
+      "name": "Rear Left Quarter Panel & Hip",
+      "group": "body_panels",
+      "transform": {
+        "position": [
+          -0.92208,
+          0.7761600000000001,
+          -1.4285
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "dimensions": {
+        "width": 0.22,
+        "height": 0.74844,
+        "length": 1.15,
+        "thickness": 0.02
+      },
+      "materialRef": "body_paint",
+      "editable": true,
+      "geometryType": "quarter_panel",
+      "customizationOptions": {
+        "allowPosition": true,
+        "allowRotation": true,
+        "allowScale": true,
+        "allowDimensions": true,
+        "allowMaterial": true,
+        "allowColor": true
+      }
+    },
+    {
+      "id": "rear_right_quarter",
+      "name": "Rear Right Quarter Panel & Hip",
+      "group": "body_panels",
+      "transform": {
+        "position": [
+          0.92208,
+          0.7761600000000001,
+          -1.4285
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "dimensions": {
+        "width": 0.22,
+        "height": 0.74844,
+        "length": 1.15,
+        "thickness": 0.02
+      },
+      "materialRef": "body_paint",
+      "editable": true,
+      "geometryType": "quarter_panel",
+      "customizationOptions": {
+        "allowPosition": true,
+        "allowRotation": true,
+        "allowScale": true,
+        "allowDimensions": true,
+        "allowMaterial": true,
+        "allowColor": true
+      }
+    },
+    {
+      "id": "front_left_door",
+      "name": "Front Left Door Assembly",
+      "group": "body_panels",
+      "transform": {
+        "position": [
+          -0.86445,
+          0.72072,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "dimensions": {
+        "width": 0.16,
+        "height": 0.85932,
+        "length": 1.1,
+        "thickness": 0.05
+      },
+      "materialRef": "body_paint",
+      "editable": true,
+      "geometryType": "door_panel",
+      "customizationOptions": {
+        "allowPosition": true,
+        "allowRotation": true,
+        "allowScale": true,
+        "allowDimensions": true,
+        "allowMaterial": true,
+        "allowColor": true
+      }
+    },
+    {
+      "id": "front_right_door",
+      "name": "Front Right Door Assembly",
+      "group": "body_panels",
+      "transform": {
+        "position": [
+          0.86445,
+          0.72072,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "dimensions": {
+        "width": 0.16,
+        "height": 0.85932,
+        "length": 1.1,
+        "thickness": 0.05
+      },
+      "materialRef": "body_paint",
+      "editable": true,
+      "geometryType": "door_panel",
+      "customizationOptions": {
+        "allowPosition": true,
+        "allowRotation": true,
+        "allowScale": true,
+        "allowDimensions": true,
+        "allowMaterial": true,
+        "allowColor": true
+      }
+    },
+    {
+      "id": "side_skirts",
+      "name": "Carbon Aerodynamic Side Skirts",
+      "group": "body_panels",
+      "transform": {
+        "position": [
+          0,
+          0.14,
+          0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "dimensions": {
+        "width": 1.88258,
+        "height": 0.08,
+        "length": 2.6284400000000003,
+        "thickness": 0.03
+      },
+      "materialRef": "carbon_fiber",
+      "editable": true,
+      "geometryType": "side_skirt_set",
+      "customizationOptions": {
+        "allowPosition": true,
+        "allowScale": true,
+        "allowDimensions": true,
+        "allowMaterial": true,
+        "allowColor": true
+      }
+    },
+    {
+      "id": "front_grille",
+      "name": "Front Air Intake Grille",
+      "group": "body_panels",
+      "transform": {
+        "position": [
+          0,
+          0.28,
+          2.3169999999999997
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "dimensions": {
+        "width": 1.38312,
+        "height": 0.28,
+        "length": 0.12,
+        "thickness": 0.02
+      },
+      "materialRef": "carbon_fiber",
+      "editable": true,
+      "geometryType": "intake_grille",
+      "customizationOptions": {
+        "allowScale": true,
+        "allowMaterial": true,
+        "allowColor": true
+      }
+    },
+    {
+      "id": "front_splitter",
+      "name": "Front Carbon Downforce Splitter",
+      "group": "aerodynamics",
+      "transform": {
+        "position": [
+          0,
+          0.12,
+          2.437
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "dimensions": {
+        "width": 1.88258,
+        "height": 0.04,
+        "length": 0.42,
+        "thickness": 0.02
+      },
+      "materialRef": "carbon_fiber",
+      "editable": true,
+      "geometryType": "front_splitter",
+      "customizationOptions": {
+        "allowPosition": true,
+        "allowScale": true,
+        "allowDimensions": true,
+        "allowMaterial": true,
+        "allowColor": true,
+        "ranges": {
+          "positionZ": [
+            -0.05,
+            0.12
+          ],
+          "width": [
+            1.5368000000000002,
+            2.2091499999999997
+          ]
+        }
+      }
+    },
+    {
+      "id": "rear_diffuser",
+      "name": "Rear Underbody Diffuser",
+      "group": "aerodynamics",
+      "transform": {
+        "position": [
+          0,
+          0.16,
+          -2.2969999999999997
+        ],
+        "rotation": [
+          0.12,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "dimensions": {
+        "width": 1.69048,
+        "height": 0.18,
+        "length": 0.65,
+        "thickness": 0.03
+      },
+      "materialRef": "carbon_fiber",
+      "editable": true,
+      "geometryType": "rear_diffuser",
+      "customizationOptions": {
+        "allowPosition": true,
+        "allowScale": true,
+        "allowDimensions": true,
+        "allowMaterial": true,
+        "allowColor": true,
+        "specificOptions": {
+          "finCount": 4
+        }
+      }
+    },
+    {
+      "id": "rear_wing",
+      "name": "Rear Ducktail Decklid Spoiler",
+      "group": "aerodynamics",
+      "transform": {
+        "position": [
+          0,
+          0.9979199999999999,
+          -2.1769999999999996
+        ],
+        "rotation": [
+          -0.08,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "dimensions": {
+        "width": 1.63285,
+        "height": 0.06,
+        "length": 0.14,
+        "thickness": 0.025
+      },
+      "materialRef": "carbon_fiber",
+      "editable": true,
+      "geometryType": "decklid_lip",
+      "customizationOptions": {
+        "allowPosition": true,
+        "allowRotation": true,
+        "allowScale": true,
+        "allowDimensions": true,
+        "allowMaterial": true,
+        "allowColor": true,
+        "ranges": {
+          "positionY": [
+            0.9008999999999999,
+            1.7325
+          ],
+          "rotationX": [
+            -0.25,
+            0.1
+          ],
+          "width": [
+            1.1526,
+            2.1131
+          ]
+        }
+      }
+    },
+    {
+      "id": "headlights_left",
+      "name": "Front Left Projector LED Headlamp",
+      "group": "lighting",
+      "transform": {
+        "position": [
+          -0.71412,
+          0.74844,
+          2.1769999999999996
+        ],
+        "rotation": [
+          0,
+          0.12,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "dimensions": {
+        "width": 0.28,
+        "height": 0.14,
+        "length": 0.35,
+        "thickness": 0.05
+      },
+      "materialRef": "emissive_headlight",
+      "editable": true,
+      "geometryType": "headlight_assembly",
+      "customizationOptions": {
+        "allowColor": true,
+        "allowMaterial": true
+      }
+    },
+    {
+      "id": "headlights_right",
+      "name": "Front Right Projector LED Headlamp",
+      "group": "lighting",
+      "transform": {
+        "position": [
+          0.71412,
+          0.74844,
+          2.1769999999999996
+        ],
+        "rotation": [
+          0,
+          -0.12,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "dimensions": {
+        "width": 0.28,
+        "height": 0.14,
+        "length": 0.35,
+        "thickness": 0.05
+      },
+      "materialRef": "emissive_headlight",
+      "editable": true,
+      "geometryType": "headlight_assembly",
+      "customizationOptions": {
+        "allowColor": true,
+        "allowMaterial": true
+      }
+    },
+    {
+      "id": "taillights_bar",
+      "name": "Rear Full-Width Signature LED Light Bar",
+      "group": "lighting",
+      "transform": {
+        "position": [
+          0,
+          0.8870399999999999,
+          -2.347
+        ],
+        "rotation": [
+          0,
+          3.141592653589793,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "dimensions": {
+        "width": 1.5143399999999998,
+        "height": 0.06,
+        "length": 0.08,
+        "thickness": 0.02
+      },
+      "materialRef": "emissive_taillight",
+      "editable": true,
+      "geometryType": "taillight_bar",
+      "customizationOptions": {
+        "allowColor": true,
+        "allowMaterial": true
+      }
+    },
+    {
+      "id": "windshield",
+      "name": "Acoustic Tinted Curved Windshield",
+      "group": "windows",
+      "transform": {
+        "position": [
+          0,
+          1.1365199999999998,
+          0.67116
+        ],
+        "rotation": [
+          -0.58,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "dimensions": {
+        "width": 1.4599600000000001,
+        "height": 0.65,
+        "length": 0.92,
+        "thickness": 0.012
+      },
+      "materialRef": "glass",
+      "editable": true,
+      "geometryType": "windshield_glass",
+      "customizationOptions": {
+        "allowMaterial": true,
+        "allowColor": true
+      }
+    },
+    {
+      "id": "rear_glass",
+      "name": "Rear Window / Engine Cover Glass",
+      "group": "windows",
+      "transform": {
+        "position": [
+          0,
+          1.1088,
+          -1.0546799999999998
+        ],
+        "rotation": [
+          0.52,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "dimensions": {
+        "width": 1.38312,
+        "height": 0.55,
+        "length": 0.85,
+        "thickness": 0.012
+      },
+      "materialRef": "glass",
+      "editable": true,
+      "geometryType": "rear_glass",
+      "customizationOptions": {
+        "allowMaterial": true,
+        "allowColor": true
+      }
+    },
+    {
+      "id": "side_windows_left",
+      "name": "Side Windows Left",
+      "group": "windows",
+      "transform": {
+        "position": [
+          -0.74919,
+          1.1365199999999998,
+          -0.09587999999999999
+        ],
+        "rotation": [
+          0,
+          0,
+          0.14
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "dimensions": {
+        "width": 0.015,
+        "height": 0.38,
+        "length": 1.15,
+        "thickness": 0.008
+      },
+      "materialRef": "glass",
+      "editable": true,
+      "geometryType": "side_glass",
+      "customizationOptions": {
+        "allowMaterial": true,
+        "allowColor": true
+      }
+    },
+    {
+      "id": "side_windows_right",
+      "name": "Side Windows Right",
+      "group": "windows",
+      "transform": {
+        "position": [
+          0.74919,
+          1.1365199999999998,
+          -0.09587999999999999
+        ],
+        "rotation": [
+          0,
+          0,
+          -0.14
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "dimensions": {
+        "width": 0.015,
+        "height": 0.38,
+        "length": 1.15,
+        "thickness": 0.008
+      },
+      "materialRef": "glass",
+      "editable": true,
+      "geometryType": "side_glass",
+      "customizationOptions": {
+        "allowMaterial": true,
+        "allowColor": true
+      }
+    },
+    {
+      "id": "wheel_front_left",
+      "name": "Front Left Performance Wheel Assembly",
+      "group": "wheels",
+      "transform": {
+        "position": [
+          -0.8115,
+          0.34,
+          1.4285
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "dimensions": {
+        "width": 0.275,
+        "height": 0.68,
+        "length": 0.68
+      },
+      "materialRef": "wheel_alloy",
+      "editable": true,
+      "geometryType": "wheel_assembly",
+      "customizationOptions": {
+        "allowPosition": true,
+        "allowRotation": true,
+        "allowDimensions": true,
+        "allowMaterial": true,
+        "allowColor": true,
+        "specificOptions": {
+          "rimDiameterIn": 19,
+          "tireWidthMm": 275,
+          "spokeCount": 10,
+          "camberDeg": -1.8
+        }
+      }
+    },
+    {
+      "id": "wheel_front_right",
+      "name": "Front Right Performance Wheel Assembly",
+      "group": "wheels",
+      "transform": {
+        "position": [
+          0.8115,
+          0.34,
+          1.4285
+        ],
+        "rotation": [
+          0,
+          3.141592653589793,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "dimensions": {
+        "width": 0.275,
+        "height": 0.68,
+        "length": 0.68
+      },
+      "materialRef": "wheel_alloy",
+      "editable": true,
+      "geometryType": "wheel_assembly",
+      "customizationOptions": {
+        "allowPosition": true,
+        "allowRotation": true,
+        "allowDimensions": true,
+        "allowMaterial": true,
+        "allowColor": true,
+        "specificOptions": {
+          "rimDiameterIn": 19,
+          "tireWidthMm": 275,
+          "spokeCount": 10,
+          "camberDeg": -1.8
+        }
+      }
+    },
+    {
+      "id": "wheel_rear_left",
+      "name": "Rear Left Performance Wheel Assembly",
+      "group": "wheels",
+      "transform": {
+        "position": [
+          -0.8055,
+          0.36,
+          -1.4285
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "dimensions": {
+        "width": 0.285,
+        "height": 0.72,
+        "length": 0.72
+      },
+      "materialRef": "wheel_alloy",
+      "editable": true,
+      "geometryType": "wheel_assembly",
+      "customizationOptions": {
+        "allowPosition": true,
+        "allowRotation": true,
+        "allowDimensions": true,
+        "allowMaterial": true,
+        "allowColor": true,
+        "specificOptions": {
+          "rimDiameterIn": 20,
+          "tireWidthMm": 285,
+          "spokeCount": 10,
+          "camberDeg": -1.5
+        }
+      }
+    },
+    {
+      "id": "wheel_rear_right",
+      "name": "Rear Right Performance Wheel Assembly",
+      "group": "wheels",
+      "transform": {
+        "position": [
+          0.8055,
+          0.36,
+          -1.4285
+        ],
+        "rotation": [
+          0,
+          3.141592653589793,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "dimensions": {
+        "width": 0.285,
+        "height": 0.72,
+        "length": 0.72
+      },
+      "materialRef": "wheel_alloy",
+      "editable": true,
+      "geometryType": "wheel_assembly",
+      "customizationOptions": {
+        "allowPosition": true,
+        "allowRotation": true,
+        "allowDimensions": true,
+        "allowMaterial": true,
+        "allowColor": true,
+        "specificOptions": {
+          "rimDiameterIn": 20,
+          "tireWidthMm": 285,
+          "spokeCount": 10,
+          "camberDeg": -1.5
+        }
+      }
+    },
+    {
+      "id": "exhaust_tips",
+      "name": "Sport Exhaust Quad Outlets",
+      "group": "exhaust",
+      "transform": {
+        "position": [
+          0,
+          0.24,
+          -2.377
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "dimensions": {
+        "width": 0.52,
+        "height": 0.1,
+        "length": 0.18,
+        "thickness": 0.015
+      },
+      "materialRef": "chrome",
+      "editable": true,
+      "geometryType": "exhaust_pipes",
+      "customizationOptions": {
+        "allowPosition": true,
+        "allowScale": true,
+        "allowDimensions": true,
+        "allowMaterial": true,
+        "allowColor": true
+      }
+    },
+    {
+      "id": "interior_dashboard",
+      "name": "Digital Cockpit & Dashboard Assembly",
+      "group": "interior",
+      "transform": {
+        "position": [
+          0,
+          0.8870399999999999,
+          0.4794
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "dimensions": {
+        "width": 1.42154,
+        "height": 0.38,
+        "length": 0.55
+      },
+      "materialRef": "interior_leather",
+      "editable": true,
+      "geometryType": "interior_dash",
+      "customizationOptions": {
+        "allowMaterial": true,
+        "allowColor": true
+      }
+    },
+    {
+      "id": "interior_steering_wheel",
+      "name": "Sport Alcantara Multifunction Steering Wheel",
+      "group": "interior",
+      "transform": {
+        "position": [
+          -0.38,
+          0.9701999999999998,
+          0.19175999999999999
+        ],
+        "rotation": [
+          -0.35,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "dimensions": {
+        "width": 0.36,
+        "height": 0.36,
+        "length": 0.08
+      },
+      "materialRef": "carbon_fiber",
+      "editable": true,
+      "geometryType": "steering_wheel",
+      "customizationOptions": {
+        "allowMaterial": true,
+        "allowColor": true
+      }
+    },
+    {
+      "id": "interior_seats",
+      "name": "Carbon-backed Racing Bucket Seats (Pair)",
+      "group": "interior",
+      "transform": {
+        "position": [
+          0,
+          0.6652799999999999,
+          -0.28763999999999995
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1,
+          1,
+          1
+        ]
+      },
+      "dimensions": {
+        "width": 1.30628,
+        "height": 0.75,
+        "length": 0.65
+      },
+      "materialRef": "interior_leather",
+      "editable": true,
+      "geometryType": "bucket_seats",
+      "customizationOptions": {
+        "allowMaterial": true,
+        "allowColor": true
+      }
+    }
+  ],
+  "wheels": {
+    "frontLeft": {
+      "id": "wheel_front_left",
+      "axle": "front",
+      "side": "left",
+      "center_m": {
+        "x": -0.8115,
+        "y": 0.3375,
+        "z": 1.4285
+      },
+      "tire": {
+        "size": "275/35 R19",
+        "nominal_section_width_mm": 275,
+        "aspect_ratio": 35,
+        "rim_diameter_in": 19,
+        "calculated_outer_diameter_mm": 675.1,
+        "calculated_radius_m": 0.3375,
+        "treadPattern": "performance_tread"
+      },
+      "rim": {
+        "size": "10.8J x 19",
+        "width_m": 0.275,
+        "diameter_m": 0.4826,
+        "style": "OEM BMW Spoke Design",
+        "spokeCount": 10,
+        "offset_mm": 40
+      },
+      "brakes": {
+        "discDiameter_m": 0.42,
+        "caliperColor": "#dc2626",
+        "pistonCount": 6
+      },
+      "alignment": {
+        "camberDeg": -1.8,
+        "toeDeg": 0.1
+      }
+    },
+    "frontRight": {
+      "id": "wheel_front_right",
+      "axle": "front",
+      "side": "right",
+      "center_m": {
+        "x": 0.8115,
+        "y": 0.3375,
+        "z": 1.4285
+      },
+      "tire": {
+        "size": "275/35 R19",
+        "nominal_section_width_mm": 275,
+        "aspect_ratio": 35,
+        "rim_diameter_in": 19,
+        "calculated_outer_diameter_mm": 675.1,
+        "calculated_radius_m": 0.3375,
+        "treadPattern": "performance_tread"
+      },
+      "rim": {
+        "size": "10.8J x 19",
+        "width_m": 0.275,
+        "diameter_m": 0.4826,
+        "style": "OEM BMW Spoke Design",
+        "spokeCount": 10,
+        "offset_mm": 40
+      },
+      "brakes": {
+        "discDiameter_m": 0.42,
+        "caliperColor": "#dc2626",
+        "pistonCount": 6
+      },
+      "alignment": {
+        "camberDeg": -1.8,
+        "toeDeg": 0.1
+      }
+    },
+    "rearLeft": {
+      "id": "wheel_rear_left",
+      "axle": "rear",
+      "side": "left",
+      "center_m": {
+        "x": -0.8055,
+        "y": 0.3395,
+        "z": -1.4285
+      },
+      "tire": {
+        "size": "285/30 R20",
+        "nominal_section_width_mm": 285,
+        "aspect_ratio": 30,
+        "rim_diameter_in": 20,
+        "calculated_outer_diameter_mm": 679,
+        "calculated_radius_m": 0.3395,
+        "treadPattern": "performance_tread"
+      },
+      "rim": {
+        "size": "11.2J x 20",
+        "width_m": 0.285,
+        "diameter_m": 0.508,
+        "style": "OEM BMW Spoke Design",
+        "spokeCount": 10,
+        "offset_mm": 32
+      },
+      "brakes": {
+        "discDiameter_m": 0.39,
+        "caliperColor": "#dc2626",
+        "pistonCount": 4
+      },
+      "alignment": {
+        "camberDeg": -1.5,
+        "toeDeg": 0.1
+      }
+    },
+    "rearRight": {
+      "id": "wheel_rear_right",
+      "axle": "rear",
+      "side": "right",
+      "center_m": {
+        "x": 0.8055,
+        "y": 0.3395,
+        "z": -1.4285
+      },
+      "tire": {
+        "size": "285/30 R20",
+        "nominal_section_width_mm": 285,
+        "aspect_ratio": 30,
+        "rim_diameter_in": 20,
+        "calculated_outer_diameter_mm": 679,
+        "calculated_radius_m": 0.3395,
+        "treadPattern": "performance_tread"
+      },
+      "rim": {
+        "size": "11.2J x 20",
+        "width_m": 0.285,
+        "diameter_m": 0.508,
+        "style": "OEM BMW Spoke Design",
+        "spokeCount": 10,
+        "offset_mm": 32
+      },
+      "brakes": {
+        "discDiameter_m": 0.39,
+        "caliperColor": "#dc2626",
+        "pistonCount": 4
+      },
+      "alignment": {
+        "camberDeg": -1.5,
+        "toeDeg": 0.1
+      }
+    }
+  },
+  "materials": [
+    {
+      "id": "body_paint",
+      "name": "Primary Exterior Finish",
+      "type": "paint_metallic",
+      "color": "#475569",
+      "metalness": 0.72,
+      "roughness": 0.22,
+      "clearcoat": 1,
+      "clearcoatRoughness": 0.08
+    },
+    {
+      "id": "secondary_paint",
+      "name": "Secondary Accent Finish",
+      "type": "paint_gloss",
+      "color": "#dc2626",
+      "metalness": 0.5,
+      "roughness": 0.25,
+      "clearcoat": 0.95,
+      "clearcoatRoughness": 0.1
+    },
+    {
+      "id": "carbon_fiber",
+      "name": "Autoclave Pre-preg Carbon Fiber",
+      "type": "carbon_fiber",
+      "color": "#18181b",
+      "metalness": 0.35,
+      "roughness": 0.42
+    },
+    {
+      "id": "forged_carbon",
+      "name": "Chapped Forged Carbon Composite",
+      "type": "forged_carbon",
+      "color": "#27272a",
+      "metalness": 0.25,
+      "roughness": 0.48
+    },
+    {
+      "id": "glass",
+      "name": "Acoustic Tinted High-Index Glass",
+      "type": "glass",
+      "color": "#0f172a",
+      "metalness": 0.05,
+      "roughness": 0.05,
+      "transmission": 0.75,
+      "transparent": true
+    },
+    {
+      "id": "wheel_alloy",
+      "name": "Forged Monoblock Wheel Alloy",
+      "type": "alloy",
+      "color": "#18181b",
+      "metalness": 0.88,
+      "roughness": 0.22
+    },
+    {
+      "id": "brake_caliper",
+      "name": "Brembo Racing Caliper Enamel",
+      "type": "paint_gloss",
+      "color": "#dc2626",
+      "metalness": 0.45,
+      "roughness": 0.15
+    },
+    {
+      "id": "chrome",
+      "name": "Polished Mirror Chrome / Titanium",
+      "type": "chrome",
+      "color": "#f8fafc",
+      "metalness": 0.98,
+      "roughness": 0.04
+    },
+    {
+      "id": "rubber",
+      "name": "Performance Tread Compound",
+      "type": "rubber",
+      "color": "#18181b",
+      "metalness": 0.05,
+      "roughness": 0.85
+    },
+    {
+      "id": "emissive_headlight",
+      "name": "Ultra-Bright 6000K LED Projector",
+      "type": "emissive_led",
+      "color": "#f8fafc",
+      "metalness": 0.1,
+      "roughness": 0.1,
+      "emissive": "#f8fafc",
+      "emissiveIntensity": 1.8
+    },
+    {
+      "id": "emissive_taillight",
+      "name": "Vibrant Rear Brake & Marker LED",
+      "type": "emissive_led",
+      "color": "#dc2626",
+      "metalness": 0.1,
+      "roughness": 0.1,
+      "emissive": "#dc2626",
+      "emissiveIntensity": 2
+    },
+    {
+      "id": "interior_leather",
+      "name": "Hand-Stitched Semi-Aniline Leather",
+      "type": "leather",
+      "color": "#18181b",
+      "metalness": 0.1,
+      "roughness": 0.65
+    }
+  ],
+  "customization": {
+    "editableComponents": [
+      "front_bumper",
+      "rear_bumper",
+      "hood",
+      "roof",
+      "front_left_fender",
+      "front_right_fender",
+      "rear_left_quarter",
+      "rear_right_quarter",
+      "front_left_door",
+      "front_right_door",
+      "side_skirts",
+      "front_grille",
+      "front_splitter",
+      "rear_diffuser",
+      "rear_wing",
+      "headlights_left",
+      "headlights_right",
+      "taillights_bar",
+      "windshield",
+      "rear_glass",
+      "side_windows_left",
+      "side_windows_right",
+      "wheel_front_left",
+      "wheel_front_right",
+      "wheel_rear_left",
+      "wheel_rear_right",
+      "exhaust_tips",
+      "interior_dashboard",
+      "interior_steering_wheel",
+      "interior_seats"
+    ],
+    "supportedTransforms": [
+      "position",
+      "rotation",
+      "scale",
+      "dimensions",
+      "material",
+      "color",
+      "visibility"
+    ],
+    "factoryConfiguration": {
+      "front_bumper": {
+        "transform": {
+          "position": [
+            0,
+            0.4850999999999999,
+            2.247
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "dimensions": {
+          "width": 1.80574,
+          "height": 0.6236999999999999,
+          "length": 0.35,
+          "thickness": 0.03
+        },
+        "materialRef": "body_paint",
+        "visible": true
+      },
+      "rear_bumper": {
+        "transform": {
+          "position": [
+            0,
+            0.5544,
+            -2.247
+          ],
+          "rotation": [
+            0,
+            3.141592653589793,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "dimensions": {
+          "width": 1.84416,
+          "height": 0.6652799999999999,
+          "length": 0.38,
+          "thickness": 0.03
+        },
+        "materialRef": "body_paint",
+        "visible": true
+      },
+      "hood": {
+        "transform": {
+          "position": [
+            0,
+            0.85932,
+            1.0546799999999998
+          ],
+          "rotation": [
+            -0.12,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "dimensions": {
+          "width": 1.5752199999999998,
+          "height": 0.05,
+          "length": 1.5340799999999999,
+          "thickness": 0.02
+        },
+        "materialRef": "body_paint",
+        "visible": true
+      },
+      "roof": {
+        "transform": {
+          "position": [
+            0,
+            1.3305599999999997,
+            -0.28763999999999995
+          ],
+          "rotation": [
+            0.02,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "dimensions": {
+          "width": 1.30628,
+          "height": 0.04,
+          "length": 1.7258399999999998,
+          "thickness": 0.02
+        },
+        "materialRef": "body_paint",
+        "visible": true
+      },
+      "front_left_fender": {
+        "transform": {
+          "position": [
+            -0.8836600000000001,
+            0.72072,
+            1.4285
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "dimensions": {
+          "width": 0.18,
+          "height": 0.6652799999999999,
+          "length": 0.95,
+          "thickness": 0.02
+        },
+        "materialRef": "body_paint",
+        "visible": true
+      },
+      "front_right_fender": {
+        "transform": {
+          "position": [
+            0.8836600000000001,
+            0.72072,
+            1.4285
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "dimensions": {
+          "width": 0.18,
+          "height": 0.6652799999999999,
+          "length": 0.95,
+          "thickness": 0.02
+        },
+        "materialRef": "body_paint",
+        "visible": true
+      },
+      "rear_left_quarter": {
+        "transform": {
+          "position": [
+            -0.92208,
+            0.7761600000000001,
+            -1.4285
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "dimensions": {
+          "width": 0.22,
+          "height": 0.74844,
+          "length": 1.15,
+          "thickness": 0.02
+        },
+        "materialRef": "body_paint",
+        "visible": true
+      },
+      "rear_right_quarter": {
+        "transform": {
+          "position": [
+            0.92208,
+            0.7761600000000001,
+            -1.4285
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "dimensions": {
+          "width": 0.22,
+          "height": 0.74844,
+          "length": 1.15,
+          "thickness": 0.02
+        },
+        "materialRef": "body_paint",
+        "visible": true
+      },
+      "front_left_door": {
+        "transform": {
+          "position": [
+            -0.86445,
+            0.72072,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "dimensions": {
+          "width": 0.16,
+          "height": 0.85932,
+          "length": 1.1,
+          "thickness": 0.05
+        },
+        "materialRef": "body_paint",
+        "visible": true
+      },
+      "front_right_door": {
+        "transform": {
+          "position": [
+            0.86445,
+            0.72072,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "dimensions": {
+          "width": 0.16,
+          "height": 0.85932,
+          "length": 1.1,
+          "thickness": 0.05
+        },
+        "materialRef": "body_paint",
+        "visible": true
+      },
+      "side_skirts": {
+        "transform": {
+          "position": [
+            0,
+            0.14,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "dimensions": {
+          "width": 1.88258,
+          "height": 0.08,
+          "length": 2.6284400000000003,
+          "thickness": 0.03
+        },
+        "materialRef": "carbon_fiber",
+        "visible": true
+      },
+      "front_grille": {
+        "transform": {
+          "position": [
+            0,
+            0.28,
+            2.3169999999999997
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "dimensions": {
+          "width": 1.38312,
+          "height": 0.28,
+          "length": 0.12,
+          "thickness": 0.02
+        },
+        "materialRef": "carbon_fiber",
+        "visible": true
+      },
+      "front_splitter": {
+        "transform": {
+          "position": [
+            0,
+            0.12,
+            2.437
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "dimensions": {
+          "width": 1.88258,
+          "height": 0.04,
+          "length": 0.42,
+          "thickness": 0.02
+        },
+        "materialRef": "carbon_fiber",
+        "visible": true
+      },
+      "rear_diffuser": {
+        "transform": {
+          "position": [
+            0,
+            0.16,
+            -2.2969999999999997
+          ],
+          "rotation": [
+            0.12,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "dimensions": {
+          "width": 1.69048,
+          "height": 0.18,
+          "length": 0.65,
+          "thickness": 0.03
+        },
+        "materialRef": "carbon_fiber",
+        "visible": true
+      },
+      "rear_wing": {
+        "transform": {
+          "position": [
+            0,
+            0.9979199999999999,
+            -2.1769999999999996
+          ],
+          "rotation": [
+            -0.08,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "dimensions": {
+          "width": 1.63285,
+          "height": 0.06,
+          "length": 0.14,
+          "thickness": 0.025
+        },
+        "materialRef": "carbon_fiber",
+        "visible": true
+      },
+      "headlights_left": {
+        "transform": {
+          "position": [
+            -0.71412,
+            0.74844,
+            2.1769999999999996
+          ],
+          "rotation": [
+            0,
+            0.12,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "dimensions": {
+          "width": 0.28,
+          "height": 0.14,
+          "length": 0.35,
+          "thickness": 0.05
+        },
+        "materialRef": "emissive_headlight",
+        "visible": true
+      },
+      "headlights_right": {
+        "transform": {
+          "position": [
+            0.71412,
+            0.74844,
+            2.1769999999999996
+          ],
+          "rotation": [
+            0,
+            -0.12,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "dimensions": {
+          "width": 0.28,
+          "height": 0.14,
+          "length": 0.35,
+          "thickness": 0.05
+        },
+        "materialRef": "emissive_headlight",
+        "visible": true
+      },
+      "taillights_bar": {
+        "transform": {
+          "position": [
+            0,
+            0.8870399999999999,
+            -2.347
+          ],
+          "rotation": [
+            0,
+            3.141592653589793,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "dimensions": {
+          "width": 1.5143399999999998,
+          "height": 0.06,
+          "length": 0.08,
+          "thickness": 0.02
+        },
+        "materialRef": "emissive_taillight",
+        "visible": true
+      },
+      "windshield": {
+        "transform": {
+          "position": [
+            0,
+            1.1365199999999998,
+            0.67116
+          ],
+          "rotation": [
+            -0.58,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "dimensions": {
+          "width": 1.4599600000000001,
+          "height": 0.65,
+          "length": 0.92,
+          "thickness": 0.012
+        },
+        "materialRef": "glass",
+        "visible": true
+      },
+      "rear_glass": {
+        "transform": {
+          "position": [
+            0,
+            1.1088,
+            -1.0546799999999998
+          ],
+          "rotation": [
+            0.52,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "dimensions": {
+          "width": 1.38312,
+          "height": 0.55,
+          "length": 0.85,
+          "thickness": 0.012
+        },
+        "materialRef": "glass",
+        "visible": true
+      },
+      "side_windows_left": {
+        "transform": {
+          "position": [
+            -0.74919,
+            1.1365199999999998,
+            -0.09587999999999999
+          ],
+          "rotation": [
+            0,
+            0,
+            0.14
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "dimensions": {
+          "width": 0.015,
+          "height": 0.38,
+          "length": 1.15,
+          "thickness": 0.008
+        },
+        "materialRef": "glass",
+        "visible": true
+      },
+      "side_windows_right": {
+        "transform": {
+          "position": [
+            0.74919,
+            1.1365199999999998,
+            -0.09587999999999999
+          ],
+          "rotation": [
+            0,
+            0,
+            -0.14
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "dimensions": {
+          "width": 0.015,
+          "height": 0.38,
+          "length": 1.15,
+          "thickness": 0.008
+        },
+        "materialRef": "glass",
+        "visible": true
+      },
+      "wheel_front_left": {
+        "transform": {
+          "position": [
+            -0.8115,
+            0.34,
+            1.4285
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "dimensions": {
+          "width": 0.275,
+          "height": 0.68,
+          "length": 0.68
+        },
+        "materialRef": "wheel_alloy",
+        "visible": true
+      },
+      "wheel_front_right": {
+        "transform": {
+          "position": [
+            0.8115,
+            0.34,
+            1.4285
+          ],
+          "rotation": [
+            0,
+            3.141592653589793,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "dimensions": {
+          "width": 0.275,
+          "height": 0.68,
+          "length": 0.68
+        },
+        "materialRef": "wheel_alloy",
+        "visible": true
+      },
+      "wheel_rear_left": {
+        "transform": {
+          "position": [
+            -0.8055,
+            0.36,
+            -1.4285
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "dimensions": {
+          "width": 0.285,
+          "height": 0.72,
+          "length": 0.72
+        },
+        "materialRef": "wheel_alloy",
+        "visible": true
+      },
+      "wheel_rear_right": {
+        "transform": {
+          "position": [
+            0.8055,
+            0.36,
+            -1.4285
+          ],
+          "rotation": [
+            0,
+            3.141592653589793,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "dimensions": {
+          "width": 0.285,
+          "height": 0.72,
+          "length": 0.72
+        },
+        "materialRef": "wheel_alloy",
+        "visible": true
+      },
+      "exhaust_tips": {
+        "transform": {
+          "position": [
+            0,
+            0.24,
+            -2.377
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "dimensions": {
+          "width": 0.52,
+          "height": 0.1,
+          "length": 0.18,
+          "thickness": 0.015
+        },
+        "materialRef": "chrome",
+        "visible": true
+      },
+      "interior_dashboard": {
+        "transform": {
+          "position": [
+            0,
+            0.8870399999999999,
+            0.4794
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "dimensions": {
+          "width": 1.42154,
+          "height": 0.38,
+          "length": 0.55
+        },
+        "materialRef": "interior_leather",
+        "visible": true
+      },
+      "interior_steering_wheel": {
+        "transform": {
+          "position": [
+            -0.38,
+            0.9701999999999998,
+            0.19175999999999999
+          ],
+          "rotation": [
+            -0.35,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "dimensions": {
+          "width": 0.36,
+          "height": 0.36,
+          "length": 0.08
+        },
+        "materialRef": "carbon_fiber",
+        "visible": true
+      },
+      "interior_seats": {
+        "transform": {
+          "position": [
+            0,
+            0.6652799999999999,
+            -0.28763999999999995
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ]
+        },
+        "dimensions": {
+          "width": 1.30628,
+          "height": 0.75,
+          "length": 0.65
+        },
+        "materialRef": "interior_leather",
+        "visible": true
+      }
+    },
+    "presets": [
+      {
+        "name": "Factory OEM Stock",
+        "description": "Factory stock original delivery specification",
+        "overrides": {}
+      },
+      {
+        "name": "Club Sport Track Spec",
+        "description": "Aggressive track setup with lowered stance, increased wing angle and carbon splitter",
+        "overrides": {
+          "rear_wing": {
+            "position": [
+              0,
+              1.07792,
+              -2.20524
+            ],
+            "rotation": [
+              -0.18,
+              0,
+              0
+            ]
+          },
+          "front_splitter": {
+            "dimensions": {
+              "length": 0.52,
+              "width": 2.0170500000000002
+            }
+          }
+        }
+      },
+      {
+        "name": "Stealth Carbon Edition",
+        "description": "Satin carbon body panels with gloss forged composite accents",
+        "overrides": {
+          "hood": {
+            "materialRef": "carbon_fiber"
+          },
+          "roof": {
+            "materialRef": "carbon_fiber"
+          },
+          "rear_wing": {
+            "materialRef": "forged_carbon"
+          }
+        }
+      }
+    ]
+  },
+  "renderSettings": {
+    "ambientOcclusion": true,
+    "shadowCast": true,
+    "defaultPaintColor": "#475569"
+  },
+  "validation": {
+    "oemGeometryVerified": false,
+    "accuracyClass": "D_APPROXIMATE",
+    "accuracyNotice": "This file defines a dimension-anchored procedural parametric model. Local surface control points are visual modeling estimates and must not be represented as factory-exact CAD.",
+    "watertight": true,
+    "componentCount": 30
+  }
+}

@@ -1,0 +1,540 @@
+{
+  "totalFiles": 108,
+  "invalidFiles": [],
+  "schemas": {
+    "Cherax Entity|Type:1": 108
+  },
+  "models": {
+    "127317925": [
+      "C6.json"
+    ],
+    "196747873": [
+      "Elegy Retro Custom.json"
+    ],
+    "223258115": [
+      "Low rider.json"
+    ],
+    "272929391": [
+      "2015_LamborghiniHuracan_LP620-2.json"
+    ],
+    "274946574": [
+      "10F Red-Carbon.json",
+      "audi r8 ( custom ).json"
+    ],
+    "330661258": [
+      "enus.json"
+    ],
+    "386089410": [
+      "all blue circuit board electric.json",
+      "coil 2.json",
+      "Cyclone II by Ram.json"
+    ],
+    "409049982": [
+      "honda.json",
+      "Jap Kanjo.json",
+      "KANJO rxs 2.json"
+    ],
+    "410882957": [
+      "KURUMA.json"
+    ],
+    "433954513": [
+      "Night RX 05.json",
+      "NightShark Modded.json"
+    ],
+    "661493923": [
+      "2011_Porsche_911GT2RS_997-2.json"
+    ],
+    "662793086": [
+      "AudiBenny.json"
+    ],
+    "686471183": [
+      "2018_AudiRS5_Coupe.json"
+    ],
+    "687627128": [
+      "Pinki.json",
+      "suzume.json"
+    ],
+    "867799010": [
+      "PARIAH.json"
+    ],
+    "1031562256": [
+      "tezeract.json"
+    ],
+    "1074745671": [
+      "Specter Classic.json"
+    ],
+    "1304459735": [
+      "Pfister Growler  Oak Green.json"
+    ],
+    "1353120668": [
+      "Fast bike.json"
+    ],
+    "1416466158": [
+      "paragon.json"
+    ],
+    "1483171323": [
+      "Deluxo Modded.json",
+      "U.F.O.json"
+    ],
+    "1484920335": [
+      "LSCM Jester RR.json"
+    ],
+    "1494708164": [
+      "Benefactor LRC GT v1.json",
+      "Benefactor LRC GT v2.json",
+      "lrc gt.json",
+      "LRC.json"
+    ],
+    "1532171089": [
+      "BEntley.json"
+    ],
+    "1596736441": [
+      "pink astrale.json"
+    ],
+    "1663218586": [
+      "t20.json"
+    ],
+    "1748565021": [
+      "2020_Koenigsegg_Jesko_Absolut.json"
+    ],
+    "1755697647": [
+      "cyper.json",
+      "m2.json"
+    ],
+    "1881415402": [
+      "Niobe.json"
+    ],
+    "1923534526": [
+      "ANNIS ZR360 DRIFT.json",
+      "rx7.json"
+    ],
+    "2038480341": [
+      "Euros.json"
+    ],
+    "2042703219": [
+      "MODDED BY NICOLAS.json"
+    ],
+    "2069146067": [
+      "broomstick.json",
+      "mK11 STEROROIDS.json"
+    ],
+    "2271995207": [
+      "CANTUCCIA.json",
+      "Cartuccia GT.json",
+      "FERRARI12.json",
+      "PINKCAR1.json"
+    ],
+    "2272483501": [
+      "purple porsche 911.json"
+    ],
+    "2362851406": [
+      "defendybob.json"
+    ],
+    "2436313176": [
+      "ZR.json"
+    ],
+    "2515968713": [
+      "PORSCHE X-TREME.json"
+    ],
+    "2536587772": [
+      "copo.json"
+    ],
+    "2568944644": [
+      "CometS2.json"
+    ],
+    "2709293299": [
+      "bmw (1).json",
+      "BMW M3 MINT GREEN.json",
+      "BMW.json",
+      "Bmw5.json",
+      "m3 competition (STD, Isle of man.json",
+      "m3.json",
+      "m3g80.json",
+      "Sentinel GTS.json"
+    ],
+    "2712905841": [
+      "AElhAfs.json"
+    ],
+    "2767531027": [
+      "Y-Cinquemila.json"
+    ],
+    "2859440138": [
+      "TANK MODERN.json"
+    ],
+    "3050505892": [
+      "2018_AudiRS3_Sedan.json"
+    ],
+    "3052358707": [
+      "vigitane.json"
+    ],
+    "3061199846": [
+      "Bravado Gauntled Mod.json"
+    ],
+    "3105951696": [
+      "blue collar rig.json"
+    ],
+    "3126015148": [
+      "urus.json"
+    ],
+    "3145241962": [
+      "grotti itali rsx modded.json",
+      "ITALI RSX.json",
+      "ITALY RSX.json"
+    ],
+    "3287642921": [
+      "fmj mk5 - gas jew2.json"
+    ],
+    "3308022675": [
+      "yellow challanger.json"
+    ],
+    "3316510914": [
+      "AA  max upgraded.json",
+      "Veleno GT.json"
+    ],
+    "3348919626": [
+      "Paragon S.json"
+    ],
+    "3356898886": [
+      "luiva.json",
+      "PROGEN LUIVA.json"
+    ],
+    "3400983137": [
+      "lime green audi l.json"
+    ],
+    "3460613305": [
+      "alfa romeo giulia red.json"
+    ],
+    "3540279623": [
+      "lampadatti.json"
+    ],
+    "3612858749": [
+      "Zorrusso.json"
+    ],
+    "3634959571": [
+      "Banshee GTS.json",
+      "iirc.json"
+    ],
+    "3656405053": [
+      "blackblueScramjet.json"
+    ],
+    "3675036420": [
+      "blue buffalo.json",
+      "S  T  X.json"
+    ],
+    "3703315515": [
+      "Blista F1.json"
+    ],
+    "3728579874": [
+      "gtr.json"
+    ],
+    "3787471536": [
+      "Modded Schalgen GT with sports b.json"
+    ],
+    "3929093893": [
+      "RO-86.json"
+    ],
+    "4003946083": [
+      "Karin Sultan RS Classic.json"
+    ],
+    "4017955470": [
+      "760 LH.json",
+      "Horus.json",
+      "Zonda.json"
+    ],
+    "4039289119": [
+      "Hakuchou Drag.json"
+    ],
+    "4071505793": [
+      "pipistrello.json"
+    ],
+    "4080061290": [
+      "2F2FSUPRA.json",
+      "2F2FSUPRA_Retro_Shade.json",
+      "lulli.json"
+    ],
+    "4151380270": [
+      "W124.json"
+    ],
+    "4171974011": [
+      "Yellow F1 Supercar.json"
+    ],
+    "4255883207": [
+      "PursuitIgnus.json"
+    ]
+  },
+  "fieldPresence": {
+    "format": 108,
+    "type": 108,
+    "model": 108,
+    "baseFlags": 108,
+    "mods": 108,
+    "extras": 87,
+    "wheelType": 108,
+    "tyreSmokeColor": 108,
+    "neonKits": 108,
+    "primaryColor": 108,
+    "secondaryColor": 108,
+    "pearlescentColor": 108,
+    "isPrimaryColorCustom": 108,
+    "customPrimaryColor": 108,
+    "isSecondaryColorCustom": 108,
+    "customSecondaryColor": 108,
+    "windowTint": 108,
+    "wheelColor": 108,
+    "interiorColor": 108,
+    "dashBoardColor": 108,
+    "plateText": 108,
+    "plateTextIndex": 108,
+    "bulletproofTyres": 87,
+    "driftTyres": 87,
+    "_creatorSignature": 3,
+    "attachments": 5
+  },
+  "fieldTypes": {
+    "format": [
+      "string"
+    ],
+    "type": [
+      "number"
+    ],
+    "model": [
+      "number"
+    ],
+    "baseFlags": [
+      "number"
+    ],
+    "mods": [
+      "object"
+    ],
+    "extras": [
+      "object"
+    ],
+    "wheelType": [
+      "number"
+    ],
+    "tyreSmokeColor": [
+      "object"
+    ],
+    "neonKits": [
+      "object"
+    ],
+    "primaryColor": [
+      "number"
+    ],
+    "secondaryColor": [
+      "number"
+    ],
+    "pearlescentColor": [
+      "number"
+    ],
+    "isPrimaryColorCustom": [
+      "boolean"
+    ],
+    "customPrimaryColor": [
+      "object"
+    ],
+    "isSecondaryColorCustom": [
+      "boolean"
+    ],
+    "customSecondaryColor": [
+      "object"
+    ],
+    "windowTint": [
+      "number"
+    ],
+    "wheelColor": [
+      "number"
+    ],
+    "interiorColor": [
+      "number"
+    ],
+    "dashBoardColor": [
+      "number"
+    ],
+    "plateText": [
+      "string"
+    ],
+    "plateTextIndex": [
+      "number"
+    ],
+    "bulletproofTyres": [
+      "boolean"
+    ],
+    "driftTyres": [
+      "boolean"
+    ],
+    "_creatorSignature": [
+      "string"
+    ],
+    "attachments": [
+      "array"
+    ]
+  },
+  "fieldValueRanges": {
+    "type": {
+      "min": 1,
+      "max": 1
+    },
+    "model": {
+      "min": 127317925,
+      "max": 4255883207
+    },
+    "baseFlags": {
+      "min": 66831,
+      "max": 1073808687
+    },
+    "wheelType": {
+      "min": 0,
+      "max": 12
+    },
+    "primaryColor": {
+      "min": 0,
+      "max": 222
+    },
+    "secondaryColor": {
+      "min": 0,
+      "max": 222
+    },
+    "pearlescentColor": {
+      "min": 0,
+      "max": 222
+    },
+    "windowTint": {
+      "min": 0,
+      "max": 7
+    },
+    "wheelColor": {
+      "min": 0,
+      "max": 222
+    },
+    "interiorColor": {
+      "min": 0,
+      "max": 160
+    },
+    "dashBoardColor": {
+      "min": 0,
+      "max": 160
+    },
+    "plateTextIndex": {
+      "min": -1,
+      "max": 12
+    }
+  },
+  "sha256Duplicates": {
+    "a6084dab301ad0612c8224930c843e4d51ed12f7da5edf45bc488f37572b47ff": [
+      "2F2FSUPRA_Retro_Shade.json",
+      "lulli.json"
+    ]
+  },
+  "normalizedDuplicates": {
+    "4a798d2f2d5e8a0042373983de09246a06206d4bc2dc12778f68c52b76a69d4b": [
+      "2F2FSUPRA_Retro_Shade.json",
+      "lulli.json"
+    ]
+  },
+  "modsStats": {
+    "totalModKeys": [
+      "mod0",
+      "mod1",
+      "mod2",
+      "mod3",
+      "mod4",
+      "mod5",
+      "mod6",
+      "mod7",
+      "mod8",
+      "mod9",
+      "mod10",
+      "mod11",
+      "mod12",
+      "mod13",
+      "mod14",
+      "mod15",
+      "mod16",
+      "mod17",
+      "mod18",
+      "mod19",
+      "mod20",
+      "mod21",
+      "mod22",
+      "mod23",
+      "mod24",
+      "mod25",
+      "mod26",
+      "mod27",
+      "mod28",
+      "mod29",
+      "mod30",
+      "mod31",
+      "mod32",
+      "mod33",
+      "mod34",
+      "mod35",
+      "mod36",
+      "mod37",
+      "mod38",
+      "mod39",
+      "mod40",
+      "mod41",
+      "mod42",
+      "mod43",
+      "mod44",
+      "mod45",
+      "mod46",
+      "mod47",
+      "mod48",
+      "mod49"
+    ],
+    "hasVariation": 5400,
+    "indexRange": {
+      "min": 0,
+      "max": 179
+    },
+    "negativeIndices": []
+  },
+  "extrasStats": {
+    "presentInFiles": 87,
+    "keysFound": [
+      "extra0",
+      "extra1",
+      "extra2",
+      "extra3",
+      "extra4",
+      "extra5",
+      "extra6",
+      "extra7",
+      "extra8",
+      "extra9",
+      "extra10",
+      "extra11",
+      "extra12",
+      "extra13",
+      "extra14",
+      "extra15"
+    ]
+  },
+  "neonKitsStats": {
+    "presentInFiles": 108,
+    "channelKeys": [
+      "left",
+      "right",
+      "front",
+      "back",
+      "color"
+    ],
+    "hasColor": 108
+  },
+  "tyreSmokeStats": {
+    "presentInFiles": 108
+  },
+  "attachmentsStats": {
+    "presentInFiles": 5,
+    "attachmentCountTotal": 35
+  },
+  "creatorSignatureStats": {
+    "presentInFiles": 3,
+    "signatures": [
+      "GallivanterBallerST"
+    ]
+  }
+}

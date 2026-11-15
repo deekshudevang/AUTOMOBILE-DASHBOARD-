@@ -1,0 +1,696 @@
+{
+  "$schema": "https://autoverse3d.local/schemas/vehicle-parametric-v1.json",
+  "schema_version": "1.0.0",
+  "asset_id": "mazda_rx_7_spirit_r_fd3s_2002",
+  "asset_type": "parametric_vehicle_geometry",
+  "vehicle": {
+    "manufacturer": "Mazda",
+    "make": "Mazda",
+    "model": "RX-7 Spirit R",
+    "generation": "FD3S",
+    "model_year_reference": 2002,
+    "production_period_reference": "2002 reference model; production and market specifications vary",
+    "body_style": "two-door front-mid-engine sports coupe",
+    "trim": "Spirit R Type A",
+    "drive_layout": "RWD",
+    "engine_description": "1.3-litre twin-rotor twin-turbo rotary",
+    "vehicle_identity_confidence": "model and generation reference; confirm market, model year and factory options before claiming exact trim correspondence"
+  },
+  "geometry_provenance": {
+    "geometry_source": "procedural_parametric_estimate",
+    "source_cad_included": false,
+    "source_mesh_included": false,
+    "oem_geometry_verified": false,
+    "accuracy_class": "D_APPROXIMATE",
+    "accuracy_note": "This asset is a vehicle-specific parametric starting model with a model-specific silhouette profile, estimated body cross-sections, approximate aero details and reference-envelope dimensions. It is NOT manufacturer OEM CAD, a factory scan, or a verified production mesh. Do not represent the surface control points as measured factory geometry. Replace with authorized CAD or verified licensed production meshes for factory-level fidelity.",
+    "reference_specification": {
+      "publisher": "Manufacturer model information / public reference material",
+      "document": "Mazda RX-7 Spirit R model reference",
+      "url": "https://www.mazda.com/",
+      "accessed_date": "2026-11-11",
+      "measurement_status": "dimensions in this asset are modeling reference estimates unless individually verified against a market-specific technical sheet"
+    }
+  },
+  "units": {
+    "length": "meter",
+    "angle": "degree",
+    "mass": "kilogram",
+    "coordinate_system": "right_handed",
+    "up_axis": "+Y",
+    "longitudinal_axis": "+Z forward",
+    "lateral_axis": "+X right",
+    "origin": "midpoint_between_front_and_rear_axle_centers_on_ground_plane"
+  },
+  "dimensions": {
+    "overall_length_m": 4.285,
+    "body_width_without_mirrors_m": 1.76,
+    "overall_width_with_mirrors_m": 1.89,
+    "overall_height_m": 1.23,
+    "wheelbase_m": 2.425,
+    "front_track_m": 1.46,
+    "rear_track_m": 1.46,
+    "front_overhang_m": 0.93,
+    "rear_overhang_m": 0.93,
+    "front_axle_z_m": 1.2125,
+    "rear_axle_z_m": -1.2125,
+    "dimension_status": {
+      "overall_length": "reference_estimate_verify_exact_year_market_and_variant",
+      "body_width_without_mirrors": "reference_estimate_verify_exact_year_market_and_variant",
+      "overall_width_with_mirrors": "derived_estimate_not_a_published_measurement",
+      "overall_height": "reference_estimate_verify_exact_year_market_and_variant",
+      "wheelbase": "reference_estimate_verify_exact_year_market_and_variant",
+      "front_track": "reference_estimate_verify_exact_year_market_and_variant",
+      "rear_track": "reference_estimate_verify_exact_year_market_and_variant",
+      "overhangs": "derived_even_split_estimate_not_a_published_measurement"
+    }
+  },
+  "geometry": {
+    "generator": "vehicle_specific_longitudinal_section_loft_with_parametric_wheels_and_aero_components",
+    "mesh_quality": {
+      "body_longitudinal_segments": 112,
+      "body_cross_section_segments": 40,
+      "bevel_segments": 4,
+      "normal_smoothing_angle_degrees": 48,
+      "weld_tolerance_m": 0.0001,
+      "subdivision_level": 1,
+      "generate_tangents": true,
+      "generate_uvs": true
+    },
+    "body_shell": {
+      "geometry_type": "parametric_longitudinal_loft",
+      "closed_mesh": true,
+      "mirror_across_x": true,
+      "surface_smoothing": "cubic_spline_interpolation",
+      "section_interpolation": "catmull_rom_with_shape_preserving_clamp",
+      "section_fields_note": "Each station is a procedural modeling control section derived from the selected vehicle archetype and its reference dimensions. It is not an OEM measured surface coordinate.",
+      "longitudinal_sections": [
+        {
+          "z_m": -2.1425,
+          "half_width_m": 0.1936,
+          "lower_y_m": 0.1722,
+          "shoulder_y_m": 0.5043,
+          "belt_y_m": 0.5943,
+          "upper_center_y_m": 0.6043,
+          "roof_half_width_m": 0.0,
+          "roof_crown_y_m": 0.6043
+        },
+        {
+          "z_m": -1.9711,
+          "half_width_m": 0.2989,
+          "lower_y_m": 0.1722,
+          "shoulder_y_m": 0.5519,
+          "belt_y_m": 0.6419,
+          "upper_center_y_m": 0.6519,
+          "roof_half_width_m": 0.0,
+          "roof_crown_y_m": 0.6519
+        },
+        {
+          "z_m": -1.7569,
+          "half_width_m": 0.4844,
+          "lower_y_m": 0.1722,
+          "shoulder_y_m": 0.6358,
+          "belt_y_m": 0.7258,
+          "upper_center_y_m": 0.7358,
+          "roof_half_width_m": 0.0,
+          "roof_crown_y_m": 0.7358
+        },
+        {
+          "z_m": -1.4997,
+          "half_width_m": 0.5984,
+          "lower_y_m": 0.1722,
+          "shoulder_y_m": 0.7134,
+          "belt_y_m": 0.8034,
+          "upper_center_y_m": 0.8134,
+          "roof_half_width_m": 0.1188,
+          "roof_crown_y_m": 0.8134
+        },
+        {
+          "z_m": -1.2427,
+          "half_width_m": 0.7062,
+          "lower_y_m": 0.1722,
+          "shoulder_y_m": 0.7896,
+          "belt_y_m": 0.861,
+          "upper_center_y_m": 0.8896,
+          "roof_half_width_m": 0.2433,
+          "roof_crown_y_m": 0.8896
+        },
+        {
+          "z_m": -0.9856,
+          "half_width_m": 0.7661,
+          "lower_y_m": 0.1722,
+          "shoulder_y_m": 0.8547,
+          "belt_y_m": 0.861,
+          "upper_center_y_m": 0.9547,
+          "roof_half_width_m": 0.3963,
+          "roof_crown_y_m": 0.9547
+        },
+        {
+          "z_m": -0.7285,
+          "half_width_m": 0.7851,
+          "lower_y_m": 0.1722,
+          "shoulder_y_m": 0.8813,
+          "belt_y_m": 0.861,
+          "upper_center_y_m": 0.9905,
+          "roof_half_width_m": 0.4514,
+          "roof_crown_y_m": 0.9905
+        },
+        {
+          "z_m": -0.4713,
+          "half_width_m": 0.7918,
+          "lower_y_m": 0.1722,
+          "shoulder_y_m": 0.8979,
+          "belt_y_m": 0.861,
+          "upper_center_y_m": 1.1048,
+          "roof_half_width_m": 0.4913,
+          "roof_crown_y_m": 1.1048
+        },
+        {
+          "z_m": -0.2143,
+          "half_width_m": 0.7744,
+          "lower_y_m": 0.1722,
+          "shoulder_y_m": 0.8979,
+          "belt_y_m": 0.861,
+          "upper_center_y_m": 1.1393,
+          "roof_half_width_m": 0.4972,
+          "roof_crown_y_m": 1.1393
+        },
+        {
+          "z_m": 0.0428,
+          "half_width_m": 0.757,
+          "lower_y_m": 0.1722,
+          "shoulder_y_m": 0.8979,
+          "belt_y_m": 0.861,
+          "upper_center_y_m": 1.1692,
+          "roof_half_width_m": 0.5009,
+          "roof_crown_y_m": 1.1692
+        },
+        {
+          "z_m": 0.3,
+          "half_width_m": 0.7637,
+          "lower_y_m": 0.1722,
+          "shoulder_y_m": 0.8979,
+          "belt_y_m": 0.861,
+          "upper_center_y_m": 1.1616,
+          "roof_half_width_m": 0.4809,
+          "roof_crown_y_m": 1.1616
+        },
+        {
+          "z_m": 0.5571,
+          "half_width_m": 0.7713,
+          "lower_y_m": 0.1722,
+          "shoulder_y_m": 0.8979,
+          "belt_y_m": 0.861,
+          "upper_center_y_m": 1.1376,
+          "roof_half_width_m": 0.4429,
+          "roof_crown_y_m": 1.1376
+        },
+        {
+          "z_m": 0.8142,
+          "half_width_m": 0.7913,
+          "lower_y_m": 0.1722,
+          "shoulder_y_m": 0.8979,
+          "belt_y_m": 0.861,
+          "upper_center_y_m": 1.0614,
+          "roof_half_width_m": 0.3298,
+          "roof_crown_y_m": 1.0614
+        },
+        {
+          "z_m": 1.0713,
+          "half_width_m": 0.77,
+          "lower_y_m": 0.1722,
+          "shoulder_y_m": 0.8549,
+          "belt_y_m": 0.861,
+          "upper_center_y_m": 0.9549,
+          "roof_half_width_m": 0.1628,
+          "roof_crown_y_m": 0.9549
+        },
+        {
+          "z_m": 1.3284,
+          "half_width_m": 0.7423,
+          "lower_y_m": 0.1722,
+          "shoulder_y_m": 0.8073,
+          "belt_y_m": 0.861,
+          "upper_center_y_m": 0.9073,
+          "roof_half_width_m": 0.0,
+          "roof_crown_y_m": 0.9073
+        },
+        {
+          "z_m": 1.5855,
+          "half_width_m": 0.5893,
+          "lower_y_m": 0.1722,
+          "shoulder_y_m": 0.6864,
+          "belt_y_m": 0.7764,
+          "upper_center_y_m": 0.7864,
+          "roof_half_width_m": 0.0,
+          "roof_crown_y_m": 0.7864
+        },
+        {
+          "z_m": 1.8426,
+          "half_width_m": 0.4696,
+          "lower_y_m": 0.1722,
+          "shoulder_y_m": 0.6174,
+          "belt_y_m": 0.7074,
+          "upper_center_y_m": 0.7174,
+          "roof_half_width_m": 0.0,
+          "roof_crown_y_m": 0.7174
+        },
+        {
+          "z_m": 2.0139,
+          "half_width_m": 0.2696,
+          "lower_y_m": 0.1722,
+          "shoulder_y_m": 0.5265,
+          "belt_y_m": 0.6165,
+          "upper_center_y_m": 0.6265,
+          "roof_half_width_m": 0.0,
+          "roof_crown_y_m": 0.6265
+        },
+        {
+          "z_m": 2.1425,
+          "half_width_m": 0.1936,
+          "lower_y_m": 0.1722,
+          "shoulder_y_m": 0.492,
+          "belt_y_m": 0.582,
+          "upper_center_y_m": 0.592,
+          "roof_half_width_m": 0.0,
+          "roof_crown_y_m": 0.592
+        }
+      ],
+      "shape_characteristics": {
+        "front_profile": "rounded nose",
+        "hood": "compact curved greenhouse",
+        "greenhouse": "flowing front fenders",
+        "rear_quarters": "sloping hatchback tail",
+        "underbody": "vehicle-specific floor and diffuser envelope; detailed underbody requires source mesh",
+        "modeling_profile": "jdm",
+        "design_signature": "rounded nose; compact curved greenhouse; flowing front fenders; sloping hatchback tail"
+      }
+    },
+    "wheel_arches": {
+      "type": "arched_cutouts_approximated_from_tire_envelopes",
+      "front": {
+        "radius_m": 0.3549,
+        "center_z_m": 1.2125,
+        "center_y_m": 0.3099,
+        "arch_lip_width_m": 0.025
+      },
+      "rear": {
+        "radius_m": 0.3629,
+        "center_z_m": -1.2125,
+        "center_y_m": 0.3179,
+        "arch_lip_width_m": 0.028
+      },
+      "note": "Wheel/tire envelope is derived from the configured reference tire size; confirm actual OEM fitment and offset for the exact variant."
+    },
+    "wheels": [
+      {
+        "id": "front_left",
+        "axle": "front",
+        "side": "left",
+        "center_m": {
+          "x": -0.73,
+          "y": 0.3099,
+          "z": 1.2125
+        },
+        "tire": {
+          "size": "235/40 R 17",
+          "nominal_section_width_mm": 235,
+          "aspect_ratio": 40,
+          "rim_diameter_in": 17,
+          "calculated_outer_diameter_mm": 619.8,
+          "calculated_radius_m": 0.3099
+        },
+        "rim": {
+          "size": "reference 17 inch rim; exact width and offset not verified",
+          "width_m": 0.1927,
+          "style": "vehicle-specific multi-spoke reference"
+        }
+      },
+      {
+        "id": "front_right",
+        "axle": "front",
+        "side": "right",
+        "center_m": {
+          "x": 0.73,
+          "y": 0.3099,
+          "z": 1.2125
+        },
+        "tire": {
+          "size": "235/40 R 17",
+          "nominal_section_width_mm": 235,
+          "aspect_ratio": 40,
+          "rim_diameter_in": 17,
+          "calculated_outer_diameter_mm": 619.8,
+          "calculated_radius_m": 0.3099
+        },
+        "rim": {
+          "size": "reference 17 inch rim; exact width and offset not verified",
+          "width_m": 0.1927,
+          "style": "vehicle-specific multi-spoke reference"
+        }
+      },
+      {
+        "id": "rear_left",
+        "axle": "rear",
+        "side": "left",
+        "center_m": {
+          "x": -0.73,
+          "y": 0.3179,
+          "z": -1.2125
+        },
+        "tire": {
+          "size": "255/40 R 17",
+          "nominal_section_width_mm": 255,
+          "aspect_ratio": 40,
+          "rim_diameter_in": 17,
+          "calculated_outer_diameter_mm": 635.8,
+          "calculated_radius_m": 0.3179
+        },
+        "rim": {
+          "size": "reference 17 inch rim; exact width and offset not verified",
+          "width_m": 0.2091,
+          "style": "vehicle-specific multi-spoke reference"
+        }
+      },
+      {
+        "id": "rear_right",
+        "axle": "rear",
+        "side": "right",
+        "center_m": {
+          "x": 0.73,
+          "y": 0.3179,
+          "z": -1.2125
+        },
+        "tire": {
+          "size": "255/40 R 17",
+          "nominal_section_width_mm": 255,
+          "aspect_ratio": 40,
+          "rim_diameter_in": 17,
+          "calculated_outer_diameter_mm": 635.8,
+          "calculated_radius_m": 0.3179
+        },
+        "rim": {
+          "size": "reference 17 inch rim; exact width and offset not verified",
+          "width_m": 0.2091,
+          "style": "vehicle-specific multi-spoke reference"
+        }
+      }
+    ],
+    "aerodynamics": {
+      "front_splitter": {
+        "type": "vehicle_specific_front_air_dam_or_splitter",
+        "z_m": 1.714,
+        "width_m": 1.549,
+        "projection_m": 0.1,
+        "thickness_m": 0.025,
+        "curvature": "vehicle_specific_estimated_planform",
+        "dimensions_status": "visual_estimate"
+      },
+      "front_fender_vents": {
+        "count": 0,
+        "placement": "above_front_wheel_arches",
+        "style": "vehicle-specific vent treatment where applicable",
+        "dimensions_status": "visual_estimate"
+      },
+      "hood_vents": {
+        "count": 0,
+        "placement": "front_hood",
+        "style": "vehicle-specific heat extraction or aero vents where applicable",
+        "dimensions_status": "visual_estimate"
+      },
+      "side_intakes": {
+        "count": 0,
+        "placement": "side body or rear quarter",
+        "style": "vehicle-specific side cooling intake treatment",
+        "dimensions_status": "visual_estimate"
+      },
+      "rear_wing": {
+        "type": "none_or_small_factory_lip",
+        "placement": "rear_deck",
+        "span_m": 1.373,
+        "chord_m": 0.08,
+        "upper_element_chord_m": 0.0,
+        "support_count": 0,
+        "support_style": "vehicle-specific support estimate",
+        "adjustable": false,
+        "dimensions_status": "visual_estimate_not_oem_measurement"
+      },
+      "rear_diffuser": {
+        "type": "vehicle-specific rear underbody diffuser envelope",
+        "placement": "rear_underbody",
+        "fin_count": 3,
+        "dimensions_status": "visual_estimate"
+      },
+      "aero_package": {
+        "code": "small_lip",
+        "description": "compact front lip and restrained rear spoiler",
+        "source_status": "visual_reference_estimate"
+      }
+    },
+    "components": [
+      {
+        "id": "body_shell",
+        "name": "Main body shell",
+        "group": "body",
+        "geometry_ref": "geometry.body_shell"
+      },
+      {
+        "id": "hood",
+        "name": "Front hood / bonnet",
+        "group": "body_panel",
+        "geometry_type": "parametric_surface_patch",
+        "dimensions_status": "approximate"
+      },
+      {
+        "id": "front_bumper",
+        "name": "Front bumper and air openings",
+        "group": "body_panel",
+        "geometry_type": "parametric_surface_patch",
+        "dimensions_status": "approximate"
+      },
+      {
+        "id": "front_left_fender",
+        "name": "Left front fender",
+        "group": "body_panel",
+        "dimensions_status": "approximate"
+      },
+      {
+        "id": "front_right_fender",
+        "name": "Right front fender",
+        "group": "body_panel",
+        "dimensions_status": "approximate"
+      },
+      {
+        "id": "windshield",
+        "name": "Front windshield",
+        "group": "glass",
+        "geometry_type": "curved_glass_surface",
+        "dimensions_status": "approximate"
+      },
+      {
+        "id": "roof",
+        "name": "Roof / cockpit canopy",
+        "group": "body_panel",
+        "geometry_type": "loft_surface",
+        "dimensions_status": "approximate"
+      },
+      {
+        "id": "left_door",
+        "name": "Left door",
+        "group": "body_panel",
+        "dimensions_status": "approximate"
+      },
+      {
+        "id": "right_door",
+        "name": "Right door",
+        "group": "body_panel",
+        "dimensions_status": "approximate"
+      },
+      {
+        "id": "left_mirror",
+        "name": "Left exterior mirror",
+        "group": "exterior",
+        "dimensions_status": "approximate"
+      },
+      {
+        "id": "right_mirror",
+        "name": "Right exterior mirror",
+        "group": "exterior",
+        "dimensions_status": "approximate"
+      },
+      {
+        "id": "rear_bumper",
+        "name": "Rear bumper / tail fascia",
+        "group": "body_panel",
+        "dimensions_status": "approximate"
+      },
+      {
+        "id": "rear_diffuser",
+        "name": "Rear diffuser",
+        "group": "aero",
+        "geometry_ref": "geometry.aerodynamics.rear_diffuser"
+      },
+      {
+        "id": "front_splitter",
+        "name": "Front splitter / air dam",
+        "group": "aero",
+        "geometry_ref": "geometry.aerodynamics.front_splitter"
+      },
+      {
+        "id": "front_left_wheel",
+        "name": "Front left wheel and tyre",
+        "group": "wheel",
+        "geometry_ref": "geometry.wheels[0]"
+      },
+      {
+        "id": "front_right_wheel",
+        "name": "Front right wheel and tyre",
+        "group": "wheel",
+        "geometry_ref": "geometry.wheels[1]"
+      },
+      {
+        "id": "rear_left_wheel",
+        "name": "Rear left wheel and tyre",
+        "group": "wheel",
+        "geometry_ref": "geometry.wheels[2]"
+      },
+      {
+        "id": "rear_right_wheel",
+        "name": "Rear right wheel and tyre",
+        "group": "wheel",
+        "geometry_ref": "geometry.wheels[3]"
+      }
+    ]
+  },
+  "materials": {
+    "default_paint": {
+      "name": "Neutral presentation paint (not a factory colour claim)",
+      "type": "MeshPhysicalMaterial",
+      "color": "#B8BDC3",
+      "metalness": 0.68,
+      "roughness": 0.25,
+      "clearcoat": 1.0,
+      "clearcoat_roughness": 0.08
+    },
+    "carbon_fiber": {
+      "name": "Exposed carbon fiber",
+      "type": "MeshStandardMaterial",
+      "color": "#17191C",
+      "metalness": 0.25,
+      "roughness": 0.38
+    },
+    "glass": {
+      "name": "Tinted automotive glass",
+      "type": "MeshPhysicalMaterial",
+      "color": "#18232D",
+      "metalness": 0.05,
+      "roughness": 0.08,
+      "transmission": 0.18,
+      "transparent": true
+    },
+    "rubber": {
+      "name": "Performance tyre rubber",
+      "type": "MeshStandardMaterial",
+      "color": "#101112",
+      "metalness": 0.0,
+      "roughness": 0.92
+    },
+    "wheel_alloy": {
+      "name": "Forged wheel alloy",
+      "type": "MeshStandardMaterial",
+      "color": "#25282C",
+      "metalness": 0.82,
+      "roughness": 0.27
+    },
+    "brake_disc": {
+      "name": "Ventilated brake disc",
+      "type": "MeshStandardMaterial",
+      "color": "#777B80",
+      "metalness": 0.78,
+      "roughness": 0.48
+    },
+    "brake_caliper": {
+      "name": "Brake caliper",
+      "type": "MeshStandardMaterial",
+      "color": "#D6D6D2",
+      "metalness": 0.32,
+      "roughness": 0.3
+    }
+  },
+  "rendering": {
+    "engine": "Three.js",
+    "recommended_asset_format": "glb",
+    "shadow_casting": true,
+    "shadow_receiving": true,
+    "tone_mapping": "ACESFilmicToneMapping",
+    "environment_intensity": 1.1,
+    "camera_presets": {
+      "front_three_quarter": {
+        "position": [
+          4.435,
+          1.943,
+          5.056
+        ],
+        "target": [
+          0,
+          0.64,
+          0
+        ]
+      },
+      "rear_three_quarter": {
+        "position": [
+          -4.435,
+          1.87,
+          -5.013
+        ],
+        "target": [
+          0,
+          0.64,
+          0
+        ]
+      },
+      "side": {
+        "position": [
+          6.019,
+          1.574,
+          0
+        ],
+        "target": [
+          0,
+          0.615,
+          0
+        ]
+      },
+      "top": {
+        "position": [
+          0,
+          7.011,
+          0.086
+        ],
+        "target": [
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "recommended_exposure": 1.0
+  },
+  "validation": {
+    "required_checks": [
+      "overall_length_envelope_matches_asset_dimensions",
+      "body_width_envelope_matches_asset_dimensions",
+      "overall_height_envelope_matches_asset_dimensions",
+      "wheelbase_matches_asset_dimensions",
+      "four_wheels_are_present",
+      "wheel_centres_align_with_axles",
+      "front_and_rear_tire_envelopes_are_valid",
+      "body_shell_has_longitudinal_sections",
+      "vehicle_specific_design_signature_is_present",
+      "geometry_provenance_is_visible_to_user"
+    ],
+    "must_not_claim_oem_accuracy": true,
+    "must_display_accuracy_class": true,
+    "dimension_values_are_reference_estimates": true,
+    "note": "Passing procedural geometry checks does not establish OEM surface accuracy or an exact production-vehicle match."
+  }
+}

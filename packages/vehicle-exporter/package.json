@@ -1,0 +1,12 @@
+{
+  "name": "@autoverse/vehicle-exporter",
+  "version": "1.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "dependencies": {
+    "@autoverse/shared-types": "workspace:*",
+    "@autoverse/json-intelligence": "workspace:*",
+    "jszip": "^3.10.1"
+  }
+}
+

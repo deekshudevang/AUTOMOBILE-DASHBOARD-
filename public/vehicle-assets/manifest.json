@@ -1,0 +1,279 @@
+{
+  "version": "1.0.0",
+  "name": "AUTOVERSE 3D Vehicle Asset Manifest",
+  "vehicles": [
+    {
+      "modelHash": 2709293299,
+      "modelCode": "sentinel5",
+      "displayName": "Sentinel GTS (BMW M3 Competition G80)",
+      "manufacturer": "Ubermacht / BMW",
+      "assetPath": "/vehicle-assets/cars/bmw/m3_g80.glb",
+      "assetFormat": "glb",
+      "supportedModifications": ["mod0", "mod1", "mod2", "mod3", "mod4", "mod5", "mod7", "mod10", "mod15", "mod22", "mod23", "mod48"],
+      "materialNames": {
+        "bodyPaint": "Paint_Primary",
+        "secondaryPaint": "Paint_Secondary",
+        "glass": "Glass_Window",
+        "wheels": "Rims_Alloy",
+        "calipers": "Brake_Calipers",
+        "interior": "Interior_Leather",
+        "lights": "Light_Emissive"
+      },
+      "wheelAttachmentPoints": {
+        "frontLeft": [-0.88, 0.35, 1.42],
+        "frontRight": [0.88, 0.35, 1.42],
+        "rearLeft": [-0.90, 0.35, -1.38],
+        "rearRight": [0.90, 0.35, -1.38]
+      },
+      "cameraPresets": {
+        "default": [3.6, 1.6, 4.4],
+        "interior": [0.35, 1.05, 0.1],
+        "front": [0.0, 1.2, 4.8],
+        "rear": [0.0, 1.2, -4.8],
+        "left": [-4.8, 1.2, 0.0],
+        "right": [4.8, 1.2, 0.0],
+        "top": [0.0, 6.5, 0.1]
+      },
+      "lodLevels": ["LOD0", "LOD1"]
+    },
+    {
+      "modelHash": 2568944644,
+      "modelCode": "comet6",
+      "displayName": "Comet S2 (Porsche 911 GT3 992)",
+      "manufacturer": "Pfister / Porsche",
+      "assetPath": "/vehicle-assets/cars/porsche/911_gt3.glb",
+      "assetFormat": "glb",
+      "supportedModifications": ["mod0", "mod1", "mod2", "mod3", "mod4", "mod7", "mod10", "mod15", "mod22", "mod23", "mod48"],
+      "materialNames": {
+        "bodyPaint": "Paint_Primary",
+        "secondaryPaint": "Paint_Secondary",
+        "glass": "Glass_Window",
+        "wheels": "Rims_Alloy",
+        "calipers": "Brake_Calipers",
+        "interior": "Interior_Leather",
+        "lights": "Light_Emissive"
+      },
+      "wheelAttachmentPoints": {
+        "frontLeft": [-0.89, 0.34, 1.35],
+        "frontRight": [0.89, 0.34, 1.35],
+        "rearLeft": [-0.92, 0.35, -1.40],
+        "rearRight": [0.92, 0.35, -1.40]
+      },
+      "cameraPresets": {
+        "default": [3.5, 1.5, 4.2],
+        "interior": [0.32, 0.98, 0.05],
+        "front": [0.0, 1.1, 4.5],
+        "rear": [0.0, 1.1, -4.5],
+        "left": [-4.5, 1.1, 0.0],
+        "right": [4.5, 1.1, 0.0],
+        "top": [0.0, 6.0, 0.1]
+      },
+      "lodLevels": ["LOD0", "LOD1"]
+    },
+    {
+      "modelHash": 274946574,
+      "modelCode": "tenf2",
+      "displayName": "10F Widebody (Audi R8 V10)",
+      "manufacturer": "Obey / Audi",
+      "assetPath": "/vehicle-assets/cars/audi/r8_widebody.glb",
+      "assetFormat": "glb",
+      "supportedModifications": ["mod0", "mod1", "mod2", "mod3", "mod4", "mod7", "mod10", "mod15", "mod22", "mod23", "mod48"],
+      "materialNames": {
+        "bodyPaint": "Paint_Primary",
+        "secondaryPaint": "Paint_Secondary",
+        "glass": "Glass_Window",
+        "wheels": "Rims_Alloy",
+        "calipers": "Brake_Calipers",
+        "interior": "Interior_Leather",
+        "lights": "Light_Emissive"
+      },
+      "wheelAttachmentPoints": {
+        "frontLeft": [-0.92, 0.34, 1.38],
+        "frontRight": [0.92, 0.34, 1.38],
+        "rearLeft": [-0.95, 0.35, -1.42],
+        "rearRight": [0.95, 0.35, -1.42]
+      },
+      "cameraPresets": {
+        "default": [3.5, 1.5, 4.2],
+        "interior": [0.34, 0.96, 0.08],
+        "front": [0.0, 1.1, 4.5],
+        "rear": [0.0, 1.1, -4.5],
+        "left": [-4.5, 1.1, 0.0],
+        "right": [4.5, 1.1, 0.0],
+        "top": [0.0, 6.0, 0.1]
+      },
+      "lodLevels": ["LOD0", "LOD1"]
+    },
+    {
+      "modelHash": 272929391,
+      "modelCode": "tempesta",
+      "displayName": "Tempesta (Lamborghini Huracán)",
+      "manufacturer": "Pegassi / Lamborghini",
+      "assetPath": "/vehicle-assets/cars/lamborghini/huracan.glb",
+      "assetFormat": "glb",
+      "supportedModifications": ["mod0", "mod1", "mod2", "mod3", "mod4", "mod7", "mod10", "mod15", "mod22", "mod23"],
+      "materialNames": {
+        "bodyPaint": "Paint_Primary",
+        "secondaryPaint": "Paint_Secondary",
+        "glass": "Glass_Window",
+        "wheels": "Rims_Alloy",
+        "calipers": "Brake_Calipers",
+        "interior": "Interior_Leather",
+        "lights": "Light_Emissive"
+      },
+      "wheelAttachmentPoints": {
+        "frontLeft": [-0.91, 0.33, 1.34],
+        "frontRight": [0.91, 0.33, 1.34],
+        "rearLeft": [-0.94, 0.34, -1.44],
+        "rearRight": [0.94, 0.34, -1.44]
+      },
+      "cameraPresets": {
+        "default": [3.4, 1.4, 4.1],
+        "interior": [0.33, 0.92, 0.05],
+        "front": [0.0, 1.0, 4.4],
+        "rear": [0.0, 1.0, -4.4],
+        "left": [-4.4, 1.0, 0.0],
+        "right": [4.4, 1.0, 0.0],
+        "top": [0.0, 5.8, 0.1]
+      },
+      "lodLevels": ["LOD0", "LOD1"]
+    },
+    {
+      "modelHash": 3145241962,
+      "modelCode": "italirsx",
+      "displayName": "Itali RSX (Ferrari SF90 Stradale)",
+      "manufacturer": "Grotti / Ferrari",
+      "assetPath": "/vehicle-assets/cars/ferrari/sf90.glb",
+      "assetFormat": "glb",
+      "supportedModifications": ["mod0", "mod1", "mod2", "mod3", "mod4", "mod7", "mod10", "mod15", "mod22", "mod23"],
+      "materialNames": {
+        "bodyPaint": "Paint_Primary",
+        "secondaryPaint": "Paint_Secondary",
+        "glass": "Glass_Window",
+        "wheels": "Rims_Alloy",
+        "calipers": "Brake_Calipers",
+        "interior": "Interior_Leather",
+        "lights": "Light_Emissive"
+      },
+      "wheelAttachmentPoints": {
+        "frontLeft": [-0.92, 0.33, 1.36],
+        "frontRight": [0.92, 0.33, 1.36],
+        "rearLeft": [-0.95, 0.34, -1.45],
+        "rearRight": [0.95, 0.34, -1.45]
+      },
+      "cameraPresets": {
+        "default": [3.4, 1.4, 4.1],
+        "interior": [0.32, 0.92, 0.06],
+        "front": [0.0, 1.0, 4.4],
+        "rear": [0.0, 1.0, -4.4],
+        "left": [-4.4, 1.0, 0.0],
+        "right": [4.4, 1.0, 0.0],
+        "top": [0.0, 5.8, 0.1]
+      },
+      "lodLevels": ["LOD0", "LOD1"]
+    },
+    {
+      "modelHash": 4080061290,
+      "modelCode": "jester3",
+      "displayName": "Jester Classic (Toyota Supra MK4)",
+      "manufacturer": "Dinka / Toyota",
+      "assetPath": "/vehicle-assets/cars/toyota/supra_mk4.glb",
+      "assetFormat": "glb",
+      "supportedModifications": ["mod0", "mod1", "mod2", "mod3", "mod4", "mod5", "mod7", "mod10", "mod15", "mod22", "mod23", "mod48"],
+      "materialNames": {
+        "bodyPaint": "Paint_Primary",
+        "secondaryPaint": "Paint_Secondary",
+        "glass": "Glass_Window",
+        "wheels": "Rims_Alloy",
+        "calipers": "Brake_Calipers",
+        "interior": "Interior_Leather",
+        "lights": "Light_Emissive"
+      },
+      "wheelAttachmentPoints": {
+        "frontLeft": [-0.88, 0.34, 1.32],
+        "frontRight": [0.88, 0.34, 1.32],
+        "rearLeft": [-0.90, 0.34, -1.35],
+        "rearRight": [0.90, 0.34, -1.35]
+      },
+      "cameraPresets": {
+        "default": [3.4, 1.4, 4.1],
+        "interior": [0.33, 0.95, 0.04],
+        "front": [0.0, 1.0, 4.4],
+        "rear": [0.0, 1.0, -4.4],
+        "left": [-4.4, 1.0, 0.0],
+        "right": [4.4, 1.0, 0.0],
+        "top": [0.0, 5.8, 0.1]
+      },
+      "lodLevels": ["LOD0", "LOD1"]
+    },
+    {
+      "modelHash": 2436313176,
+      "modelCode": "zr350",
+      "displayName": "ZR350 (Mazda RX-7 FD)",
+      "manufacturer": "Annis / Mazda",
+      "assetPath": "/vehicle-assets/cars/nissan/rx7_fd.glb",
+      "assetFormat": "glb",
+      "supportedModifications": ["mod0", "mod1", "mod2", "mod3", "mod4", "mod5", "mod7", "mod10", "mod15", "mod22", "mod23", "mod48"],
+      "materialNames": {
+        "bodyPaint": "Paint_Primary",
+        "secondaryPaint": "Paint_Secondary",
+        "glass": "Glass_Window",
+        "wheels": "Rims_Alloy",
+        "calipers": "Brake_Calipers",
+        "interior": "Interior_Leather",
+        "lights": "Light_Emissive"
+      },
+      "wheelAttachmentPoints": {
+        "frontLeft": [-0.87, 0.33, 1.30],
+        "frontRight": [0.87, 0.33, 1.30],
+        "rearLeft": [-0.89, 0.34, -1.32],
+        "rearRight": [0.89, 0.34, -1.32]
+      },
+      "cameraPresets": {
+        "default": [3.4, 1.4, 4.1],
+        "interior": [0.32, 0.94, 0.04],
+        "front": [0.0, 1.0, 4.4],
+        "rear": [0.0, 1.0, -4.4],
+        "left": [-4.4, 1.0, 0.0],
+        "right": [4.4, 1.0, 0.0],
+        "top": [0.0, 5.8, 0.1]
+      },
+      "lodLevels": ["LOD0", "LOD1"]
+    },
+    {
+      "modelHash": 3787471536,
+      "modelCode": "schlagen",
+      "displayName": "Schlagen GT (Mercedes-AMG GT R)",
+      "manufacturer": "Benefactor / Mercedes-Benz",
+      "assetPath": "/vehicle-assets/cars/mercedes/amg_gt.glb",
+      "assetFormat": "glb",
+      "supportedModifications": ["mod0", "mod1", "mod2", "mod3", "mod4", "mod7", "mod10", "mod15", "mod22", "mod23"],
+      "materialNames": {
+        "bodyPaint": "Paint_Primary",
+        "secondaryPaint": "Paint_Secondary",
+        "glass": "Glass_Window",
+        "wheels": "Rims_Alloy",
+        "calipers": "Brake_Calipers",
+        "interior": "Interior_Leather",
+        "lights": "Light_Emissive"
+      },
+      "wheelAttachmentPoints": {
+        "frontLeft": [-0.91, 0.34, 1.42],
+        "frontRight": [0.91, 0.34, 1.42],
+        "rearLeft": [-0.93, 0.35, -1.36],
+        "rearRight": [0.93, 0.35, -1.36]
+      },
+      "cameraPresets": {
+        "default": [3.6, 1.5, 4.3],
+        "interior": [0.33, 0.98, 0.06],
+        "front": [0.0, 1.1, 4.6],
+        "rear": [0.0, 1.1, -4.6],
+        "left": [-4.6, 1.1, 0.0],
+        "right": [4.6, 1.1, 0.0],
+        "top": [0.0, 6.0, 0.1]
+      },
+      "lodLevels": ["LOD0", "LOD1"]
+    }
+  ]
+}
+

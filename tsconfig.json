@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": false,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@autoverse/shared-types": ["packages/shared-types/src/index.ts"],
+      "@autoverse/gta-compat": ["packages/gta-compat/src/index.ts"],
+      "@autoverse/vehicle-registry": ["packages/vehicle-registry/src/index.ts"],
+      "@autoverse/json-intelligence": ["packages/json-intelligence/src/index.ts"],
+      "@autoverse/vehicle-generation-engine": ["packages/vehicle-generation-engine/src/index.ts"],
+      "@autoverse/vehicle-asset-pipeline": ["packages/vehicle-asset-pipeline/src/index.ts"],
+      "@autoverse/vehicle-exporter": ["packages/vehicle-exporter/src/index.ts"],
+      "@autoverse/authentic-geometry-engine": ["packages/authentic-geometry-engine/src/index.ts"]
+    }
+  },
+  "include": [
+    "src",
+    "packages/*/src",
+    "tests",
+    "scripts/vehicleDatabase.json"
+  ]
+}

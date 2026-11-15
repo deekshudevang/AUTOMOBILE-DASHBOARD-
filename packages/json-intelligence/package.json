@@ -1,0 +1,13 @@
+{
+  "name": "@autoverse/json-intelligence",
+  "version": "1.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "dependencies": {
+    "@autoverse/shared-types": "workspace:*",
+    "@autoverse/gta-compat": "workspace:*",
+    "@autoverse/vehicle-registry": "workspace:*",
+    "fast-xml-parser": "^4.5.3"
+  }
+}
+

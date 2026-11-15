@@ -1,0 +1,13 @@
+{
+  "name": "@autoverse/vehicle-generation-engine",
+  "version": "1.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "dependencies": {
+    "@autoverse/shared-types": "workspace:*",
+    "@autoverse/gta-compat": "workspace:*",
+    "@autoverse/vehicle-registry": "workspace:*",
+    "three": "^0.174.0"
+  }
+}
+

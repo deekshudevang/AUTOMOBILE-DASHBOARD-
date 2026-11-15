@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>AutoVerse 3D — Baseline Defect Viewer</title>
+  <style>
+    body { margin: 0; background: #0B0D11; overflow: hidden; }
+    #badge {
+      position: absolute; top: 20px; left: 24px;
+      color: #F59E0B; font-family: monospace; font-size: 13px; font-weight: bold;
+      background: rgba(18, 21, 28, 0.95); padding: 8px 16px; border: 1px solid #F59E0B; border-radius: 4px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+    #meta {
+      position: absolute; bottom: 20px; left: 24px;
+      color: #94A3B8; font-family: monospace; font-size: 11px;
+      background: rgba(18, 21, 28, 0.85); padding: 6px 12px; border-radius: 4px;
+    }
+  </style>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "/node_modules/three/build/three.module.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="badge">BASELINE AUDIT: CURRENT RECTANGULAR BOX ASSEMBLY DEFECT (BEFORE)</div>
+  <div id="meta">Model: BMW M3 (Joaat: 2709293299) | Defect: Stacked BoxGeometry Cuboids</div>
+  <canvas id="c" width="1600" height="900"></canvas>
+
+  <script type="module">
+    import * as THREE from 'three';
+
+    const canvas = document.getElementById('c');
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer.setSize(1600, 900);
+    renderer.setClearColor(0x0B0D11, 1);
+    renderer.shadowMap.enabled = true;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(36, 1600 / 900, 0.1, 100);
+
+    // Studio Lighting
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x181C26, 0.6);
+    scene.add(hemiLight);
+
+    const keyLight = new THREE.DirectionalLight(0xffffff, 1.4);
+    keyLight.position.set(5, 8, 5);
+    keyLight.castShadow = true;
+    scene.add(keyLight);
+
+    const fillLight = new THREE.DirectionalLight(0x00F0FF, 0.4);
+    fillLight.position.set(-6, 3, -4);
+    scene.add(fillLight);
+
+    // Studio floor grid / plane
+    const floor = new THREE.Mesh(
+      new THREE.PlaneGeometry(30, 30),
+      new THREE.MeshStandardMaterial({ color: 0x12151C, roughness: 0.8, metalness: 0.2 })
+    );
+    floor.rotation.x = -Math.PI / 2;
+    floor.position.y = -0.01;
+    floor.receiveShadow = true;
+    scene.add(floor);
+
+    const grid = new THREE.GridHelper(20, 20, 0x00F0FF, 0x1E2533);
+    grid.position.y = 0.001;
+    scene.add(grid);
+
+    // EXACT CURRENT BASELINE VEHICLE FROM VehicleRenderer.tsx:
+    const carGroup = new THREE.Group();
+    carGroup.position.set(0, 0, 0);
+
+    const bodyMat = new THREE.MeshPhysicalMaterial({
+      color: 0x00EAFF, // Mint Cyan
+      roughness: 0.2,
+      metalness: 0.85,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.08
+    });
+
+    const secondaryMat = new THREE.MeshStandardMaterial({ color: 0x111317, roughness: 0.4, metalness: 0.8 });
+    const tyreMat = new THREE.MeshStandardMaterial({ color: 0x1A1A1A, roughness: 0.85 });
+    const rimMat = new THREE.MeshStandardMaterial({ color: 0xE2E8F0, roughness: 0.2, metalness: 0.95 });
+
+    // 1. Lower Main Hull / Monocoque (BoxGeometry)
+    const hull = new THREE.Mesh(new THREE.BoxGeometry(1.76, 0.46, 4.2), bodyMat);
+    hull.position.set(0, 0.45, 0);
+    hull.castShadow = true;
+    carGroup.add(hull);
+
+    // 2. Aerodynamic Front Nosecone / Hood Slant (BoxGeometry rotated)
+    const hood = new THREE.Mesh(new THREE.BoxGeometry(1.68, 0.36, 1.5), bodyMat);
+    hood.position.set(0, 0.50, 1.4);
+    hood.rotation.x = 0.12;
+    hood.castShadow = true;
+    carGroup.add(hood);
+
+    // 3. Center Cabin Green-House / Roof (BoxGeometry)
+    const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.44, 0.58, 2.1), bodyMat);
+    cabin.position.set(0, 0.97, -0.2);
+    cabin.castShadow = true;
+    carGroup.add(cabin);
+
+    // 4. Wheels (flat cylinder geometry)
+    const wheelPositions = [
+      [-0.88, 0.35, 1.38],
+      [0.88, 0.35, 1.38],
+      [-0.90, 0.35, -1.38],
+      [0.90, 0.35, -1.38]
+    ];
+
+    wheelPositions.forEach(([x, y, z]) => {
+      const wg = new THREE.Group();
+      wg.position.set(x, y, z);
+      const tyre = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.34, 0.28, 32), tyreMat);
+      tyre.rotation.z = Math.PI / 2;
+      tyre.castShadow = true;
+      wg.add(tyre);
+      const rim = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.29, 24), rimMat);
+      rim.rotation.z = Math.PI / 2;
+      wg.add(rim);
+      carGroup.add(wg);
+    });
+
+    // 5. Aero Spoiler (BoxGeometry)
+    const wing = new THREE.Mesh(new THREE.BoxGeometry(1.72, 0.04, 0.32), secondaryMat);
+    wing.position.set(0, 1.25, -1.9);
+    wing.castShadow = true;
+    carGroup.add(wing);
+
+    scene.add(carGroup);
+
+    window.setCameraView = function(view) {
+      if (view === 'three_quarter') {
+        camera.position.set(4.6, 2.2, 4.8);
+        camera.lookAt(0, 0.6, 0);
+      } else if (view === 'side') {
+        camera.position.set(-5.6, 1.0, 0);
+        camera.lookAt(0, 0.6, 0);
+      } else if (view === 'front') {
+        camera.position.set(0, 1.0, 5.6);
+        camera.lookAt(0, 0.6, 0);
+      }
+      renderer.render(scene, camera);
+    };
+
+    window.isReady = true;
+  </script>
+</body>
+</html>

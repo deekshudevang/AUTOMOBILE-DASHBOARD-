@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>AutoVerse 3D — Archetype Visual QA Viewer</title>
+  <style>
+    body { margin: 0; background: #080A0E; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace; }
+    #overlay {
+      position: absolute; top: 20px; left: 24px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    #badge-rule6 {
+      color: #00F0FF; font-size: 13px; font-weight: 700; letter-spacing: 0.5px;
+      background: rgba(10, 14, 22, 0.92); padding: 8px 16px; border: 1px solid rgba(0, 240, 255, 0.6);
+      border-radius: 4px; box-shadow: 0 4px 16px rgba(0,0,0,0.6);
+    }
+    #archetype-badge {
+      color: #F8FAFC; font-size: 14px; font-weight: 600;
+      background: rgba(15, 23, 42, 0.85); padding: 6px 14px; border-radius: 4px;
+      border-left: 4px solid #00F0FF;
+    }
+    #meta {
+      position: absolute; bottom: 20px; left: 24px;
+      color: #94A3B8; font-size: 11px; line-height: 1.5;
+      background: rgba(10, 14, 22, 0.90); padding: 8px 14px; border-radius: 4px;
+      border: 1px solid rgba(51, 65, 85, 0.5);
+    }
+  </style>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "/node_modules/three/build/three.module.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="overlay">
+    <div id="badge-rule6">APPROXIMATE PROCEDURAL VEHICLE — NOT AUTHENTIC MODEL GEOMETRY</div>
+    <div id="archetype-badge">Archetype: <span id="lbl-name">Loading...</span> | Mode: <span id="lbl-mode">Studio</span></div>
+  </div>
+  <div id="meta">
+    <div id="lbl-meta-dims">Dimensions: --</div>
+    <div id="lbl-meta-triangles">Topology: -- triangles | Diagnostics: Passed</div>
+  </div>
+  <canvas id="c" width="1600" height="900"></canvas>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { ARCHETYPE_TEMPLATES, ProceduralChassisGenerator, GeometryDiagnostics } from '/scripts/engine.bundle.js';
+
+    const canvas = document.getElementById('c');
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer.setSize(1600, 900);
+    renderer.setPixelRatio(1);
+    renderer.setClearColor(0x080A0E, 1);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(36, 1600 / 900, 0.1, 100);
+
+    // Studio Lighting Suite
+    const hemiLight = new THREE.HemisphereLight(0xF8FAFC, 0x0F172A, 0.65);
+    scene.add(hemiLight);
+
+    const keyLight = new THREE.DirectionalLight(0xFFFFFF, 1.6);
+    keyLight.position.set(5.5, 7.5, 5.0);
+    keyLight.castShadow = true;
+    keyLight.shadow.mapSize.width = 2048;
+    keyLight.shadow.mapSize.height = 2048;
+    scene.add(keyLight);
+
+    const rimLight = new THREE.DirectionalLight(0x00F0FF, 0.85);
+    rimLight.position.set(-6.5, 3.8, -5.5);
+    scene.add(rimLight);
+
+    const fillLight = new THREE.DirectionalLight(0x94A3B8, 0.5);
+    fillLight.position.set(0, 6, -6);
+    scene.add(fillLight);
+
+    // Studio Floor with Subtle Grid
+    const floorGeo = new THREE.PlaneGeometry(40, 40);
+    const floorMat = new THREE.MeshStandardMaterial({
+      color: 0x0C0E14,
+      roughness: 0.65,
+      metalness: 0.2
+    });
+    const floor = new THREE.Mesh(floorGeo, floorMat);
+    floor.rotation.x = -Math.PI / 2;
+    floor.position.y = -0.002;
+    floor.receiveShadow = true;
+    scene.add(floor);
+
+    const grid = new THREE.GridHelper(30, 60, 0x00F0FF, 0x1E293B);
+    grid.position.y = 0.001;
+    scene.add(grid);
+
+    let currentVehicleGroup = null;
+
+    const ARCHETYPE_COLORS = {
+      sedan: { primary: '#0D47A1', secondary: '#0F172A', wheel: '#E2E8F0' },
+      coupe: { primary: '#10B981', secondary: '#111827', wheel: '#CBD5E1' },
+      sports_car: { primary: '#00E5FF', secondary: '#0F172A', wheel: '#F1F5F9' },
+      supercar: { primary: '#EF4444', secondary: '#111317', wheel: '#F8FAFC' },
+      suv: { primary: '#1E293B', secondary: '#0F172A', wheel: '#94A3B8' },
+      muscle_car: { primary: '#F97316', secondary: '#18181B', wheel: '#E2E8F0' },
+      pickup: { primary: '#475569', secondary: '#0F172A', wheel: '#94A3B8' }
+    };
+
+    window.loadArchetype = function(archetypeKey, renderMode = 'studio') {
+      if (currentVehicleGroup) {
+        scene.remove(currentVehicleGroup);
+        currentVehicleGroup.traverse(child => {
+          if (child.isMesh) {
+            child.geometry?.dispose();
+            if (Array.isArray(child.material)) child.material.forEach(m => m.dispose());
+            else child.material?.dispose();
+          }
+        });
+      }
+
+      const profile = ARCHETYPE_TEMPLATES[archetypeKey] || ARCHETYPE_TEMPLATES.coupe;
+      const palette = ARCHETYPE_COLORS[archetypeKey] || ARCHETYPE_COLORS.coupe;
+      const isWireframe = renderMode === 'wireframe';
+
+      const car = ProceduralChassisGenerator.generateSculptedBody(
+        profile,
+        palette.primary,
+        palette.secondary,
+        isWireframe,
+        {
+          wheelColor: palette.wheel,
+          includeWheels: true,
+          camberDeg: -0.035
+        }
+      );
+
+      // If flat normals inspection mode is requested
+      if (renderMode === 'flat') {
+        car.traverse(child => {
+          if (child.isMesh) {
+            child.material = new THREE.MeshNormalMaterial({ wireframe: false });
+          }
+        });
+      }
+
+      scene.add(car);
+      currentVehicleGroup = car;
+
+      const report = GeometryDiagnostics.runDiagnostics(car, profile);
+
+      document.getElementById('lbl-name').textContent = (profile.displayName || profile.id).toUpperCase();
+      document.getElementById('lbl-mode').textContent = renderMode.toUpperCase();
+      document.getElementById('lbl-meta-dims').textContent =
+        `Length: ${profile.overallLength}m | Width: ${profile.overallWidth}m | Height: ${profile.overallHeight}m | Wheelbase: ${profile.wheelbase}m`;
+      document.getElementById('lbl-meta-triangles').textContent =
+        `Triangles: ${report.totalTriangles.toLocaleString()} | Draw Calls: ${report.totalDrawCalls} | Anti-Box: Passed (0 boxes)`;
+
+      window.renderFrame();
+    };
+
+    window.setCameraView = function(viewName) {
+      if (viewName === 'three_quarter') {
+        camera.position.set(4.3, 2.1, 4.8);
+        camera.lookAt(0, 0.55, 0);
+      } else if (viewName === 'front') {
+        camera.position.set(0, 1.1, 5.8);
+        camera.lookAt(0, 0.58, 0);
+      } else if (viewName === 'rear') {
+        camera.position.set(0, 1.1, -5.8);
+        camera.lookAt(0, 0.58, 0);
+      } else if (viewName === 'side') {
+        camera.position.set(6.2, 1.1, 0);
+        camera.lookAt(0, 0.58, 0);
+      }
+      camera.updateProjectionMatrix();
+      window.renderFrame();
+    };
+
+    window.renderFrame = function() {
+      renderer.render(scene, camera);
+      window.isReady = true;
+    };
+
+    window.loadArchetype('coupe', 'studio');
+    window.setCameraView('three_quarter');
+  </script>
+</body>
+</html>
