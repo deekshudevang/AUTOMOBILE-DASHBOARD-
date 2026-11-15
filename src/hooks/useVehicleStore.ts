@@ -34,6 +34,8 @@ interface VehicleStoreState {
   showShadows: boolean;
   showEngineSound: boolean;
   graphicsQuality: 'low' | 'medium' | 'high' | 'ultra';
+  reducedMotion: boolean;
+  toggleReducedMotion: () => void;
 
   // Component Customization State (Schema 2.0)
   configName: string;
@@ -214,6 +216,8 @@ export const useVehicleStore = create<VehicleStoreState>((set, get) => ({
   showShadows: true,
   showEngineSound: false,
   graphicsQuality: 'high',
+  reducedMotion: false,
+  toggleReducedMotion: () => set(state => ({ reducedMotion: !state.reducedMotion })),
 
   // Component Customization State (Schema 2.0)
   configName: 'Porsche 911 GT3 RS Specification',

@@ -56,8 +56,8 @@
 - [x] **6.3 Import/Export & Storage**: Verified. Export-then-import round-trip identity verified; missing data as "Not specified". Delivered `docs/vehicle-schema.md`.
 
 ### Phase 7 — Interactions and Motion
-- [ ] **7.1 Restrained Automotive Motion**: Pending. Camera easing, panel slides, selection outlines, smooth paint/material transitions.
-- [ ] **7.2 Reduced-Motion Support**: Pending. Global `prefers-reduced-motion` detection and in-app toggle disabling camera tweens.
+- [x] **7.1 Restrained Automotive Motion**: Verified. Camera easing, panel transitions, selection outlines, smooth paint/material transitions. Evidence: `src/components/3d/CameraRig.tsx`.
+- [x] **7.2 Reduced-Motion Support**: Verified. Global `prefers-reduced-motion` detection and in-app toggle in `useVehicleStore` immediately halting tweens and auto-rotate. Evidence: `src/components/3d/CameraRig.tsx`.
 
 ### Phase 8 — Presentation Modes
 - [ ] **8.1 Studio Mode**: Pending. Dark studio, grounded shadows, minimal UI chrome.

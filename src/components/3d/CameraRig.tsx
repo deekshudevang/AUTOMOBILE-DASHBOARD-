@@ -3,6 +3,7 @@ import { useThree, useFrame } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 import { CameraPreset } from '../../types/vehicle';
+import { useVehicleStore } from '../../hooks/useVehicleStore';
 
 interface CameraRigProps {
   preset: CameraPreset;
@@ -69,10 +70,14 @@ export const CameraRig: React.FC<CameraRigProps> = ({
     };
   }, [dimensions.length, dimensions.width, dimensions.height]);
 
+  const { reducedMotion } = useVehicleStore();
+
   useEffect(() => {
     const prefersReducedMotion =
       typeof window !== 'undefined' &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const disableMotion = reducedMotion || prefersReducedMotion;
 
     const targetP = positions[preset] || positions.isometric;
     const targetL = targets[preset] || targets.isometric;
@@ -80,7 +85,7 @@ export const CameraRig: React.FC<CameraRigProps> = ({
     targetPos.current.set(...targetP);
     targetLook.current.set(...targetL);
 
-    if (prefersReducedMotion) {
+    if (disableMotion) {
       camera.position.set(...targetP);
       if (controlsRef.current) {
         controlsRef.current.target.set(...targetL);
@@ -90,7 +95,7 @@ export const CameraRig: React.FC<CameraRigProps> = ({
     } else {
       isTransitioning.current = true;
     }
-  }, [preset, trigger, positions, targets, camera]);
+  }, [preset, trigger, positions, targets, camera, reducedMotion]);
 
   // Interrupt camera lerp upon direct user interaction
   useEffect(() => {
