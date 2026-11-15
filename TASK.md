@@ -1,210 +1,82 @@
-# TASK.md - AUTOVERSE 3D Engineering Roadmap
+# AUTOVERSE 3D — Enhanced Engineering Roadmap (`TASK.md`)
 
-## Status Overview
-- **Project**: AUTOVERSE 3D — JSON to 3D Vehicle & Supercar Configurator
-- **Current Phase**: Phase 28 — Complete 50 Vehicle Library Rebuild & Editable Component Geometry (Schema 2.0)
-- **Status**: COMPLETED & VERIFIED (102/102 Tests Passing, Production Build Clean)
+## Status Vocabulary Standard (Section 1.3)
+- **Verified**: Implemented AND tested; evidence linked (test name, screenshot path, log, or measurement).
+- **Implemented (untested)**: Code exists, no passing test yet. Never report as complete.
+- **Blocked**: Cannot proceed; exact missing dependency named.
+- **Not applicable**: Vehicle data does not support it; reason stated.
+- **Failed**: Test fails; failure and next action recorded.
 
 ---
 
-## Phase Checklist
+## Skill Preflight Declaration (Section 1.4)
+- **UI/UX Pro Max Skill**: Preflight check executed. The skill is **NOT globally installed** in this environment. As required by Section 1.4, this absence is explicitly noted here, and the automotive design brief (minimalist luxury, deep graphite, electric cyan `#00F0FF`, WCAG 2.2 AA contrast, engineering monospace tabular metrics, and Unslop standards) is applied directly across all phases.
 
-### Phase 1: Project Discovery and JSON Intelligence
-- [x] Scan workspace and catalog all 108 vehicle JSON files in `Vehicles/`
-- [x] Identify root formats (`Cherax Entity`, Type 1) and model hash mechanism (Joaat 32-bit unsigned hashes)
-- [x] Map unique vehicle hashes (74 unique models across 108 configs)
-- [x] Identify duplicates (e.g. `2F2FSUPRA_Retro_Shade.json` vs `lulli.json`)
-- [x] Map common vs uncommon properties (`extras` 87/108, `attachments` 5/108, `_creatorSignature` 3/108, `bulletproofTyres`/`driftTyres` 87/108)
-- [x] Run automated JSON schema extraction script and generate `JSON_SCHEMA_REPORT.md`
-- [x] Build vehicle metadata database mapping Joaat hashes to real-world vehicles, manufacturers, and GTA names
+---
 
-### Phase 2: React + Three.js / R3F Engine Foundation
-- [x] Scaffold Vite + React + TypeScript + Tailwind CSS application
-- [x] Install core dependencies: `three`, `@react-three/fiber`, `@react-three/drei`, `zustand`, `lucide-react`, `clsx`, `tailwind-merge`, `jszip`
-- [x] Configure Tailwind CSS with Unslop design tokens (graphite neutrals, electric cyan accents `#00F0FF`, precise typography)
-- [x] Build core 3D Canvas with OrbitControls, Studio HDR lighting, soft contact shadows, ground reflections
-- [x] Implement camera presets (Front, Rear, Left, Right, Top, Isometric, Interior, Cinematic 360 rotation)
-- [x] Implement Screenshot capture with metadata, wireframe mode, and studio lighting presets
+## Phase Checklist & Status Table
 
-### Phase 3: Vehicle Asset Registry & Intelligent Loader
-- [x] Create `public/vehicle-assets/manifest.json` asset registry
-- [x] Build 3D vehicle geometry and model loader with support for GLB/GLTF/OBJ/FBX
-- [x] Provide authentic 3D models and procedural PBR vehicle assemblies for key brands (BMW, Porsche, Audi, Lamborghini, Ferrari, Toyota, Nissan, Mercedes)
-- [x] Implement strict "Missing Asset State" when a model hash has no mapped 3D mesh (never fabricate false labels)
-- [x] Implement drag-and-drop 3D asset importer in Asset Manager to bind custom GLB/GLTF to any vehicle model
+### Phase 0 — Preflight
+- [x] **0.1 Node & Package Manager Verification**: Verified. Node v24.19.0, npm 11.4.1. Evidence: `docs/baseline/BASELINE_REPORT.md`.
+- [x] **0.2 Git Branch & Baseline Tag**: Verified. Branch `feat/autoverse-configurator`, Tag `pre-configurator-baseline`. Evidence: `git branch`, `git tag`.
+- [x] **0.3 Golden Fixture Set**: Verified. 109 legacy vehicle configurations copied into `tests/fixtures/vehicles/`. Evidence: `tests/fixtures/vehicles/`.
+- [x] **0.4 Decision Log**: Verified. `docs/DECISIONS.md` created.
+- [x] **0.5 Baseline Execution**: Verified. Build clean (6.68s), 102/102 tests passing, baseline screenshots stored in `docs/baseline/screenshots/`. Evidence: `docs/baseline/BASELINE_REPORT.md`.
 
-### Phase 4: JSON-to-3D Vehicle Customization Engine
-- [x] GTA V color palette engine (160+ metallic/classic/matte color swatch mappings) + Custom RGB Hex picker
-- [x] Metallic, clearcoat, matte, gloss, and pearlescent automotive shader materials
-- [x] Realistic tinted glass with variable opacity and tint indices (Limo, Smoke, Pure Black, None)
-- [x] Neon Underglow Kit system (Left, Right, Front, Back toggles, custom RGB point lights, ground bounce)
-- [x] Interactive Wheel Engine (wheel types, rim finishes, tyre appearance, drift/bulletproof flags)
-- [x] Mod Slots (mod0 to mod49) system with friendly names (Spoiler, Bumpers, Skirts, Exhaust, Hood, Grille, Roof, Livery)
-- [x] License Plate engine (custom text, Yankton / Blue on White / Yellow on Black styles)
+### Phase 1 — Project Audit & Vehicle Capability Matrix
+- [ ] **1.1 Architectural & Dependency Audit**: Pending. Document frontend framework, Three.js, R3F, loaders, and state management in `docs/AUTOVERSE_UI_UX_AUDIT.md`.
+- [ ] **1.2 Individual Vehicle JSON Audit**: Pending. Audit all vehicle definitions (coordinates, units, materials, optional fields).
+- [ ] **1.3 Vehicle Capability Matrix**: Pending. Matrix mapping vehicles to separable panels, wheels, tires, brakes, interior, named materials, and spec data.
+- [ ] **1.4 Performance & Bottlenecks Audit**: Pending. Measure draw calls, triangles, memory, and frame times using `renderer.info`.
 
-### Phase 5: Premium Dark Automotive UI & Navigation
-- [x] Main Sidebar with 10 modules: Dashboard, Library, 3D Studio, JSON Explorer, Customization, Comparison, Asset Manager, History, Export, Settings
-- [x] Dashboard view with metrics: Total JSONs (108), Unique Models (74), Asset Availability, Property breakdown, Recent vehicles
-- [x] Vehicle summary cards with badges, manufacturer logos, model hashes, and quick load actions
+### Phase 2 — Design System & Component Gallery
+- [ ] **2.1 Automotive Design System Tokens**: Pending. Token definition (graphite surfaces, cyan accents, WCAG 2.2 AA contrast, 4px spacing). Deliver `docs/design-system.md`.
+- [ ] **2.2 Design System Component Gallery**: Pending. Interactive in-app gallery showcasing buttons, sliders, color pickers, pills, inputs, and toggles.
 
-### Phase 6: Vehicle Library Module
-- [x] Searchable & filterable library (Manufacturer, Category, Supercar, Sports, Sedan, SUV, Favorites)
-- [x] Multi-configuration support per vehicle model (e.g. 8 BMW configs, 4 Mercedes configs)
-- [x] Duplicate configuration indicator & config diff launcher
+### Phase 3 — Main Configurator Interface
+- [ ] **3.1 Top Navigation Bar**: Pending. AUTOVERSE 3D logo, vehicle selector, editable config name, Save, Reset (with confirmation), Undo/Redo, Fullscreen, Settings.
+- [ ] **3.2 Hero Central Viewport**: Pending. Damped OrbitControls, bounding-box-derived framing & camera presets (front, rear, side, top, 3/4, interior if exists), contact shadows, studio environment.
+- [ ] **3.3 Capability-Driven Right Configuration Panel**: Pending. Categories appear ONLY if capability matrix indicates vehicle support; unsupported items collapsed with explanatory note.
+- [ ] **3.4 Serializable Configuration & Command Pattern**: Pending. Single `VehicleConfiguration` source of truth; pure rendering function; coalescing slider drag commands.
 
-### Phase 7: Advanced JSON Explorer & Two-Way Sync
-- [x] Interactive JSON tree browser with syntax highlighting and collapsible nodes
-- [x] Direct JSON editor with real-time validation and error diagnostics
-- [x] Bidirectional synchronization: changing 3D controls updates JSON; editing JSON updates 3D scene immediately
-- [x] Side-by-side JSON file comparison with diff highlights
+### Phase 4 — Vehicle Customization
+- [ ] **4.1 Exterior Components Engine**: Pending. Click-to-select, hierarchy list, highlight, per-component visibility/material/color, unmapped meshes listed cleanly.
+- [ ] **4.2 Paint Studio**: Pending. Solid, metallic, pearl, matte, satin, gloss, carbon-fiber finishes; flake, roughness, clearcoat using `MeshPhysicalMaterial`.
+- [ ] **4.3 Wheels, Tyres, Brakes & Rule-Based Validation**: Pending. Diameter +/-3% rule, width/offset fender clearance, arithmetic tire sizes, invalid combination blocking.
+- [ ] **4.4 Interior Studio**: Pending. Mapped interior meshes (seats, dash, steering wheel, trims) rendered only where geometry exists.
 
-### Phase 8: Multi-Vehicle Comparison Studio
-- [x] 2 to 4 synchronized 3D vehicle viewports
-- [x] Synchronized camera angles & lighting
-- [x] Side-by-side property diff table (paint, wheels, mods, plate)
-- [x] Multi-car comparative screenshot generation
+### Phase 5 — Geometry Integrity & Invariants
+- [ ] **5.1 Pristine Source Preservation**: Pending. No source geometry mutation; per-instance cloned materials; flawless Reset.
+- [ ] **5.2 Geometry Validation on Load**: Pending. NaN/degenerate face check, missing normals, unit scaling, bounding box calculator.
+- [ ] **5.3 Automated Invariants Test**: Pending. Pre/post configuration change comparison asserting wheelbase, track width, ground clearance, and bounding boxes.
 
-### Phase 9: Asset Manager & Modular Mesh Binder
-- [x] Asset inspector for user-uploaded GLB/GLTF/OBJ/FBX files
-- [x] Model-to-Hash assignment interface
-- [x] Material inspector and attachment point calibrator
-- [x] Geometry inspection (vertex count, triangles, meshes)
+### Phase 6 — Vehicle JSON Configuration Engine
+- [ ] **6.1 Versioned Schema & Validation**: Pending. Schema validator (Zod/Ajv) returning exact JSON paths; corrupted-input protection.
+- [ ] **6.2 Golden Fixture Compatibility Test**: Pending. Load all 109 golden fixtures with 100% pass rate.
+- [ ] **6.3 Import/Export & Storage**: Pending. Round-trip export-then-import; per-vehicle isolated persistence; missing data as "Not specified". Deliver `docs/vehicle-schema.md`.
 
-### Phase 10: Import / Export Center & History
-- [x] Original and modified JSON export with preserved formatting and unknown properties
-- [x] Batch JSON ZIP download (compiles all 108 vehicle configurations into a single `.zip`)
-- [x] Configuration backup and restore
-- [x] Undo / Redo history stack for customization actions
+### Phase 7 — Interactions and Motion
+- [ ] **7.1 Restrained Automotive Motion**: Pending. Camera easing, panel slides, selection outlines, smooth paint/material transitions.
+- [ ] **7.2 Reduced-Motion Support**: Pending. Global `prefers-reduced-motion` detection and in-app toggle disabling camera tweens.
 
-### Phase 11: Performance Optimization & RTX 4060 Target
-- [x] Lazy loading of 3D models and textures
-- [x] WebGL memory disposal on vehicle unmount
-- [x] Performance stats monitor and graphics quality presets (Low, Medium, High, Ultra)
+### Phase 8 — Presentation Modes
+- [ ] **8.1 Studio Mode**: Pending. Dark studio, grounded shadows, minimal UI chrome.
+- [ ] **8.2 Engineering Mode**: Pending. Hierarchy tree, triangle/mesh metrics, derived vs verified dimensions, 2-point 3D measurement tool, wireframe/normal inspector.
+- [ ] **8.3 Showroom Mode**: Pending. Smooth auto-orbit, clean presentation lighting, pause on any interaction.
+- [ ] **8.4 Comparison Mode**: Pending. Side-by-side / A/B slider of 2 configs of same vehicle with parameter diff table.
 
-### Phase 12: Testing, Verification & Validation
-- [x] Automated Vitest unit tests for JSON parser, Joaat hash resolver, color converter, and schema validator (11/11 tests passing)
-- [x] End-to-end configuration round-trip test (Import -> Modify -> Export -> Re-import -> Verify)
-- [x] Error handling tests for malformed JSON, unknown models, missing assets
+### Phase 9 — Performance & RTX Optimization
+- [ ] **9.1 Performance Budgets & Profiling**: Pending. 60 fps desktop / 30 fps mobile, frame < 50ms, zero memory growth over 50 configuration cycles. Deliver `docs/performance.md`.
+- [ ] **9.2 Dynamic Quality Tiers**: Pending. Low, Medium, High, and Auto tiers adapting DPR, shadows, and reflection resolution.
 
-### Phase 13: Documentation Suite
-- [x] `README.md`
-- [x] `ARCHITECTURE.md`
-- [x] `JSON_SCHEMA_REPORT.md`
-- [x] `VEHICLE_ASSET_GUIDE.md`
-- [x] `MOD_MAPPING_GUIDE.md`
-- [x] `INSTALLATION.md`
-- [x] `TEST_REPORT.md`
-- [x] `TASK.md`
+### Phase 10 — Responsive & Accessible Input
+- [ ] **10.1 Responsive Breakpoints**: Pending. Ultrawide, desktop, laptop, tablet, and mobile with bottom-sheet drawer.
+- [ ] **10.2 Touch & Keyboard Navigation**: Pending. 1-finger orbit, 2-finger pan/pinch, keyboard shortcuts, WCAG 2.2 AA focus rings, and ARIA announcements.
 
-### Phase 14: Decoupled Monorepo Architecture & Universal Packages
-- [x] `@autoverse/shared-types`: Universal TypeScript contracts & four-level status reports
-- [x] `@autoverse/gta-compat`: Signed/unsigned 32-bit Joaat math, 160+ GTA color swatches, mod0-mod49 dictionary
-- [x] `@autoverse/json-intelligence`: Schema detection, FiveM XML parsing, lossless round-trip preservation
-- [x] `@autoverse/vehicle-registry`: 74 unique models mapped with confidence scores
-- [x] `@autoverse/vehicle-generation-engine`: Standalone Three.js engine with zero React/DOM imports
-- [x] `@autoverse/vehicle-asset-pipeline`: Asset manifest handling, AssetResolver, and AssetInspector
-- [x] `@autoverse/vehicle-exporter`: Cherax JSON, FiveM `vehicles.meta` XML, and batch fleet ZIP compilation
+### Phase 11 — Quality Assurance & Test Matrix
+- [ ] **11.1 Automated Full Test Suite**: Pending. Vitest & Playwright automation for startup, load, customization, export, and reset.
+- [ ] **11.2 Failure Paths Testing**: Pending. Corrupted JSON, WebGL context loss/restore, storage quota, rapid vehicle switching. Deliver `docs/verification/`.
 
-### Phase 15: Local-First Backend & Offline SQLite Job Queue
-- [x] Fastify server listening on loopback `127.0.0.1:3001` with local CORS
-- [x] Native Node.js `node:sqlite` database repository with WAL mode (`autoverse.db`)
-- [x] Persistent embedded job queue (`OfflineJobQueue`) for batch fleet processing
-- [x] Full REST API endpoints for vehicles, undo/redo history, background jobs, and XML/ZIP exports
-
-### Phase 16: Milestone 1 BMW M3 Verification & Acceptance
-- [x] Verified `Vehicles/BMW M3 MINT GREEN.json` (hash 2709293299, sentinel5, custom cyan paint, wheel type 8, 4-channel neon)
-- [x] Validated standalone Three.js scene assembly generation with zero DOM dependencies
-- [x] Validated lossless round-trip serialization and FiveM XML export
-- [x] 37/37 unit and integration tests passing across 6 test suites with 0 failures
-
-### Phase 17: Vehicle Geometry Engine Reconstruction
-- [x] Phase 1 Audit: Produced `GEOMETRY_DEFECT_REPORT.md` documenting primitive usage table, root-cause diagnosis, proportion defects, 0 GLB asset inventory, and captured baseline 1600x900 screenshots (`artifacts/screenshots/baseline/`)
-- [x] Phase 2 Parametric Body Engine: Built `LongitudinalProfileGenerator`, `CrossSectionGenerator` (≥28 transverse stations with wheel arch cutouts and flares), `SurfaceLofter` (watertight BufferGeometry lofting with area-weighted normals), and `PanelSeparator` (bonnet, fascias, diffuser, doors, side skirts with 3mm shut-lines)
-- [x] Phase 3 Geometry Profiles: Defined typed `VehicleGeometryProfile` schema with 28 fields, validation rules, and 7 archetype templates (`sedan`, `coupe`, `sports_car`, `supercar`, `suv`, `muscle_car`, `pickup`)
-- [x] Phase 4 Detailed Components & Anchors: Built profile-derived mounting anchor system (`AssemblyGraph`) with body style compatibility rejection
-- [x] Phase 5 Wheels & Suspension: Built `WheelGenerator` with authentic toroidal radial tyres (`LatheGeometry` with sidewall bulge and crown tread), stepped multi-piece rim, ventilated brake disc, 6-piston caliper; updated `WheelAssembly.tsx` and removed all flat cylinders
-- [x] Phase 6 Materials & Diagnostics: Built `GeometryDiagnostics` automated 9-point CI verification suite (anti-box check, NaN/Inf, unit normals, ground plane contact, tyre-arch clearance, triangle budget)
-- [x] Phase 7 Asset Priority: Implemented strict 5-tier resolution logging with rejection reasons in `AssetResolver` (Tier 1 Exact GLB -> Tier 2 Base Mesh -> Tier 3 Base + Mods -> Tier 4 Parametric Procedural -> Tier 5 Missing Asset State)
-- [x] Phase 8 Visual Quality Gate: Captured 42 high-resolution (1600x900) screenshots across all 7 archetypes across 6 views (three_quarter, front, rear, side, wireframe, flat_normals) with mandatory Rule 6 banner; produced `VISUAL_QA_REPORT.md`
-- [x] Phase 9 Documentation & Verification: Produced `GEOMETRY_ENGINE.md`, updated `ENGINE_TASK.md` and `BLOCKERS.md`; 65/65 unit and integration tests passing (100%) and production build passing (`tsc && vite build`)
-
-### Phase 18: Authentic Automotive Geometry Engine (AAGE) Monorepo Core
-- [x] Scaffold `@autoverse/authentic-geometry-engine` package with universal TypeScript contracts
-- [x] Define `AuthenticVehicleMetadata`, `GeometryQualityClass` (Class A/B/C/D), `ManufacturerSpecifications`, `TopologyAnalysisResult`, `DimensionCheck`, and `GeometryValidationReport` in `types.ts`
-- [x] Integrate package aliases in root `tsconfig.json` and `vite.config.ts`
-
-### Phase 19: Multi-Format 3D Ingestion & Native ISO 10303-21 STEP CAD Ingestion Engine
-- [x] Implement `StepLoader` with ISO 10303-21 lexical tokenization, `#ID` entity resolution, and B-rep face loop ear-clipping/fan tessellation
-- [x] Implement `UniversalLoader` supporting GLB, GLTF, OBJ, STL, PLY, STEP, and JSON formats
-- [x] Implement automated normal vector generation and unindexed buffer conversion
-
-### Phase 20: Mesh Topology & Automatic Spatial Unit Scale Detection Engine
-- [x] Implement `MeshTopologyAnalyzer.detectUnitScale()` supporting Millimeters ($mm$), Centimeters ($cm$), Inches ($in$), Feet ($ft$), and Meters ($m$)
-- [x] Implement automated non-manifold edge detection, boundary edge analysis, and degenerate zero-area triangle elimination
-- [x] Implement analytical area-weighted unit normal recomputation
-
-### Phase 21: Semantic Vehicle Component Recognition & Hierarchy Engine
-- [x] Implement `ComponentRecognizer` decomposing vehicle meshes into `exterior`, `wheels`, and `interior`
-- [x] Implement cockpit and interior controls classification (steering wheel, seats, dashboard, console) prior to road wheel matching
-- [x] Implement 4-quadrant spatial road wheel partitioning ($FL, FR, RL, RR$) with rim, tyre, brake disc, and caliper recognition
-
-### Phase 22: Dimensional Verification & Verified OEM Specifications Database
-- [x] Implement `DimensionalValidator` calculating Length, Width, Height, Wheelbase, Front Track, Rear Track, and Ground Clearance
-- [x] Establish verified OEM technical specifications database (`vehicleAssetDatabase.ts`) seeded with BMW M3 G80, Porsche 911 GT3 992, Audi R8 V10, Lamborghini Huracán, Ferrari 812, Toyota Supra A80, Nissan Skyline GT-R R34, Koenigsegg Jesko
-- [x] Calculate percentage error against OEM specs and enforce tolerances ($\le 0.5\%$ Class A, $\le 3.5\%$ Class B, $\le 5.0\%$ Class C)
-
-### Phase 23: Digital Provenance Certification & 4-Tier Accuracy Quality Grading
-- [x] Implement `QualityClassifier` evaluating topology and dimensional reports into Class A (OEM), Class B (Production), Class C (Reconstructed), or Class D (Approximate)
-- [x] Issue digital `ProvenanceCertificate` with cryptographic ID, timestamp, and dimensional compliance report
-- [x] Enforce mandatory Rule 6 disclaimer for Class D: `APPROXIMATE PROCEDURAL VEHICLE — NOT AUTHENTIC MODEL GEOMETRY`
-
-### Phase 24: Runtime Optimization & Orthographic Verification Camera Harness
-- [x] Implement `RuntimeOptimizer` precomputing bounding spheres, enabling frustum culling, consolidating duplicate PBR materials, and safely disposing WebGL resources
-- [x] Implement `OrthographicVerificationHarness` configuring 8 CAD-grade orthographic viewing angles (Front, Rear, Left, Right, Top, Bottom, Isometric Front, Isometric Rear)
-
-### Phase 25: Studio Integration & Interactive Provenance Certificate HUD
-- [x] Extend `VehicleAssetBinding` in `src/types/vehicle.ts` supporting custom uploaded meshes, quality class, certificate, and components
-- [x] Update `AssetManagerView.tsx` with drag-and-drop dropzone for all 8 formats, real-time AAGE analysis, live quality badge, and model binding
-- [x] Update `StudioView.tsx` with top HUD quality pill, Rule 6 warning banner for Class D, and interactive Provenance Certificate modal
-
-### Phase 26: Complete AAGE Documentation Suite & Master Verification
-- [x] Create `GEOMETRY_ENGINE_AUDIT.md` (Phase 1 audit)
-- [x] Create `VEHICLE_ASSET_INVENTORY.md` (Phase 1 inventory)
-- [x] Create `GEOMETRY_UPGRADE_PLAN.md` (Phase 1 upgrade plan)
-- [x] Create `AAGE_ENGINE_ARCHITECTURE.md` (Phase 14 architectural specification)
-- [x] Create `VEHICLE_GEOMETRY_VALIDATION.md` (Phase 14 dimensional tolerances & validation standard)
-- [x] Create `VEHICLE_ASSET_CATALOG.md` (Phase 14 catalog of 74 unique models across 108 configs)
-- [x] Create `FORMAT_SUPPORT.md` (Phase 14 format specification & support matrix)
-- [x] Update `INSTALLATION.md` (installation, quick start, build, and offline usage)
-- [x] 83/83 unit and integration tests passing across 9 test suites (`npm test -- --run`)
-- [x] 0 TypeScript compiler errors (`tsc -b` / `tsc`)
-- [x] Clean production build generated in 6.41s (`npm run build`)
-
-### Phase 27: Parametric Vehicle Geometry Engine & Porsche 911 GT3 RS (992) Integration
-- [x] Ingest dimension-anchored parametric JSON specification `porsche_911_gt3_rs_992_2022.json` (published overall dimensions: length 4.572m, width 1.900m, height 1.322m, wheelbase 2.457m, track 1.630m / 1.582m)
-- [x] Build `ParametricGeometryBuilder` in `@autoverse/vehicle-generation-engine` with multi-station longitudinal lofting (15 stations from Z=2.286 to Z=-2.286)
-- [x] Model authentic 992 GT3 RS aerodynamics: tall dual-element swan-neck rear wing (span 1.78m, chord 0.42m / 0.30m), top-mounted curved swan-neck brackets, endplates, swept carbon front splitter, hood extraction vents, front fender louvres, rear diffuser with 5 vertical fins
-- [x] Model staggered performance wheels: 20" front (275/35 ZR 20, radius 0.35025m, center X=±0.815m) and 21" rear (335/30 ZR 21, radius 0.36720m, center X=±0.791m) with center-lock forged rims and ventilated brakes
-- [x] Integrate PBR materials: GT Silver Metallic (`MeshPhysicalMaterial` #8B929A, clearcoat 1.0), exposed carbon fiber (#17191C), tinted greenhouse glass (#18232D)
-- [x] Add `Parametric Vehicle` schema detection and parser support in `parseVehicleJson` and `@autoverse/json-intelligence`
-- [x] Integrate into `UniversalLoader` for direct JSON-to-3D geometry generation
-- [x] Wire into `VehicleRenderer.tsx` and configure as active default in `useVehicleStore.ts`
-- [x] 94/94 unit and integration tests passing across 10 test suites (`npm test -- --run`)
-- [x] Production build clean in 6.06s (`npm run build`)
-
-### Phase 28: Complete Vehicle Library Rebuild (50 High-Detail Vehicles + Fully Editable Component Geometry)
-- [x] Schema 2.0 TypeScript Contracts: Defined `VehicleSchema2`, `VehicleComponentDef`, `WheelComponentSpec`, `LongitudinalCrossSection`, `MaterialDef`, `ComponentOverride`, and `ComponentCustomizationOptions` in `packages/shared-types/src/schema2.ts`.
-- [x] 50 Unique Vehicles Library: Generated 50 detailed Schema 2.0 JSON files across 8 categories (`supercars`, `hypercars`, `sports_cars`, `luxury_cars`, `track_cars`, `jdm_cars`, `muscle_cars`, `special_edition`) with authentic dimensions, cross-sections, wheel specs, and components in both `vehicles/` and `public/vehicles/`.
-- [x] Universal Editable Vehicle Assembler: Implemented `EditableVehicleAssembler` in `packages/vehicle-generation-engine` generating discrete, addressable 3D meshes with component ID tagging, PBR materials, real-time matrix transforms, dimension scaling, and material swapping.
-- [x] Universal Loader & JSON Parser Upgrades: Extended `UniversalLoader`, `parseVehicleJson`, and `schemaDetector` to seamlessly detect, parse, and instantiate Schema 2.0 assets.
-- [x] Component Customization State & Store: Wired interactive customization store in `src/hooks/useVehicleStore.ts` supporting `selectedComponentId`, `componentOverrides`, `selectComponent`, `updateComponentOverride`, `toggleComponentVisibility`, `toggleComponentLock`, `resetComponentOverride`, and `resetAllComponentOverrides`.
-- [x] 3D Raycasting & Viewport Interaction: Updated `src/components/3d/VehicleRenderer.tsx` with direct 3D raycasting pointer down handlers selecting components on click, and rendering live Schema 2.0 assemblies with cyan selection emissive glow.
-- [x] Binary GLB Exporter: Implemented `VehicleExporter.exportToGlb` using Three.js `GLTFExporter` to download customized vehicles ready for Blender, Unreal Engine, and WebGL.
-- [x] Phase 8 Professional Customization UI: Built responsive 3-column Customization Studio (`src/components/customizer/CustomizationPanel.tsx`) with 50-car category filter and search, collapsible component hierarchy tree, camera presets toolbar, comprehensive component inspector (transforms, dimensions, finishes, colors, wheel camber, wing AoA), and bottom action bar with undo/redo, save, export JSON, and export GLB.
-- [x] Phase 11 Documentation Suite: Created `VEHICLE_LIBRARY_AUDIT.md`, `AAGE_GEOMETRY_SCHEMA.md`, `COMPONENT_CUSTOMIZATION_GUIDE.md`, `VEHICLE_ASSET_CATALOG.md`, and `GEOMETRY_VALIDATION_REPORT.md`.
-- [x] Quality & Verification Gates:
-  - 102/102 unit & integration tests passing across all 11 test suites (`npm test -- --run`).
-  - Production build compiled cleanly with 0 errors (`npm run build`).
-  - Headless Chromium visual verification executed with screenshots captured in `artifacts/`: `studio_view.png`, `customizer_view.png`, and `schema2_aventador_customizer.png` with 0 console errors.
-
-
+### Phase 12 — Final Audit and Reporting
+- [ ] **12.1 Comprehensive UI/UX Audit Report**: Pending. Deliver `docs/AUTOVERSE_FINAL_UI_UX_REPORT.md` comparing against Phase 1 baseline.
+- [ ] **12.2 Deliverables Verification**: Pending. Final signoff of all deliverables, clean git commits on `feat/autoverse-configurator`.
