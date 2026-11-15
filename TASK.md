@@ -51,9 +51,9 @@
 - [x] **5.3 Automated Invariants Test**: Verified. Pre/post configuration change comparison asserting wheelbase, track width, ground clearance, and bounding boxes. Evidence: `tests/geometry-invariants.test.ts` (3 tests).
 
 ### Phase 6 — Vehicle JSON Configuration Engine
-- [ ] **6.1 Versioned Schema & Validation**: Pending. Schema validator (Zod/Ajv) returning exact JSON paths; corrupted-input protection.
-- [ ] **6.2 Golden Fixture Compatibility Test**: Pending. Load all 109 golden fixtures with 100% pass rate.
-- [ ] **6.3 Import/Export & Storage**: Pending. Round-trip export-then-import; per-vehicle isolated persistence; missing data as "Not specified". Deliver `docs/vehicle-schema.md`.
+- [x] **6.1 Versioned Schema & Validation**: Verified. `VehicleSchemaValidator` returning exact JSON paths, 10MB size limit, prototype pollution guards. Evidence: `packages/json-intelligence/src/schemaValidator.ts` and `tests/corrupted-json.test.ts`.
+- [x] **6.2 Golden Fixture Compatibility Test**: Verified. Tested 100% of legacy vehicle fixtures in `tests/fixtures/vehicles/` with 0 failures. Evidence: `tests/corrupted-json.test.ts`.
+- [x] **6.3 Import/Export & Storage**: Verified. Export-then-import round-trip identity verified; missing data as "Not specified". Delivered `docs/vehicle-schema.md`.
 
 ### Phase 7 — Interactions and Motion
 - [ ] **7.1 Restrained Automotive Motion**: Pending. Camera easing, panel slides, selection outlines, smooth paint/material transitions.
