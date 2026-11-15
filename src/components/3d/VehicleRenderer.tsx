@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useEffect } from 'react';
 import * as THREE from 'three';
 import { CheraxVehicleConfig, VehicleModelMetadata, VehicleAssetBinding } from '../../types/vehicle';
 import { VehicleSchema2 } from '@autoverse/shared-types';
@@ -72,6 +72,15 @@ export const VehicleRenderer: React.FC<VehicleRendererProps> = ({
     }
     return null;
   }, [config.parametricSpec, config, componentOverrides, selectedComponentId, isWireframe]);
+
+  // Clean up GPU geometries and materials when assembly changes or unmounts
+  useEffect(() => {
+    return () => {
+      if (schema2Body) {
+        EditableVehicleAssembler.dispose(schema2Body);
+      }
+    };
+  }, [schema2Body]);
 
   // Dedicated parametric specification model (e.g. Porsche 911 GT3 RS 992 or AutoVerse 50 Supercars)
   const parametricBody = useMemo(() => {

@@ -61,23 +61,60 @@ export const SceneCanvas: React.FC<SceneCanvasProps> = ({
     return raw?.components ? raw.components.some((c: any) => c.group === 'interior') : true;
   }, [currentConfig]);
 
-  const activeDpr = graphicsQuality === 'low' ? 1 : graphicsQuality === 'medium' ? 1.25 : [1, 2];
+  // Dynamic Quality Tiers (Low, Medium, High, Ultra)
+  const qualitySettings = useMemo(() => {
+    switch (graphicsQuality) {
+      case 'low':
+        return {
+          dpr: 1.0,
+          shadows: false,
+          contactResolution: 256,
+          contactBlur: 2.5,
+          antialias: false
+        };
+      case 'medium':
+        return {
+          dpr: 1.25,
+          shadows: showShadows,
+          contactResolution: 512,
+          contactBlur: 2.0,
+          antialias: true
+        };
+      case 'ultra':
+        return {
+          dpr: [1, 2.5] as any,
+          shadows: showShadows,
+          contactResolution: 2048,
+          contactBlur: 1.5,
+          antialias: true
+        };
+      case 'high':
+      default:
+        return {
+          dpr: [1, 2] as any,
+          shadows: showShadows,
+          contactResolution: 1024,
+          contactBlur: 1.8,
+          antialias: true
+        };
+    }
+  }, [graphicsQuality, showShadows]);
 
   return (
     <div className={`relative ${className} bg-[#0A0C10] overflow-hidden`}>
       <Canvas
-        shadows={showShadows}
+        shadows={qualitySettings.shadows}
         camera={{ position: [3.8, 1.8, 4.4], fov: 42 }}
         gl={{
-          antialias: true,
+          antialias: qualitySettings.antialias,
           toneMapping: THREE.ACESFilmicToneMapping,
           toneMappingExposure: 1.1,
           preserveDrawingBuffer: true
         }}
-        dpr={activeDpr as any}
+        dpr={qualitySettings.dpr}
       >
         {/* Studio Lighting & Environment Reflections */}
-        <EnvironmentPresets preset={environmentPreset} showShadows={showShadows} />
+        <EnvironmentPresets preset={environmentPreset} showShadows={qualitySettings.shadows} />
 
         {/* Dynamic Bounding-Box Camera Controller & Presets */}
         {enableControls && (
@@ -102,14 +139,14 @@ export const SceneCanvas: React.FC<SceneCanvasProps> = ({
         <MeasurementOverlay3D />
 
         {/* Ambient Ground Contact Shadows */}
-        {showShadows && (
+        {qualitySettings.shadows && (
           <ContactShadows
             position={[0, 0.005, 0]}
             opacity={0.7}
             scale={12}
-            blur={1.8}
+            blur={qualitySettings.contactBlur}
             far={3.5}
-            resolution={1024}
+            resolution={qualitySettings.contactResolution}
             color="#000000"
           />
         )}

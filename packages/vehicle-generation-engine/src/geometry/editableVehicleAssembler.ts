@@ -813,5 +813,27 @@ export class EditableVehicleAssembler {
     if (componentId.includes('rear_left')) return wheels.rearLeft;
     return wheels.rearRight;
   }
+
+  /**
+   * Safely disposes all geometries and materials in an object graph
+   * preventing GPU memory leaks across repeated vehicle customization cycles.
+   */
+  public static dispose(root: THREE.Object3D): void {
+    root.traverse((child) => {
+      if ((child as THREE.Mesh).isMesh) {
+        const mesh = child as THREE.Mesh;
+        if (mesh.geometry) {
+          mesh.geometry.dispose();
+        }
+        if (mesh.material) {
+          if (Array.isArray(mesh.material)) {
+            mesh.material.forEach(m => m.dispose());
+          } else {
+            mesh.material.dispose();
+          }
+        }
+      }
+    });
+  }
 }
 
