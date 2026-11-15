@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import { CameraRig } from './CameraRig';
 import { EnvironmentPresets } from './EnvironmentPresets';
 import { VehicleRenderer } from './VehicleRenderer';
+import { MeasurementOverlay3D } from './MeasurementOverlay3D';
 import { useVehicleStore } from '../../hooks/useVehicleStore';
 
 interface SceneCanvasProps {
@@ -96,6 +97,9 @@ export const SceneCanvas: React.FC<SceneCanvasProps> = ({
           assetBinding={currentBinding}
           isWireframe={isWireframe}
         />
+
+        {/* 2-Point 3D Measurement Tool (Caliper) */}
+        <MeasurementOverlay3D />
 
         {/* Ambient Ground Contact Shadows */}
         {showShadows && (

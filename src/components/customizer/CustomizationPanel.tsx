@@ -30,7 +30,10 @@ import {
   Settings,
   AlertTriangle,
   Edit2,
-  HelpCircle
+  HelpCircle,
+  Cpu,
+  GitCompare,
+  RotateCw
 } from 'lucide-react';
 import { useVehicleStore } from '../../hooks/useVehicleStore';
 import { SceneCanvas } from '../3d/SceneCanvas';
@@ -39,6 +42,9 @@ import { VehicleComponentDef, MaterialFinishType, VehicleSchema2 } from '@autove
 import { EditableVehicleAssembler, WheelRuleValidator } from '@autoverse/vehicle-generation-engine';
 import { VehicleExporter } from '@autoverse/vehicle-exporter';
 import { ComponentGalleryModal } from '../gallery/ComponentGalleryModal';
+import { EngineeringOverlay } from '../modes/EngineeringOverlay';
+import { ShowroomOverlay } from '../modes/ShowroomOverlay';
+import { ComparisonDiffPanel } from '../modes/ComparisonDiffPanel';
 import libraryIndex from '../../../public/vehicles/index.json';
 
 type ConfigCategory =
@@ -137,7 +143,9 @@ export const CustomizationPanel: React.FC = () => {
     historyIndex,
     history,
     overrideHistoryIndex,
-    overrideHistory
+    overrideHistory,
+    presentationMode,
+    setPresentationMode
   } = useVehicleStore();
 
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -403,11 +411,56 @@ export const CustomizationPanel: React.FC = () => {
           </div>
         </div>
 
-        {/* Center: Provenance Disclaimer Pill */}
-        <div className="hidden lg:flex items-center gap-2">
-          <span className="text-amber-400/90 font-mono text-[10px] tracking-wide bg-amber-950/40 px-2 py-0.5 rounded border border-amber-800/50">
-            APPROXIMATE PROCEDURAL VEHICLE — NOT AUTHENTIC MODEL GEOMETRY
-          </span>
+        {/* Center: Presentation Mode Switcher */}
+        <div className="flex items-center gap-1 p-0.5 rounded-lg bg-[#0E1118] border border-[#1E2533]">
+          <button
+            onClick={() => setPresentationMode('studio')}
+            className={`px-2.5 py-1 rounded text-xs font-semibold flex items-center gap-1.5 transition-all ${
+              presentationMode === 'studio'
+                ? 'bg-[#00F0FF] text-slate-950 font-bold shadow-sm'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+            title="Studio Mode: Clean aesthetic presentation with customizer studios"
+          >
+            <Palette className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Studio</span>
+          </button>
+          <button
+            onClick={() => setPresentationMode('engineering')}
+            className={`px-2.5 py-1 rounded text-xs font-semibold flex items-center gap-1.5 transition-all ${
+              presentationMode === 'engineering'
+                ? 'bg-[#00F0FF] text-slate-950 font-bold shadow-sm'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+            title="Engineering Mode: CAD HUD, 3D Caliper, hierarchy and dimensional validation"
+          >
+            <Cpu className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Engineering</span>
+          </button>
+          <button
+            onClick={() => setPresentationMode('showroom')}
+            className={`px-2.5 py-1 rounded text-xs font-semibold flex items-center gap-1.5 transition-all ${
+              presentationMode === 'showroom'
+                ? 'bg-[#00F0FF] text-slate-950 font-bold shadow-sm'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+            title="Showroom Mode: Fullscreen 360 turntable auto-orbit with interaction pause"
+          >
+            <RotateCw className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Showroom</span>
+          </button>
+          <button
+            onClick={() => setPresentationMode('comparison')}
+            className={`px-2.5 py-1 rounded text-xs font-semibold flex items-center gap-1.5 transition-all ${
+              presentationMode === 'comparison'
+                ? 'bg-[#00F0FF] text-slate-950 font-bold shadow-sm'
+                : 'text-slate-400 hover:text-slate-200'
+            }`}
+            title="Comparison Mode: A/B parameter delta table against factory OEM baseline"
+          >
+            <GitCompare className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Comparison</span>
+          </button>
         </div>
 
         {/* Right Action Icons: Undo, Redo, Reset, Save, Fullscreen, Design Gallery */}
@@ -476,7 +529,8 @@ export const CustomizationPanel: React.FC = () => {
       {/* ========================================================= */}
       <div className="flex-1 flex flex-row overflow-hidden relative">
         {/* LEFT PANEL: 50 Vehicle Library & Component Hierarchy */}
-        <aside className="w-72 lg:w-80 h-full bg-[#0D1017] border-r border-[#1E2533] flex flex-col shrink-0 z-10">
+        {presentationMode !== 'showroom' && (
+          <aside className="w-72 lg:w-80 h-full bg-[#0D1017] border-r border-[#1E2533] flex flex-col shrink-0 z-10">
           <div className="p-3 border-b border-[#1E2533] space-y-2 shrink-0">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
@@ -618,6 +672,7 @@ export const CustomizationPanel: React.FC = () => {
             })}
           </div>
         </aside>
+        )}
 
         {/* 3.2 CENTRAL HERO VIEWPORT: Three.js Interactive 3D Canvas */}
         <main className="flex-1 h-full relative flex flex-col overflow-hidden">
@@ -685,6 +740,11 @@ export const CustomizationPanel: React.FC = () => {
           <div className="flex-1 w-full h-full relative bg-[#0A0C10]">
             <SceneCanvas />
 
+            {/* Overlays for Presentation Modes */}
+            {presentationMode === 'engineering' && <EngineeringOverlay />}
+            {presentationMode === 'showroom' && <ShowroomOverlay />}
+            {presentationMode === 'comparison' && <ComparisonDiffPanel />}
+
             {/* Selection pill */}
             {selectedComponent && (
               <div className="absolute top-3 left-3 bg-[#0D1017]/90 backdrop-blur-md border border-[#00F0FF]/60 px-3 py-1.5 rounded-lg shadow-xl text-xs flex items-center gap-2 z-10">
@@ -703,7 +763,8 @@ export const CustomizationPanel: React.FC = () => {
         </main>
 
         {/* 3.3 RIGHT CONFIGURATION PANEL: Capability-Driven Categories & Inspector */}
-        <aside className="w-88 md:w-96 h-full bg-[#0D1017] border-l border-[#1E2533] flex flex-col shrink-0 z-10 overflow-hidden">
+        {presentationMode !== 'showroom' && (
+          <aside className="w-88 md:w-96 h-full bg-[#0D1017] border-l border-[#1E2533] flex flex-col shrink-0 z-10 overflow-hidden">
           {/* Category Tabs Header */}
           <div className="p-2 border-b border-[#1E2533] bg-[#11141C] flex items-center gap-1 overflow-x-auto shrink-0 scrollbar-none">
             {CATEGORY_TABS.map(tab => (
@@ -1110,48 +1171,51 @@ export const CustomizationPanel: React.FC = () => {
             )}
           </div>
         </aside>
+        )}
       </div>
 
       {/* ========================================================= */}
       {/* BOTTOM ACTION BAR                                         */}
       {/* ========================================================= */}
-      <footer className="h-12 bg-[#0D1017] border-t border-[#1E2533] px-4 flex items-center justify-between text-xs shrink-0 z-20">
-        <div className="flex items-center gap-3">
-          <span className="font-semibold text-slate-200 truncate">
-            {activeModel?.realWorldModel || 'AutoVerse Spec'}
-          </span>
-          <span className="text-slate-500">·</span>
-          <span className="font-mono text-slate-400 text-[11px]">
-            {schema2Spec?.components.length || 0} Components
-          </span>
-          {modifiedCount > 0 && (
-            <span className="px-2 py-0.5 rounded bg-[#00F0FF]/15 text-[#00F0FF] font-mono text-[10px] border border-[#00F0FF]/40">
-              {modifiedCount} Modified
+      {presentationMode !== 'showroom' && (
+        <footer className="h-12 bg-[#0D1017] border-t border-[#1E2533] px-4 flex items-center justify-between text-xs shrink-0 z-20">
+          <div className="flex items-center gap-3">
+            <span className="font-semibold text-slate-200 truncate">
+              {activeModel?.realWorldModel || 'AutoVerse Spec'}
             </span>
-          )}
-        </div>
+            <span className="text-slate-500">·</span>
+            <span className="font-mono text-slate-400 text-[11px]">
+              {schema2Spec?.components.length || 0} Components
+            </span>
+            {modifiedCount > 0 && (
+              <span className="px-2 py-0.5 rounded bg-[#00F0FF]/15 text-[#00F0FF] font-mono text-[10px] border border-[#00F0FF]/40">
+                {modifiedCount} Modified
+              </span>
+            )}
+          </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handleExportJson}
-            className="px-3 py-1.5 rounded bg-[#161C28] hover:bg-[#1E2533] text-slate-200 border border-[#1E2533] flex items-center gap-1.5 font-medium"
-            title="Export Schema 2.0 Vehicle JSON"
-          >
-            <Download className="w-3.5 h-3.5 text-[#00F0FF]" />
-            <span>Export JSON</span>
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleExportJson}
+              className="px-3 py-1.5 rounded bg-[#161C28] hover:bg-[#1E2533] text-slate-200 border border-[#1E2533] flex items-center gap-1.5 font-medium"
+              title="Export Schema 2.0 Vehicle JSON"
+            >
+              <Download className="w-3.5 h-3.5 text-[#00F0FF]" />
+              <span>Export JSON</span>
+            </button>
 
-          <button
-            onClick={handleExportGlb}
-            disabled={isExportingGlb}
-            className="px-3.5 py-1.5 rounded bg-[#00F0FF] hover:bg-[#00D4E0] text-black font-semibold flex items-center gap-1.5 transition-colors disabled:opacity-50"
-            title="Export binary GLB 3D model"
-          >
-            <Download className="w-3.5 h-3.5 text-black" />
-            <span>{isExportingGlb ? 'Exporting...' : 'Export GLB'}</span>
-          </button>
-        </div>
-      </footer>
+            <button
+              onClick={handleExportGlb}
+              disabled={isExportingGlb}
+              className="px-3.5 py-1.5 rounded bg-[#00F0FF] hover:bg-[#00D4E0] text-black font-semibold flex items-center gap-1.5 transition-colors disabled:opacity-50"
+              title="Export binary GLB 3D model"
+            >
+              <Download className="w-3.5 h-3.5 text-black" />
+              <span>{isExportingGlb ? 'Exporting...' : 'Export GLB'}</span>
+            </button>
+          </div>
+        </footer>
+      )}
 
       {/* Reset Confirmation Dialog */}
       {isResetConfirmOpen && (

@@ -7,6 +7,8 @@ import porscheGt3RsRaw from '../../public/vehicles/porsche_911_gt3_rs_992_2022.j
 import { parseVehicleJson } from '../utils/jsonParser';
 import { parametricFiles, parametricModels, parametricBindings } from '../data/parametricCatalog';
 
+export type PresentationMode = 'studio' | 'engineering' | 'showroom' | 'comparison';
+
 interface VehicleStoreState {
   // Database & Catalog
   allFiles: VehicleFileSummary[];
@@ -23,12 +25,16 @@ interface VehicleStoreState {
 
   // Navigation & View
   activeView: 'dashboard' | 'library' | 'studio' | 'explorer' | 'customizer' | 'comparison' | 'assetManager' | 'history' | 'export' | 'settings';
+  presentationMode: PresentationMode;
+  setPresentationMode: (mode: PresentationMode) => void;
   
   // 3D Scene Controls
   cameraPreset: CameraPreset;
   cameraTrigger: number;
   environmentPreset: EnvironmentPreset;
   isWireframe: boolean;
+  showNormals: boolean;
+  toggleShowNormals: () => void;
   isAutoRotate: boolean;
   showGrid: boolean;
   showShadows: boolean;
@@ -36,6 +42,13 @@ interface VehicleStoreState {
   graphicsQuality: 'low' | 'medium' | 'high' | 'ultra';
   reducedMotion: boolean;
   toggleReducedMotion: () => void;
+
+  // 3D Measurement Tool (Caliper)
+  isMeasuring: boolean;
+  setIsMeasuring: (measuring: boolean) => void;
+  measurementPoints: { p1: [number, number, number] | null; p2: [number, number, number] | null };
+  setMeasurementPoint: (point: [number, number, number]) => void;
+  clearMeasurement: () => void;
 
   // Component Customization State (Schema 2.0)
   configName: string;
@@ -207,10 +220,23 @@ export const useVehicleStore = create<VehicleStoreState>((set, get) => ({
   historyIndex: 0,
 
   activeView: 'studio',
+  presentationMode: 'studio',
+  setPresentationMode: (mode: PresentationMode) => {
+    set(state => {
+      // Showroom automatically enables slow turntable rotation and hides sidebars
+      const isShowroom = mode === 'showroom';
+      return {
+        presentationMode: mode,
+        isAutoRotate: isShowroom ? true : state.isAutoRotate
+      };
+    });
+  },
   cameraPreset: 'isometric',
   cameraTrigger: Date.now(),
   environmentPreset: 'studio-dark',
   isWireframe: false,
+  showNormals: false,
+  toggleShowNormals: () => set(state => ({ showNormals: !state.showNormals })),
   isAutoRotate: false,
   showGrid: true,
   showShadows: true,
@@ -218,6 +244,23 @@ export const useVehicleStore = create<VehicleStoreState>((set, get) => ({
   graphicsQuality: 'high',
   reducedMotion: false,
   toggleReducedMotion: () => set(state => ({ reducedMotion: !state.reducedMotion })),
+
+  // 3D Measurement Tool (Caliper)
+  isMeasuring: false,
+  setIsMeasuring: (measuring: boolean) => set({ isMeasuring: measuring }),
+  measurementPoints: { p1: null, p2: null },
+  setMeasurementPoint: (point: [number, number, number]) => {
+    set(state => {
+      if (!state.measurementPoints.p1) {
+        return { measurementPoints: { p1: point, p2: null } };
+      }
+      if (!state.measurementPoints.p2) {
+        return { measurementPoints: { p1: state.measurementPoints.p1, p2: point } };
+      }
+      return { measurementPoints: { p1: point, p2: null } };
+    });
+  },
+  clearMeasurement: () => set({ measurementPoints: { p1: null, p2: null } }),
 
   // Component Customization State (Schema 2.0)
   configName: 'Porsche 911 GT3 RS Specification',

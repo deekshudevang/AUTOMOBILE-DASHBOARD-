@@ -22,7 +22,14 @@ export const VehicleRenderer: React.FC<VehicleRendererProps> = ({
   assetBinding,
   isWireframe = false
 }) => {
-  const { selectedComponentId, componentOverrides, selectComponent } = useVehicleStore();
+  const {
+    selectedComponentId,
+    componentOverrides,
+    selectComponent,
+    isMeasuring,
+    setMeasurementPoint,
+    showNormals
+  } = useVehicleStore();
 
   // Primary Paint material resolution
   const primaryPaint = useMemo(() => {
@@ -97,6 +104,10 @@ export const VehicleRenderer: React.FC<VehicleRendererProps> = ({
   // Direct 3D Raycasting Component Click Handler
   const handlePointerDown = useCallback((e: any) => {
     e.stopPropagation();
+    if (isMeasuring && e.point) {
+      setMeasurementPoint([e.point.x, e.point.y, e.point.z]);
+      return;
+    }
     let current: THREE.Object3D | null = e.object;
     while (current) {
       if (current.userData?.componentId) {
@@ -106,7 +117,7 @@ export const VehicleRenderer: React.FC<VehicleRendererProps> = ({
       current = current.parent;
     }
     selectComponent(null);
-  }, [selectComponent]);
+  }, [isMeasuring, setMeasurementPoint, selectComponent]);
 
   // If a verified authentic custom mesh was uploaded, render it
   if (assetBinding?.isCustomUpload && assetBinding?.customMesh) {

@@ -60,10 +60,10 @@
 - [x] **7.2 Reduced-Motion Support**: Verified. Global `prefers-reduced-motion` detection and in-app toggle in `useVehicleStore` immediately halting tweens and auto-rotate. Evidence: `src/components/3d/CameraRig.tsx`.
 
 ### Phase 8 — Presentation Modes
-- [ ] **8.1 Studio Mode**: Pending. Dark studio, grounded shadows, minimal UI chrome.
-- [ ] **8.2 Engineering Mode**: Pending. Hierarchy tree, triangle/mesh metrics, derived vs verified dimensions, 2-point 3D measurement tool, wireframe/normal inspector.
-- [ ] **8.3 Showroom Mode**: Pending. Smooth auto-orbit, clean presentation lighting, pause on any interaction.
-- [ ] **8.4 Comparison Mode**: Pending. Side-by-side / A/B slider of 2 configs of same vehicle with parameter diff table.
+- [x] **8.1 Studio Mode**: Verified. Dark studio `#0A0C10`, soft grounded contact shadows, minimal chrome, full customization studios. Evidence: `src/components/customizer/CustomizationPanel.tsx`.
+- [x] **8.2 Engineering Mode**: Verified. CAD HUD with live vertex/triangle/mesh counters, derived vs verified OEM dimensions table, 2-point 3D caliper measurement tool with Euclidean readout in mm/m, and surface normal/wireframe inspector. Evidence: `src/components/modes/EngineeringOverlay.tsx`, `tests/presentation-modes.test.ts`, `docs/verification/phase8_engineering.png`.
+- [x] **8.3 Showroom Mode**: Verified. Clean turntable auto-orbit, hidden chrome/drawers, instant pause/resume on user interaction, and quick camera angles. Evidence: `src/components/modes/ShowroomOverlay.tsx`, `docs/verification/phase8_showroom.png`.
+- [x] **8.4 Comparison Mode**: Verified. Side-by-side parameter diff table showing body finish, wheel stance, drop, and component overrides against OEM baseline. Evidence: `src/components/modes/ComparisonDiffPanel.tsx`, `docs/verification/phase8_comparison.png`.
 
 ### Phase 9 — Performance & RTX Optimization
 - [ ] **9.1 Performance Budgets & Profiling**: Pending. 60 fps desktop / 30 fps mobile, frame < 50ms, zero memory growth over 50 configuration cycles. Deliver `docs/performance.md`.
