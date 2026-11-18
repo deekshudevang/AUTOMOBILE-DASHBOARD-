@@ -40,6 +40,17 @@ export interface SimulationResultEntry {
   notes?: string;
 }
 
+export interface ProjectRevision {
+  id: string;
+  projectId: string;
+  timestamp: string;
+  author: string;
+  description: string;
+  changesCount: number;
+  hash: string;
+  serializedBundle: string;
+}
+
 export interface VehicleProject {
   meta: ProjectMetadata;
   dimensions: ProjectDimensions;
@@ -254,5 +265,53 @@ export class ProjectManager {
       'simulations.json': project.simulationHistory
     };
     return JSON.stringify(bundle, null, 2);
+  }
+
+  private static revisions: Map<string, ProjectRevision[]> = new Map();
+
+  /**
+   * Create an append-only immutable snapshot revision of a project
+   */
+  public static createRevision(
+    projectId: string,
+    description: string,
+    author: string = 'Engineer'
+  ): ProjectRevision {
+    const project = this.projects.get(projectId);
+    if (!project) {
+      throw new Error(`Project '${projectId}' not found.`);
+    }
+    const serialized = this.exportProjectBundle(project);
+    const revId = `rev_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+    const revList = this.revisions.get(projectId) || [];
+
+    let hashVal = 0x811c9dc5;
+    for (let i = 0; i < serialized.length; i++) {
+      hashVal ^= serialized.charCodeAt(i);
+      hashVal = (hashVal * 0x01000193) >>> 0;
+    }
+    const hash = hashVal.toString(16).padStart(8, '0');
+
+    const revision: ProjectRevision = {
+      id: revId,
+      projectId,
+      timestamp: new Date().toISOString(),
+      author,
+      description,
+      changesCount: project.featureDag.getAllFeatures().length,
+      hash,
+      serializedBundle: serialized
+    };
+
+    revList.push(revision);
+    this.revisions.set(projectId, revList);
+    return revision;
+  }
+
+  /**
+   * Retrieve all revisions for a project
+   */
+  public static getRevisions(projectId: string): ProjectRevision[] {
+    return this.revisions.get(projectId) || [];
   }
 }

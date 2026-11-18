@@ -154,6 +154,38 @@ export interface RearDiffuserParameters {
   strakeHeightM: number;
 }
 
+export interface CanardParameters {
+  lengthM: number;
+  widthM: number;
+  angleDegrees: number;
+  thicknessM: number;
+  curvatureDegrees?: number;
+}
+
+export interface UnderbodyTunnelParameters {
+  lengthM: number;
+  widthM: number;
+  throatHeightM: number;
+  exitHeightM: number;
+  expansionAngleDeg: number;
+  strakeCount: number;
+}
+
+export interface AeroPackageDefinition {
+  id: string;
+  name: string;
+  tier: 'STREET' | 'TRACK' | 'HIGH_DOWNFORCE' | 'LOW_DRAG' | 'CUSTOM';
+  description: string;
+  targetVehicleId: string;
+  frontSplitter: FrontSplitterParameters;
+  rearWing: RearWingParameters;
+  rearDiffuser: RearDiffuserParameters;
+  canards?: CanardParameters;
+  estimatedCd: number;
+  estimatedCl: number;
+  estimatedBalanceFrontPct: number;
+}
+
 export class ParametricAeroLibrary {
   /**
    * Generate 3D Three.js BufferGeometry for a parametric rear wing
@@ -367,4 +399,196 @@ export class ParametricAeroLibrary {
       ]
     };
   }
+
+  /**
+   * Generate 3D Three.js BufferGeometry for a bumper-mounted dive plane / canard
+   */
+  public static generateCanardGeometry(params: CanardParameters): THREE.BufferGeometry {
+    const geo = new THREE.BufferGeometry();
+    const length = params.lengthM;
+    const width = params.widthM;
+    const thickness = params.thicknessM;
+    const angleRad = (params.angleDegrees * Math.PI) / 180;
+
+    // Delta / trapezoid profile with rake angle
+    const v0: [number, number, number] = [0, 0, 0];
+    const v1: [number, number, number] = [length, width * 0.4, -length * Math.tan(angleRad)];
+    const v2: [number, number, number] = [length * 0.8, width, -length * 0.8 * Math.tan(angleRad)];
+    const v3: [number, number, number] = [0, width * 0.7, 0];
+
+    const positions = new Float32Array([
+      // Top face
+      v0[0], v0[1], v0[2],
+      v1[0], v1[1], v1[2],
+      v2[0], v2[1], v2[2],
+      v0[0], v0[1], v0[2],
+      v2[0], v2[1], v2[2],
+      v3[0], v3[1], v3[2],
+
+      // Bottom face (offset by thickness)
+      v0[0], v0[1], v0[2] - thickness,
+      v2[0], v2[1], v2[2] - thickness,
+      v1[0], v1[1], v1[2] - thickness,
+      v0[0], v0[1], v0[2] - thickness,
+      v3[0], v3[1], v3[2] - thickness,
+      v2[0], v2[1], v2[2] - thickness
+    ]);
+
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geo.computeVertexNormals();
+    return geo;
+  }
+
+  /**
+   * Generate 3D BufferGeometry for an underbody venturi channel tunnel
+   */
+  public static generateUnderbodyTunnelGeometry(params: UnderbodyTunnelParameters): THREE.BufferGeometry {
+    const geo = new THREE.BufferGeometry();
+    const halfW = params.widthM / 2;
+    const len = params.lengthM;
+    const throatZ = params.throatHeightM;
+    const exitZ = params.exitHeightM;
+
+    // Longitudinal expansion profile
+    const positions: number[] = [];
+    const segments = 16;
+    for (let i = 0; i < segments; i++) {
+      const u0 = i / segments;
+      const u1 = (i + 1) / segments;
+      const x0 = -len * u0;
+      const x1 = -len * u1;
+      const z0 = throatZ + (exitZ - throatZ) * Math.pow(u0, 1.3);
+      const z1 = throatZ + (exitZ - throatZ) * Math.pow(u1, 1.3);
+
+      // Quad strip
+      positions.push(-halfW, x0, z0);
+      positions.push(halfW, x0, z0);
+      positions.push(halfW, x1, z1);
+
+      positions.push(-halfW, x0, z0);
+      positions.push(halfW, x1, z1);
+      positions.push(-halfW, x1, z1);
+    }
+
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    geo.computeVertexNormals();
+    return geo;
+  }
+
+  /**
+   * Imports custom UIUC / Selig formatted DAT coordinate file
+   */
+  public static importAirfoilFromDat(datString: string, code: string, name: string): AirfoilProfile {
+    const lines = datString.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+    const coords: [number, number][] = [];
+
+    for (let i = 0; i < lines.length; i++) {
+      const parts = lines[i].split(/\s+/).map(p => parseFloat(p));
+      if (parts.length >= 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+        coords.push([parts[0], parts[1]]);
+      }
+    }
+
+    if (coords.length < 10) {
+      throw new Error(`Invalid airfoil DAT file: expected at least 10 coordinate pairs, parsed ${coords.length}`);
+    }
+
+    // Compute max thickness and camber from coordinates
+    let maxThickness = 0;
+    let maxCamber = 0;
+    for (const [x, y] of coords) {
+      maxThickness = Math.max(maxThickness, Math.abs(y) * 2);
+      maxCamber = Math.max(maxCamber, y);
+    }
+
+    const profile: AirfoilProfile = {
+      name,
+      code,
+      citation: `User-imported DAT coordinate set (${coords.length} stations)`,
+      thicknessRatio: Math.round(maxThickness * 1000) / 1000,
+      maxCamberRatio: Math.round(maxCamber * 1000) / 1000,
+      coordinates: coords
+    };
+
+    AIRFOIL_CATALOG[code] = profile;
+    return profile;
+  }
 }
+
+export const PREBUILT_AERO_PACKAGES: AeroPackageDefinition[] = [
+  {
+    id: 'pkg_gt3rs_street',
+    name: 'Standard Street Low-Drag Package',
+    tier: 'STREET',
+    description: 'Reduced downforce configuration minimizing highway drag and maximizing top speed.',
+    targetVehicleId: 'porsche_911_gt3_rs_992',
+    frontSplitter: {
+      forwardExtensionM: 0.08,
+      widthM: 1.85,
+      thicknessM: 0.015,
+      angleDegrees: 0.0,
+      edgeRadiusM: 0.005,
+      sideEndplates: { enabled: false, heightM: 0.0 }
+    },
+    rearWing: {
+      airfoilCode: 'NACA_2412',
+      spanM: 1.68,
+      chordM: 0.28,
+      angleDegrees: 4.0,
+      mountType: 'swan_neck',
+      mountSpacingM: 0.8,
+      endplates: { heightM: 0.22, lengthM: 0.32, thicknessM: 0.008 }
+    },
+    rearDiffuser: {
+      lengthM: 0.65,
+      widthM: 1.35,
+      expansionAngleDegrees: 8.0,
+      strakeCount: 4,
+      strakeHeightM: 0.04
+    },
+    estimatedCd: 0.33,
+    estimatedCl: -0.15,
+    estimatedBalanceFrontPct: 40.0
+  },
+  {
+    id: 'pkg_gt3rs_track_high_downforce',
+    name: 'Manthey Nordschleife High-Downforce Package',
+    tier: 'HIGH_DOWNFORCE',
+    description: 'Maximum aerodynamic downforce configuration with Gurney flaps and dive planes.',
+    targetVehicleId: 'porsche_911_gt3_rs_992',
+    frontSplitter: {
+      forwardExtensionM: 0.165,
+      widthM: 1.92,
+      thicknessM: 0.02,
+      angleDegrees: 3.5,
+      edgeRadiusM: 0.005,
+      sideEndplates: { enabled: true, heightM: 0.12 }
+    },
+    rearWing: {
+      airfoilCode: 'SELIG_S1223',
+      spanM: 1.88,
+      chordM: 0.38,
+      angleDegrees: 14.5,
+      mountType: 'swan_neck',
+      mountSpacingM: 0.8,
+      endplates: { heightM: 0.32, lengthM: 0.45, thicknessM: 0.01 },
+      gurneyFlap: { enabled: true, heightMm: 10 }
+    },
+    rearDiffuser: {
+      lengthM: 0.85,
+      widthM: 1.48,
+      expansionAngleDegrees: 14.0,
+      strakeCount: 6,
+      strakeHeightM: 0.075
+    },
+    canards: {
+      lengthM: 0.24,
+      widthM: 0.12,
+      angleDegrees: 18.0,
+      thicknessM: 0.004
+    },
+    estimatedCd: 0.42,
+    estimatedCl: -0.68,
+    estimatedBalanceFrontPct: 44.5
+  }
+];

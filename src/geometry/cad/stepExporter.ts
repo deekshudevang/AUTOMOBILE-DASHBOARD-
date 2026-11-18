@@ -58,15 +58,21 @@ export class StepExporter {
 
     step += headerBlock;
 
-    // Export Cartesian points for vertices
+    // Export Cartesian points for vertices (welding coincident coordinates for CAD topological manifoldness)
+    const coordToPointId = new Map<string, string>();
     const vertexMap = new Map<number, string>();
     for (let i = 0; i < pos.count; i++) {
-      const pId = nextId();
-      vertexMap.set(i, pId);
       const x = pos.getX(i).toFixed(6);
       const y = pos.getY(i).toFixed(6);
       const z = pos.getZ(i).toFixed(6);
-      step += `${pId} = CARTESIAN_POINT('', (${x}, ${y}, ${z}));\n`;
+      const key = `${x}_${y}_${z}`;
+      let pId = coordToPointId.get(key);
+      if (!pId) {
+        pId = nextId();
+        coordToPointId.set(key, pId);
+        step += `${pId} = CARTESIAN_POINT('', (${x}, ${y}, ${z}));\n`;
+      }
+      vertexMap.set(i, pId);
     }
 
     // Export Polyloops & Facets
