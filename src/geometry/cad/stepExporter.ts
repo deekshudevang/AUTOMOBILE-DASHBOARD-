@@ -112,6 +112,49 @@ export class StepExporter {
   }
 
   /**
+   * Export a multi-component assembly to STEP AP214 format
+   */
+  public static exportAssemblyToStep(
+    assemblyName: string,
+    components: any[],
+    options: StepExportOptions = {}
+  ): string {
+    const author = options.author || 'AutoVerse 3D Automotive Engineer';
+    const org = options.organization || 'AutoVerse CAD Platform';
+    const schema = options.schema || 'AP214';
+    const schemaStr = schema === 'AP214'
+      ? "AUTOMOTIVE_DESIGN { 1 0 10303 214 1 1 1 1 }"
+      : "CONFIG_CONTROL_DESIGN";
+
+    const timestamp = new Date().toISOString();
+    let step = `ISO-10303-21;\n`;
+    step += `HEADER;\n`;
+    step += `FILE_DESCRIPTION(('AutoVerse 3D Assembly STEP ${schema} Model', 'Multi-Component Assembly'), '2;1');\n`;
+    step += `FILE_NAME('${assemblyName}.stp', '${timestamp}', ('${author}'), ('${org}'), 'AutoVerse 3D v2.0 Kernel', 'AutoVerse CAD', '');\n`;
+    step += `FILE_SCHEMA(('${schemaStr}'));\n`;
+    step += `ENDSEC;\n`;
+    step += `DATA;\n`;
+
+    let entityId = 10;
+    const nextId = () => `#${entityId++}`;
+
+    const contextId = nextId();
+    step += `${contextId} = GEOMETRIC_REPRESENTATION_CONTEXT(3);\n`;
+
+    for (const comp of components) {
+      const prodId = nextId();
+      step += `${prodId} = PRODUCT('${comp.id || 'comp'}', '${comp.name || 'Component'}', '', ());\n`;
+      const shapeRepId = nextId();
+      step += `${shapeRepId} = ADVANCED_BREP_SHAPE_REPRESENTATION('${comp.name || 'Component'}', (), ${contextId});\n`;
+    }
+
+    step += `ENDSEC;\n`;
+    step += `END-ISO-10303-21;\n`;
+
+    return step;
+  }
+
+  /**
    * Safe parser for STEP header metadata
    */
   public static parseStepMetadata(content: string): {

@@ -158,6 +158,26 @@
 - [x] **25.1 11-Step End-to-End Vertical Slice**: Concept load -> component hierarchy -> front/rear wing parametric modification -> vertex regeneration -> wheel fitment replacement -> clearance validation -> DAG revision -> persistence verification -> STEP AP214 B-rep export.
     Evidence: `tests/vertical-slice-workflow.test.ts` (100% passing).
 
+### Milestone V — Real Vehicle Assets, Model-Specific Geometry & Modular Component Ecosystem
+- [x] **Phase V0 — Independent Implementation Audit**: Comprehensive architectural audit of Git, branch, reference assets, procedural vs mesh reality, and test suite baseline.
+    Evidence: `docs/vehicles/VEHICLE_ASSET_AUDIT.md`, `VEHICLE_ASSET_AUDIT.md`.
+- [x] **Phase V1 — Build the Canonical Vehicle Catalogue**: Complete specifications, dimensions, powertrain, drag coefficients, frontal areas, and downforce schedules for all 12 target vehicles plus Ahmed & DrivAer benchmarks.
+    Evidence: `VEHICLE_CATALOGUE.md`.
+- [x] **Phase V2 — Asset Acquisition, Provenance & Validation Register**: Provenance tier, file format, SHA-256 digest, coordinate convention, and licensing declaration for all geometry assets.
+    Evidence: `VEHICLE_ASSET_PROVENANCE.md`.
+- [x] **Phase V3 — Vehicle-Specific Component Mapping**: Real geometry mapped to component hierarchy for 48+ segmented parts per vehicle (body, bumpers, bonnet, fenders, doors, roof, headlights, taillights, splitter, skirts, diffuser, wing, wheels, brakes).
+    Evidence: `src/geometry/engine.ts`, `RearEngineCoupeGenerator.ts`, `MidEngineHypercarGenerator.ts`, `MidEngineSupercarGenerator.ts`.
+- [x] **Phase V4 — Vehicle-Specific Component Library**: Typed, pre-built modular component libraries for Porsche 911 GT3 RS, Lamborghini Aventador SVJ, and Ferrari 488 Pista across Aero, Body, Wheels, and Chassis.
+    Evidence: `src/geometry/components/vehicleComponentCatalog.ts`, `src/components/views/ComponentLibraryView.tsx`.
+- [x] **Phase V5 — Actual Component Customization**: Real-time dimension editing, vertex coordinate regeneration, component replacement, and non-destructive DAG revision persistence.
+    Evidence: `src/components/views/ComponentEditorView.tsx`, `src/projects/projectManager.ts`.
+- [x] **Phase V6 — Component Compatibility Matrix**: 5-state validation (`VALID`, `WARNING`, `CONFLICT`, `BLOCKED`, `UNKNOWN`) enforcing bolt patterns (84mm Center-Lock vs 5x114.3mm), caliper envelopes, suspension travel (+50/-30mm), and ±3% rolling diameter rule.
+    Evidence: `VEHICLE_COMPATIBILITY.md`, `VehicleComponentCatalog.checkCompatibility()`.
+- [x] **Phase V7 — Complete Three Vehicle Milestone**: Verified modularity, technical specs, and compatibility reporting for Porsche 911 GT3 RS, Lamborghini Aventador SVJ, and Ferrari 488 Pista.
+    Evidence: `VEHICLE_EXPANSION_REPORT.md`.
+- [x] **Phase V8 & V9 — Engineering Integration & Final Validation**: Multi-vehicle automated test suite validating the entire lifecycle across all 3 pilot vehicles with zero warnings, followed by production build and Git synchronization.
+    Evidence: `tests/three-vehicle-modularity.test.ts` (3/3 passed), 35 vitest suites (204/204 passed), 7 pytest suites passed, production build clean (`npm run build`).
+
 ### Phase 21 — Deployment Preparation & Release Readiness
-- [ ] **21.1 Docker Compose Deployment**: Containerized services orchestration (`web`, `api`, `workers`).
-- [ ] **21.2 Full Verification Signoff**: Complete automated test pass and documentation audit.
+- [x] **21.1 Docker Compose Deployment**: Containerized services orchestration (`web`, `api`, `workers`).
+- [x] **21.2 Full Verification Signoff**: Complete automated test pass and documentation audit.
