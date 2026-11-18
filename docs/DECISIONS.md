@@ -72,3 +72,32 @@ This log records significant architectural, design, and engineering decisions th
 - **Alternatives Considered:**
   1. Hide defects with camera angles or dark lighting (Rejected: violates Section 0 non-negotiable rule).
   2. Manual vertex editing (Rejected: parametric generative approach maintains mathematical reproducibility across dimensional variants).
+
+---
+
+## Decision 007: Operating Contract v2 — Provenance Hierarchy, Feasibility Bounds, and Vertical Slice First
+- **Date:** 2026-11-18
+- **Status:** Approved
+- **Context:** Master Prompt v2 establishes strict non-negotiable rules against fabricated simulation outputs, requiring honest evidence, explicit result provenance tags, and a public-benchmark vertical slice (Ahmed Body) before scaling to vehicle fleets.
+- **Decision:** 
+  1. Enforce strict tri-state provenance tags across all aerodynamic and physical calculations: `CFD` (genuine numerical solver execution with convergence proof), `ANALYTIC` (closed-form or empirical equations with cited assumptions), and `ILLUSTRATIVE` (visual/decorative representations carrying no physical validity).
+  2. Implement an end-to-end vertical slice using the canonical Ahmed Body (25° and 35° slant angles) to validate geometry export, mesh generation, solver execution, force extraction, and benchmark literature comparison prior to full vehicle CFD.
+- **Alternatives Considered:**
+  1. Interactive "live in-browser CFD" via client WebAssembly (Rejected: technically impossible; external vehicle RANS requires millions of cells and exceeds 4 GB WASM linear memory limit).
+  2. Simulated decorative particle streams presented as CFD (Rejected: violates Section 1.1 non-negotiable rule).
+
+---
+
+## Decision 008: B-Rep CAD Kernel & Simulation Solver Orchestration Boundary
+- **Date:** 2026-11-18
+- **Status:** Approved
+- **Context:** Three.js is a WebGL mesh renderer, not an engineering CAD kernel. Professional automotive development requires B-rep solid modeling (NURBS, fillets, booleans, STEP/BREP export) and reliable OpenFOAM case generation.
+- **Decision:**
+  1. Adopt a decoupled hybrid architecture:
+     - Client Web Worker: Fast parametric lofting, surface continuity analysis, and UI visualization.
+     - CAD Kernel Service / Open CASCADE: True B-rep geometry operations, watertight sewing, and STEP/IGES serialization.
+     - Simulation Orchestrator: Headless OpenFOAM case generation, mesh quality gating (`checkMesh`), solver monitoring (`simpleFoam`), and automated post-processing.
+  2. If OpenFOAM or CAD kernel is not running on the host, gracefully degrade to `ANALYTIC` mode, clearly explaining the boundary and emitting exportable case files for external execution.
+- **Alternatives Considered:**
+  1. Force all CAD and CFD into the browser render thread (Rejected: causes catastrophic browser crashes and memory exhaustion).
+  2. Proprietary closed-source cloud solver APIs (Rejected: requires user credentials and paid subscriptions; violates open, reproducible engineering contract).

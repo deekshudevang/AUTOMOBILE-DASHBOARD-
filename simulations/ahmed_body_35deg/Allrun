@@ -1,0 +1,32 @@
+#!/bin/bash
+# AutoVerse 3D OpenFOAM Verification Allrun Script
+set -e
+
+echo "=== AutoVerse 3D OpenFOAM Pipeline Execution ==="
+echo "Running blockMesh..."
+blockMesh > log.blockMesh 2>&1
+
+echo "Extracting surface features..."
+surfaceFeatureExtract > log.surfaceFeatureExtract 2>&1 || true
+
+echo "Running snappyHexMesh..."
+snappyHexMesh -overwrite > log.snappyHexMesh 2>&1
+
+echo "Checking mesh quality..."
+checkMesh > log.checkMesh 2>&1
+
+echo "Initializing flow field..."
+# Overwrite 0/ from initial setup if needed
+
+echo "Solving steady-state RANS with simpleFoam..."
+if [ "4" -gt 1 ]; then
+    decomposePar > log.decomposePar 2>&1
+    mpirun -np 4 simpleFoam -parallel > log.simpleFoam 2>&1
+    reconstructPar -latestTime > log.reconstructPar 2>&1
+else
+    simpleFoam > log.simpleFoam 2>&1
+fi
+
+echo "Extracting aerodynamic force coefficients..."
+# Forces are logged in postProcessing/forceCoeffs/0/coefficient.dat
+echo "=== Case Execution Complete ==="

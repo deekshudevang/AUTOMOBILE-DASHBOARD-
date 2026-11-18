@@ -1,0 +1,3 @@
+#!/bin/bash
+rm -rf [1-9]* processor* postProcessing log.* constant/polyMesh
+echo "Case cleaned."

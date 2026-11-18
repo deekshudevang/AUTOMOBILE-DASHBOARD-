@@ -1,0 +1,12 @@
+{
+  "caseName": "ahmed_body_35deg",
+  "slantAngleDeg": 35,
+  "freestreamVelocity": 40,
+  "frontalAreaM2": 0.112032,
+  "literatureReferenceCd": 0.257,
+  "literatureSource": "S.R. Ahmed, G. Ramm, G. Faltin, SAE Paper 840300 (1984)",
+  "solver": "simpleFoam (OpenFOAM Foundation / ESI-OpenCFD)",
+  "turbulenceModel": "kOmegaSST",
+  "provenance": "CFD_CASE_BUNDLE",
+  "createdAt": "2026-11-18T12:54:30.302Z"
+}

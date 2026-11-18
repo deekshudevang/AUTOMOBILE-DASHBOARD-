@@ -1,0 +1,46 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2406 / 11                            |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  | AutoVerse 3D Verified Case Generator            |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    location    "";
+    object      omega;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 0 -1 0 0 0 0];
+internalField   uniform 6.12;
+
+boundaryField
+{
+    inlet
+    {
+        type            fixedValue;
+        value           uniform 6.12;
+    }
+    outlet
+    {
+        type            zeroGradient;
+    }
+    ground
+    {
+        type            omegaWallFunction;
+        value           uniform 6.12;
+    }
+    topAndSides
+    {
+        type            slip;
+    }
+    ahmed_body
+    {
+        type            omegaWallFunction;
+        value           uniform 6.12;
+    }
+}

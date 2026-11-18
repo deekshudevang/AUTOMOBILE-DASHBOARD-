@@ -1,0 +1,33 @@
+{
+  "benchmark": "Ahmed Reference Body",
+  "citation": "S.R. Ahmed, G. Ramm, G. Faltin, SAE Technical Paper 840300 (1984)",
+  "doi": "10.4271/840300",
+  "dimensions": {
+    "length_m": 1.044,
+    "width_m": 0.389,
+    "height_m": 0.288,
+    "ground_clearance_m": 0.050,
+    "frontal_area_m2": 0.112032
+  },
+  "test_conditions": {
+    "freestream_velocity_m_s": 40.0,
+    "air_density_kg_m3": 1.205,
+    "kinematic_viscosity_m2_s": 1.5e-5,
+    "reynolds_number": 2.784e6
+  },
+  "configurations": [
+    {
+      "slant_angle_deg": 25.0,
+      "flow_regime": "Attached flow over slant with strong C-pillar longitudinal trailing vortices",
+      "literature_cd": 0.285,
+      "acceptable_cd_range": [0.270, 0.315]
+    },
+    {
+      "slant_angle_deg": 35.0,
+      "flow_regime": "Separated wake over slant with vortex breakdown",
+      "literature_cd": 0.257,
+      "acceptable_cd_range": [0.250, 0.275]
+    }
+  ],
+  "regression_command": "npm run benchmark:ahmed"
+}

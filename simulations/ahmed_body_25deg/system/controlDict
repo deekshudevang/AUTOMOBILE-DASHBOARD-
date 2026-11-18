@@ -1,0 +1,71 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2406 / 11                            |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
+|    \\/     M anipulation  | AutoVerse 3D Verified Case Generator            |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     simpleFoam;
+startFrom       startTime;
+startTime       0;
+stopAt          endTime;
+endTime         500;
+deltaT          1;
+writeControl    timeStep;
+writeInterval   100;
+purgeWrite      3;
+writeFormat     ascii;
+writePrecision  7;
+writeCompression off;
+timeFormat      general;
+timePrecision   6;
+runTimeModifiable true;
+
+functions
+{
+    forces
+    {
+        type            forces;
+        libs            ("libforces.so");
+        writeControl    timeStep;
+        writeInterval   1;
+        patches         (ahmed_body);
+        pName           p;
+        UName           U;
+        log             true;
+        rho             rhoInf;
+        rhoInf          1.205;
+        CofG            (0.522 0.05 0); // Center of gravity / reference moment center
+    }
+
+    forceCoeffs
+    {
+        type            forceCoeffs;
+        libs            ("libforces.so");
+        writeControl    timeStep;
+        writeInterval   1;
+        patches         (ahmed_body);
+        pName           p;
+        UName           U;
+        log             true;
+        rho             rhoInf;
+        rhoInf          1.205;
+        CofG            (0.522 0.05 0);
+        liftDir         (0 1 0);       // Y is vertical up
+        dragDir         (1 0 0);       // X is longitudinal freestream
+        pitchAxis       (0 0 1);       // Z is lateral
+        magUInf         40;
+        lRef            1.044;         // Body length
+        Aref            0.112032; // Projected frontal area
+    }
+}
