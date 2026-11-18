@@ -147,44 +147,23 @@ class AerodynamicWorker:
 
         l_over_d = abs(total_cl) / total_cd if total_cd > 0 else 0.0
 
-        # 7. Generate Residuals and Convergence History
+        # 7. Residuals: in analytical estimate mode, do NOT fabricate fake solver residuals
         residuals_history = []
         force_std_dev = 0.00034
         converged = iterations >= 100
 
-        # Simulation residual convergence rate: exponential decay with physical turbulent jitter
-        base_p = 1.0
-        base_u = 1.0
-        base_k = 1.0
-        base_omega = 1.0
-
-        step_count = min(iterations, 200)
-        for it in range(1, step_count + 1):
-            decay = math.exp(-0.025 * it)
-            jitter = 0.0005 * math.sin(it * 0.4)
-            p_res = max(1.2e-5, base_p * decay + jitter * 0.1)
-            u_res = max(8.5e-6, base_u * decay * 0.8 + jitter * 0.08)
-            k_res = max(3.4e-5, base_k * decay * 1.2 + jitter * 0.12)
-            w_res = max(4.1e-5, base_omega * decay * 1.1 + jitter * 0.11)
-
-            curr_cd = total_cd + (0.08 * decay * math.cos(it * 0.3))
-            curr_cl = total_cl + (0.12 * decay * math.sin(it * 0.25))
-
-            residuals_history.append({
-                "iteration": it,
-                "p": round(p_res, 6),
-                "Ux": round(u_res, 6),
-                "Uy": round(u_res * 0.9, 6),
-                "Uz": round(u_res * 0.7, 6),
-                "k": round(k_res, 6),
-                "omega": round(w_res, 6),
-                "cd": round(curr_cd, 4),
-                "cl": round(curr_cl, 4)
-            })
+        # Provenance: if native openfoam is installed and running, label CFD; otherwise label ANALYTICAL_ESTIMATE
+        has_native_cfd = AerodynamicWorker.is_openfoam_installed()
+        provenance = "CFD" if has_native_cfd else "ANALYTICAL_ESTIMATE"
+        solver_label = (
+            "OpenFOAM v2406 / simpleFoam RANS (kOmegaSST)"
+            if has_native_cfd
+            else "AutoVerse Boundary-Layer & Lifting-Line Analytical Engine"
+        )
 
         return {
-            "provenance": "CFD_RESOLVED",
-            "solver": "OpenFOAM v2406 / simpleFoam RANS (kOmegaSST)" if AerodynamicWorker.is_openfoam_installed() else "AutoVerse Automotive CFD Solver (RANS k-omega SST Form-Factor Integral)",
+            "provenance": provenance,
+            "solver": solver_label,
             "converged": converged,
             "iterations": iterations,
             "force_std_dev": force_std_dev,

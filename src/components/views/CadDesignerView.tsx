@@ -6,8 +6,7 @@ import {
   CheckCircle2,
   AlertCircle,
   Activity,
-  Layers,
-  Sparkles
+  Layers
 } from 'lucide-react';
 import { useVehicleStore } from '../../hooks/useVehicleStore';
 import * as THREE from 'three';
@@ -205,7 +204,7 @@ export const CadDesignerView: React.FC = () => {
 
             <div className="space-y-2 text-xs pt-2">
               <div className="flex justify-between py-1.5 border-b border-autoverse-border/50">
-                <span className="text-slate-400">Euler Characteristic ($\chi$)</span>
+                <span className="text-slate-400">Euler Characteristic (&chi;)</span>
                 <span className="font-mono font-bold text-emerald-400">2 (Spherical genus-0)</span>
               </div>
               <div className="flex justify-between py-1.5 border-b border-autoverse-border/50">

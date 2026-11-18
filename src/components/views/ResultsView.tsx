@@ -1,16 +1,4 @@
 import React, { useState } from 'react';
-import {
-  Activity,
-  Layers,
-  Wind,
-  CheckCircle2,
-  AlertCircle,
-  HelpCircle,
-  TrendingDown,
-  Gauge,
-  Sliders,
-  Eye
-} from 'lucide-react';
 import { useVehicleStore } from '../../hooks/useVehicleStore';
 
 export const ResultsView: React.FC = () => {
@@ -63,7 +51,7 @@ export const ResultsView: React.FC = () => {
             )}
           </div>
           <p className="text-xs text-autoverse-muted mt-1">
-            Force breakdowns, sectional pressure distribution ($C_p$), wake vorticity, and high-speed downforce curves.
+            Force breakdowns, sectional pressure distribution (Cp), wake vorticity, and high-speed downforce curves.
           </p>
         </div>
       </div>
@@ -75,13 +63,13 @@ export const ResultsView: React.FC = () => {
           {/* Key Force Metrics Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="p-4 rounded bg-autoverse-surface border border-autoverse-border space-y-1">
-              <span className="text-xs text-slate-400">Total Drag ($C_d$)</span>
+              <span className="text-xs text-slate-400">Total Drag (Cd)</span>
               <div className="text-xl font-mono font-bold text-slate-100">{sim.cd.toFixed(3)}</div>
-              <span className="text-[10px] text-emerald-400 font-mono">σ = {sim.forceConvergenceStdDev}</span>
+              <span className="text-[10px] text-emerald-400 font-mono">&sigma; = {sim.forceConvergenceStdDev}</span>
             </div>
 
             <div className="p-4 rounded bg-autoverse-surface border border-autoverse-border space-y-1">
-              <span className="text-xs text-slate-400">Total Downforce ($C_l$)</span>
+              <span className="text-xs text-slate-400">Total Downforce (Cl)</span>
               <div className="text-xl font-mono font-bold text-autoverse-cyan">{sim.cl.toFixed(3)}</div>
               <span className="text-[10px] text-autoverse-cyan font-mono">Net Negative Lift</span>
             </div>

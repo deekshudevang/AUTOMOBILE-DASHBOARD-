@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import {
   Box,
-  Wrench,
   CheckCircle2,
   RefreshCw,
   Eye,
   Layers,
-  Sparkles,
   Scissors
 } from 'lucide-react';
 import { useVehicleStore } from '../../hooks/useVehicleStore';

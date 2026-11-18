@@ -1,15 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import {
-  Activity,
-  Sliders,
-  RotateCcw,
-  CheckCircle2,
-  AlertCircle,
-  HelpCircle,
-  TrendingDown,
-  Gauge,
-  Wind
-} from 'lucide-react';
 import { useVehicleStore } from '../../hooks/useVehicleStore';
 import { AeroDynamicsCoupler, VehicleDynamicsInput } from '../../simulation/dynamics/aeroDynamicsCoupler';
 

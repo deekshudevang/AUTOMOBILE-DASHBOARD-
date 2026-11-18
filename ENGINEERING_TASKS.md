@@ -181,3 +181,23 @@
 ### Phase 21 — Deployment Preparation & Release Readiness
 - [x] **21.1 Docker Compose Deployment**: Containerized services orchestration (`web`, `api`, `workers`).
 - [x] **21.2 Full Verification Signoff**: Complete automated test pass and documentation audit.
+
+### Milestone W — Whole-Repository Transformation & Engineering Workstation Upgrade
+- [x] **Phase W0 — Whole-Repository Audit & Skills Discovery**: Systematic inventory of all 19 workspace views, design tokens, CFD truth boundaries, and installed global skills (`ui-ux-pro-max`, `superpowers`, `ponytail`, `unslop`).
+    Evidence: `docs/product/WHOLE_REPOSITORY_AUDIT.md`, `docs/engineering/ENGINEERING_TRUTH_MATRIX.md`.
+- [x] **Phase W1 — UI/UX Pro Max Design System**: Generation of dark graphite `#0A0C10` design token specification, high-contrast surfaces (`#11141C`, `#161C28`), restrained cyan `#00F0FF`, 4px spatial grid, and tabular monospace numerals.
+    Evidence: `design-system/autoverse/MASTER.md`, `design-system/autoverse/pages/dashboard.md`.
+- [x] **Phase W2 — Workstation Shell & Real-Time Telemetry**: Real-time `TopContextBar` (telemetry, breadcrumbs, backend engine status, Student Mode toggle) and persistent `EngineeringStatusBar` (manifold status, kinematic clearance, aerodynamic polar, solver mode).
+    Evidence: `src/components/shell/TopContextBar.tsx`, `src/components/shell/EngineeringStatusBar.tsx`, `src/App.tsx`.
+- [x] **Phase W3 — Complete Dashboard Transformation**: Replaced legacy configurator content with engineering metrics, active vehicle telemetry, fleet category distribution, live engine health indicators, and recent projects table.
+    Evidence: `src/components/dashboard/DashboardView.tsx`.
+- [x] **Phase W4 — Vehicle Library Redesign**: Multi-faceted filtering (manufacturer, category, geometry fidelity), grid/list views, verified vs procedural badges, and OEM technical specification inspector modal.
+    Evidence: `src/components/library/VehicleLibraryView.tsx`.
+- [x] **Phase W5 — CFD Engineering Truth & Workflows**: Explicit separation of empirical Mode A (`ANALYTICAL_ESTIMATE` with exact equations and zero fabricated residuals) from solver Mode B (OpenFOAM `simpleFoam` with honest binary prerequisite readiness).
+    Evidence: `services/cfd/aerodynamic_worker.py`, `src/components/views/CfdLabView.tsx`.
+- [x] **Phase W6 — CAD & Component Workspaces Polish**: Grounded typography, G0/G1/G2 Class-A analysis, Watertight 2-Manifold checks, Euler characteristic, kinematic steer/travel sweeps, and ISO STEP AP214 export.
+    Evidence: `ComponentLibraryView.tsx`, `ComponentEditorView.tsx`, `AssemblyView.tsx`, `CadDesignerView.tsx`, `GeometryEditorView.tsx`, `MaterialStudioView.tsx`.
+- [x] **Phase W7 — Simulation, Knowledge & System Modules Polish**: Selig/NACA airfoil importer, Pareto frontier optimizer, multibody dynamics coupling, 20-section SAE J1594 reports, and educational curriculum.
+    Evidence: `AeroStudioView.tsx`, `MeshGeneratorView.tsx`, `VehicleDynamicsView.tsx`, `ResultsView.tsx`, `ReportsView.tsx`, `LearningCentreView.tsx`, `AssetManagerView.tsx`, `SettingsView.tsx`.
+- [x] **Phase W8 — Verification & Build Signoff**: 36 Vitest suites (205/205 passed), 7 Pytest suites passed, zero TypeScript errors (`tsc --noEmit`), and clean production bundle (`vite build`).
+    Evidence: `docs/qa/VISUAL_REGRESSION_REPORT.md`, `dist/`.

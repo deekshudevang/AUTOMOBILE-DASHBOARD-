@@ -1,11 +1,5 @@
 import React, { useState } from 'react';
 import {
-  BookOpen,
-  GraduationCap,
-  HelpCircle,
-  CheckCircle2,
-  XCircle,
-  ChevronRight,
   Wind,
   Layers,
   Cpu,

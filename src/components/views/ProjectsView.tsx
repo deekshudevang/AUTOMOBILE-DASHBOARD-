@@ -2,14 +2,9 @@ import React, { useState } from 'react';
 import {
   FolderKanban,
   GitBranch,
-  GitCommit,
   Plus,
   Clock,
-  Layers,
-  CheckCircle2,
-  AlertCircle,
-  Copy,
-  ExternalLink
+  CheckCircle2
 } from 'lucide-react';
 import { useVehicleStore } from '../../hooks/useVehicleStore';
 

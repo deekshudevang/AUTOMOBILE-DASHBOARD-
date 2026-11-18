@@ -5,16 +5,10 @@ import {
   Check,
   AlertTriangle,
   Box,
-  FileCode,
-  Link,
-  Layers,
-  Sparkles,
   ArrowRight,
-  HardDrive,
   ShieldCheck,
   Cpu,
-  Ruler,
-  Eye
+  Ruler
 } from 'lucide-react';
 import { useVehicleStore } from '../../hooks/useVehicleStore';
 import { toHex32 } from '../../utils/joaat';

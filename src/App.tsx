@@ -28,51 +28,59 @@ import { ReportsView } from './components/views/ReportsView';
 import { LearningCentreView } from './components/views/LearningCentreView';
 
 import { useVehicleStore } from './hooks/useVehicleStore';
+import { TopContextBar } from './components/shell/TopContextBar';
+import { EngineeringStatusBar } from './components/shell/EngineeringStatusBar';
 
 export const App: React.FC = () => {
   const { activeView } = useVehicleStore();
 
   return (
     <div className="flex w-screen h-screen bg-autoverse-bg text-slate-100 overflow-hidden font-sans">
-      {/* 19-Module Navigation Sidebar with Student/Advanced Mode Switch */}
+      {/* 19-Module Navigation Sidebar with Search & Dynamic Badges */}
       <NavigationSidebar />
 
-      {/* Main Dynamic Viewport Container */}
-      <main className="flex-1 h-screen overflow-hidden relative">
-        {/* Workspace Modules */}
-        {activeView === 'dashboard' && <DashboardView />}
-        {activeView === 'library' && <VehicleLibraryView />}
-        {activeView === 'projects' && <ProjectsView />}
-        {activeView === 'studio' && <StudioView />}
+      {/* Main Dynamic Viewport Container with Context Header & Engineering Status Bar */}
+      <div className="flex-1 flex flex-col h-screen overflow-hidden relative">
+        <TopContextBar />
 
-        {/* CAD & Components Modules */}
-        {activeView === 'componentLibrary' && <ComponentLibraryView />}
-        {activeView === 'componentEditor' && <ComponentEditorView />}
-        {activeView === 'assembly' && <AssemblyView />}
-        {activeView === 'cadDesigner' && <CadDesignerView />}
-        {activeView === 'geometryEditor' && <GeometryEditorView />}
-        {activeView === 'materialStudio' && <MaterialStudioView />}
+        <main className="flex-1 overflow-hidden relative">
+          {/* Workspace Modules */}
+          {activeView === 'dashboard' && <DashboardView />}
+          {activeView === 'library' && <VehicleLibraryView />}
+          {activeView === 'projects' && <ProjectsView />}
+          {activeView === 'studio' && <StudioView />}
 
-        {/* Simulation & Aero Modules */}
-        {activeView === 'aeroStudio' && <AeroStudioView />}
-        {activeView === 'meshGenerator' && <MeshGeneratorView />}
-        {activeView === 'cfdLab' && <CfdLabView />}
-        {activeView === 'dynamics' && <VehicleDynamicsView />}
-        {activeView === 'results' && <ResultsView />}
+          {/* CAD & Components Modules */}
+          {activeView === 'componentLibrary' && <ComponentLibraryView />}
+          {activeView === 'componentEditor' && <ComponentEditorView />}
+          {activeView === 'assembly' && <AssemblyView />}
+          {activeView === 'cadDesigner' && <CadDesignerView />}
+          {activeView === 'geometryEditor' && <GeometryEditorView />}
+          {activeView === 'materialStudio' && <MaterialStudioView />}
 
-        {/* Knowledge & System Modules */}
-        {activeView === 'reports' && <ReportsView />}
-        {activeView === 'learning' && <LearningCentreView />}
-        {activeView === 'assetManager' && <AssetManagerView />}
-        {activeView === 'settings' && <SettingsView />}
+          {/* Simulation & Aero Modules */}
+          {activeView === 'aeroStudio' && <AeroStudioView />}
+          {activeView === 'meshGenerator' && <MeshGeneratorView />}
+          {activeView === 'cfdLab' && <CfdLabView />}
+          {activeView === 'dynamics' && <VehicleDynamicsView />}
+          {activeView === 'results' && <ResultsView />}
 
-        {/* Legacy / Direct Tool Views */}
-        {activeView === 'customizer' && <CustomizationPanel />}
-        {activeView === 'comparison' && <ComparisonView />}
-        {activeView === 'explorer' && <JsonExplorerView />}
-        {activeView === 'history' && <HistoryView />}
-        {activeView === 'export' && <ExportCenterView />}
-      </main>
+          {/* Knowledge & System Modules */}
+          {activeView === 'reports' && <ReportsView />}
+          {activeView === 'learning' && <LearningCentreView />}
+          {activeView === 'assetManager' && <AssetManagerView />}
+          {activeView === 'settings' && <SettingsView />}
+
+          {/* Legacy / Direct Tool Views */}
+          {activeView === 'customizer' && <CustomizationPanel />}
+          {activeView === 'comparison' && <ComparisonView />}
+          {activeView === 'explorer' && <JsonExplorerView />}
+          {activeView === 'history' && <HistoryView />}
+          {activeView === 'export' && <ExportCenterView />}
+        </main>
+
+        <EngineeringStatusBar />
+      </div>
     </div>
   );
 };

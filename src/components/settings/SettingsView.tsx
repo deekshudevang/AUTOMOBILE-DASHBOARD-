@@ -1,15 +1,7 @@
 import React from 'react';
 import {
-  Settings,
   Cpu,
-  Monitor,
-  Zap,
-  Shield,
-  Layers,
-  Sparkles,
-  Check,
-  RefreshCw,
-  Sliders
+  Zap
 } from 'lucide-react';
 import { useVehicleStore } from '../../hooks/useVehicleStore';
 
@@ -76,7 +68,7 @@ export const SettingsView: React.FC = () => {
         {/* GPU & Hardware Target Profile */}
         <div className="p-5 rounded-lg bg-autoverse-surface border border-autoverse-border space-y-4">
           <div className="flex items-center gap-2 text-slate-100 font-bold text-sm">
-            <Cpu className="w-4 h-4 text-autoverse-purple" />
+            <Cpu className="w-4 h-4 text-autoverse-cyan" />
             <span>Target Hardware Specification</span>
           </div>
 

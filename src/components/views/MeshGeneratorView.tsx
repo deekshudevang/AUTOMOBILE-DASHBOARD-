@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
 import {
-  Grid,
-  Play,
-  CheckCircle2,
-  AlertCircle,
-  HelpCircle,
-  Layers,
-  Activity,
   Cpu
 } from 'lucide-react';
 import { useVehicleStore } from '../../hooks/useVehicleStore';
@@ -119,7 +112,7 @@ export const MeshGeneratorView: React.FC = () => {
             {/* Target y+ & Wall Treatment */}
             <div className="space-y-1.5">
               <div className="flex justify-between text-xs">
-                <span className="text-slate-300 font-medium">Target Wall $y^+$ Treatment</span>
+                <span className="text-slate-300 font-medium">Target Wall y+ Treatment</span>
                 <span className="font-mono text-autoverse-cyan font-bold">y+ = {targetYPlus}</span>
               </div>
               <div className="grid grid-cols-2 gap-3">
@@ -214,7 +207,7 @@ export const MeshGeneratorView: React.FC = () => {
                 <span className="font-mono font-bold text-autoverse-cyan">{cellCountEstimate}</span>
               </div>
               <div className="flex justify-between py-1.5 border-b border-autoverse-border/50">
-                <span className="text-slate-400">First Cell Height ($y_1$)</span>
+                <span className="text-slate-400">First Cell Height (y₁)</span>
                 <span className="font-mono font-bold text-slate-200">
                   {targetYPlus === 1 ? (y1_mm / 30).toFixed(3) : y1_mm.toFixed(2)} mm
                 </span>
@@ -236,9 +229,9 @@ export const MeshGeneratorView: React.FC = () => {
             {/* Student Explanation */}
             {engineeringMode === 'student' && (
               <div className="p-3 rounded bg-autoverse-elevated border border-autoverse-border text-[11px] text-slate-300 space-y-1">
-                <p className="font-semibold text-autoverse-cyan">🎓 Why is $y^+$ critical?</p>
+                <p className="font-semibold text-autoverse-cyan">🎓 Why is y+ critical?</p>
                 <p className="leading-relaxed">
-                  $y^+$ is the non-dimensional wall distance. If the first cell is too tall (y+ &gt; 100), turbulence models cannot accurately predict skin friction or flow separation over the rear window.
+                  y+ is the non-dimensional wall distance. If the first cell is too tall (y+ &gt; 100), turbulence models cannot accurately predict skin friction or flow separation over the rear window.
                 </p>
               </div>
             )}

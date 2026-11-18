@@ -1,18 +1,9 @@
 import React, { useState } from 'react';
 import {
   Wind,
-  Sliders,
-  CheckCircle2,
-  AlertCircle,
-  HelpCircle,
-  Layers,
-  Activity,
-  ChevronRight,
   TrendingUp,
   Cpu,
-  Download,
-  Upload,
-  Check
+  Upload
 } from 'lucide-react';
 import { useVehicleStore } from '../../hooks/useVehicleStore';
 import {

@@ -1,13 +1,8 @@
 import React, { useState } from 'react';
 import {
-  FileText,
   Download,
   Copy,
-  CheckCircle2,
-  Share2,
-  Printer,
-  Layers,
-  Sparkles
+  CheckCircle2
 } from 'lucide-react';
 import { useVehicleStore } from '../../hooks/useVehicleStore';
 

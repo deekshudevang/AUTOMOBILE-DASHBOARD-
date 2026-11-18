@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   LayoutDashboard,
   Layers,
@@ -24,7 +24,9 @@ import {
   Activity,
   FileText,
   BookOpen,
-  GraduationCap
+  GraduationCap,
+  Search,
+  X
 } from 'lucide-react';
 import { useVehicleStore, ActiveView } from '../../hooks/useVehicleStore';
 import { toHex32 } from '../../utils/joaat';
@@ -41,48 +43,6 @@ interface NavSection {
   items: NavItem[];
 }
 
-const NAV_SECTIONS: NavSection[] = [
-  {
-    title: 'Workspace',
-    items: [
-      { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-      { id: 'library', label: 'Vehicle Library', icon: Layers, badge: '50+' },
-      { id: 'projects', label: 'Projects DAG', icon: FolderKanban },
-      { id: 'studio', label: '3D Studio', icon: Box }
-    ]
-  },
-  {
-    title: 'CAD & Components',
-    items: [
-      { id: 'componentLibrary', label: 'Component Library', icon: Layers, badge: '80+' },
-      { id: 'componentEditor', label: 'Parametric Editor', icon: Sliders },
-      { id: 'assembly', label: 'Assembly Validation', icon: ShieldCheck },
-      { id: 'cadDesigner', label: 'CAD Designer', icon: FileCode },
-      { id: 'geometryEditor', label: 'Geometry & Mesh', icon: Wrench },
-      { id: 'materialStudio', label: 'Material Studio', icon: Palette }
-    ]
-  },
-  {
-    title: 'Simulation & Aero',
-    items: [
-      { id: 'aeroStudio', label: 'Aero Studio', icon: Wind },
-      { id: 'meshGenerator', label: 'Mesh Generator', icon: Grid },
-      { id: 'cfdLab', label: 'CFD Wind Tunnel', icon: Cpu },
-      { id: 'dynamics', label: 'Vehicle Dynamics', icon: Activity },
-      { id: 'results', label: 'Results Analyzer', icon: Activity }
-    ]
-  },
-  {
-    title: 'Knowledge & System',
-    items: [
-      { id: 'reports', label: 'Engineering Reports', icon: FileText },
-      { id: 'learning', label: 'Learning Centre', icon: GraduationCap },
-      { id: 'assetManager', label: 'Asset Manager', icon: FolderArchive },
-      { id: 'settings', label: 'Settings', icon: Settings }
-    ]
-  }
-];
-
 export const NavigationSidebar: React.FC = () => {
   const {
     activeView,
@@ -95,6 +55,61 @@ export const NavigationSidebar: React.FC = () => {
     toggleEngineeringMode
   } = useVehicleStore();
 
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  const NAV_SECTIONS: NavSection[] = useMemo(() => [
+    {
+      title: 'Workspace',
+      items: [
+        { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+        { id: 'library', label: 'Vehicle Library', icon: Layers, badge: `${allFiles.length}` },
+        { id: 'projects', label: 'Projects DAG', icon: FolderKanban },
+        { id: 'studio', label: '3D Studio', icon: Box }
+      ]
+    },
+    {
+      title: 'CAD & Components',
+      items: [
+        { id: 'componentLibrary', label: 'Component Library', icon: Layers, badge: '80+' },
+        { id: 'componentEditor', label: 'Parametric Editor', icon: Sliders },
+        { id: 'assembly', label: 'Assembly Validation', icon: ShieldCheck },
+        { id: 'cadDesigner', label: 'CAD Designer', icon: FileCode },
+        { id: 'geometryEditor', label: 'Geometry & Mesh', icon: Wrench },
+        { id: 'materialStudio', label: 'Material Studio', icon: Palette }
+      ]
+    },
+    {
+      title: 'Simulation & Aero',
+      items: [
+        { id: 'aeroStudio', label: 'Aero Studio', icon: Wind },
+        { id: 'meshGenerator', label: 'Mesh Generator', icon: Grid },
+        { id: 'cfdLab', label: 'CFD Wind Tunnel', icon: Cpu },
+        { id: 'dynamics', label: 'Vehicle Dynamics', icon: Activity },
+        { id: 'results', label: 'Results Analyzer', icon: Activity }
+      ]
+    },
+    {
+      title: 'Knowledge & System',
+      items: [
+        { id: 'reports', label: 'Engineering Reports', icon: FileText },
+        { id: 'learning', label: 'Learning Centre', icon: GraduationCap },
+        { id: 'assetManager', label: 'Asset Manager', icon: FolderArchive },
+        { id: 'settings', label: 'Settings', icon: Settings }
+      ]
+    }
+  ], [allFiles.length]);
+
+  const filteredSections = useMemo(() => {
+    if (!searchQuery.trim()) return NAV_SECTIONS;
+    const q = searchQuery.toLowerCase();
+    return NAV_SECTIONS.map(sec => ({
+      ...sec,
+      items: sec.items.filter(item =>
+        item.label.toLowerCase().includes(q) || item.id.toLowerCase().includes(q)
+      )
+    })).filter(sec => sec.items.length > 0);
+  }, [NAV_SECTIONS, searchQuery]);
+
   return (
     <>
       {/* Desktop & Tablet Sidebar */}
@@ -102,58 +117,48 @@ export const NavigationSidebar: React.FC = () => {
         {/* Top Header & Navigation */}
         <div className="flex flex-col flex-1 overflow-hidden">
           {/* Brand Header */}
-          <div className="h-14 md:h-16 px-3 md:px-5 flex items-center justify-between border-b border-autoverse-border shrink-0">
+          <div className="h-12 px-3 md:px-5 flex items-center justify-between border-b border-autoverse-border shrink-0">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded bg-autoverse-elevated border border-autoverse-border flex items-center justify-center text-autoverse-cyan shrink-0">
-                <Car className="w-5 h-5" />
+              <div className="w-7 h-7 rounded bg-autoverse-elevated border border-autoverse-border flex items-center justify-center text-autoverse-cyan shrink-0">
+                <Car className="w-4 h-4" />
               </div>
               <div className="hidden md:block">
                 <div className="flex items-center gap-2">
-                  <span className="font-bold tracking-wider text-sm text-slate-100">AUTOVERSE</span>
-                  <span className="text-[10px] px-1.5 py-0.5 rounded font-mono font-semibold bg-autoverse-elevated border border-autoverse-border text-autoverse-cyan">
+                  <span className="font-bold tracking-wider text-xs text-slate-100">AUTOVERSE</span>
+                  <span className="text-[9px] px-1.5 py-0.2 rounded font-mono font-semibold bg-autoverse-elevated border border-autoverse-border text-autoverse-cyan">
                     3D
                   </span>
                 </div>
-                <p className="text-[11px] text-autoverse-muted tracking-tight">Automotive CAD & Aero</p>
+                <p className="text-[10px] text-autoverse-muted tracking-tight -mt-0.5">Automotive CAD & Aero</p>
               </div>
             </div>
           </div>
 
-          {/* Student Mode / Advanced Mode Toggle Pill */}
-          <div className="p-2 md:p-3 border-b border-autoverse-border shrink-0">
-            <button
-              onClick={toggleEngineeringMode}
-              title={`Switch to ${engineeringMode === 'student' ? 'Advanced' : 'Student'} Mode`}
-              className={`w-full flex items-center justify-between p-2 rounded transition-all border ${
-                engineeringMode === 'student'
-                  ? 'bg-emerald-950/40 border-emerald-800/80 text-emerald-300 hover:bg-emerald-950/60'
-                  : 'bg-cyan-950/40 border-cyan-800/80 text-cyan-300 hover:bg-cyan-950/60'
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                {engineeringMode === 'student' ? (
-                  <GraduationCap className="w-4 h-4 text-emerald-400 shrink-0" />
-                ) : (
-                  <Wrench className="w-4 h-4 text-cyan-400 shrink-0" />
-                )}
-                <div className="hidden md:block text-left">
-                  <span className="text-[11px] font-bold block uppercase tracking-wider">
-                    {engineeringMode === 'student' ? 'Student Mode' : 'Advanced CAE'}
-                  </span>
-                  <span className="text-[9px] text-slate-400 block -mt-0.5">
-                    {engineeringMode === 'student' ? 'Guided with guardrails' : 'Raw CAD & Solvers'}
-                  </span>
-                </div>
-              </div>
-              <span className="hidden md:inline text-[9px] font-mono px-1.5 py-0.5 rounded bg-autoverse-overlay text-slate-300">
-                TOGGLE
-              </span>
-            </button>
+          {/* Quick Search across 19 views */}
+          <div className="hidden md:block px-3 py-2 border-b border-autoverse-border/80">
+            <div className="relative flex items-center">
+              <Search className="w-3.5 h-3.5 text-slate-500 absolute left-2.5 pointer-events-none" />
+              <input
+                type="text"
+                placeholder="Search modules..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="w-full bg-autoverse-elevated border border-autoverse-border/80 rounded pl-8 pr-7 py-1 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-2 text-slate-400 hover:text-slate-200"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Scrollable Navigation Menu */}
           <nav className="flex-1 overflow-y-auto p-2 md:p-3 space-y-4">
-            {NAV_SECTIONS.map(section => (
+            {filteredSections.map(section => (
               <div key={section.title} className="space-y-1">
                 <h3 className="hidden md:block px-2 text-[10px] font-mono uppercase tracking-wider text-autoverse-muted">
                   {section.title}
@@ -169,7 +174,7 @@ export const NavigationSidebar: React.FC = () => {
                       aria-label={item.label}
                       className={`w-full flex items-center justify-center md:justify-between px-2 md:px-2.5 py-1.5 rounded text-xs font-medium transition-all duration-150 ${
                         isActive
-                          ? 'bg-autoverse-elevated text-slate-100 border border-autoverse-borderLight shadow-sm'
+                          ? 'bg-autoverse-elevated text-slate-100 border border-cyan-800/80 shadow-sm'
                           : 'text-slate-400 hover:text-slate-200 hover:bg-autoverse-elevated/50 border border-transparent'
                       }`}
                     >
@@ -205,7 +210,10 @@ export const NavigationSidebar: React.FC = () => {
               </span>
             )}
           </div>
-          <div className="p-2.5 rounded bg-autoverse-elevated border border-autoverse-border">
+          <div
+            onClick={() => setActiveView('library')}
+            className="p-2.5 rounded bg-autoverse-elevated border border-autoverse-border hover:border-cyan-800/70 cursor-pointer transition-colors"
+          >
             <div className="flex items-center justify-between">
               <h4 className="text-xs font-semibold text-slate-200 truncate" title={activeModel?.displayName || activeFile}>
                 {activeModel?.displayName || activeFile.replace('.json', '')}

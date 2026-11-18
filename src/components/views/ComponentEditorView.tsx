@@ -101,7 +101,7 @@ export const ComponentEditorView: React.FC = () => {
               {/* Span Slider */}
               <div className="space-y-1.5">
                 <div className="flex justify-between text-xs">
-                  <span className="text-slate-300 font-medium">Wing Span ($b$)</span>
+                  <span className="text-slate-300 font-medium">Wing Span (b)</span>
                   <span className="font-mono text-autoverse-cyan font-bold">{span.toFixed(3)} m ({Math.round(span * 1000)} mm)</span>
                 </div>
                 <input
@@ -123,7 +123,7 @@ export const ComponentEditorView: React.FC = () => {
               {/* Chord Slider */}
               <div className="space-y-1.5">
                 <div className="flex justify-between text-xs">
-                  <span className="text-slate-300 font-medium">Aerofoil Chord ($c$)</span>
+                  <span className="text-slate-300 font-medium">Aerofoil Chord (c)</span>
                   <span className="font-mono text-autoverse-cyan font-bold">{chord.toFixed(3)} m ({Math.round(chord * 1000)} mm)</span>
                 </div>
                 <input
@@ -144,7 +144,7 @@ export const ComponentEditorView: React.FC = () => {
               {/* Angle of Attack Slider */}
               <div className="space-y-1.5">
                 <div className="flex justify-between text-xs">
-                  <span className="text-slate-300 font-medium">Angle of Attack ($\alpha$)</span>
+                  <span className="text-slate-300 font-medium">Angle of Attack (&alpha;)</span>
                   <span className="font-mono text-autoverse-cyan font-bold">{aoa.toFixed(1)}°</span>
                 </div>
                 <input

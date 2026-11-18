@@ -1,11 +1,6 @@
 import React, { useState } from 'react';
 import {
   Palette,
-  Sparkles,
-  Sliders,
-  Sun,
-  Layers,
-  RotateCcw,
   Check
 } from 'lucide-react';
 import { useVehicleStore } from '../../hooks/useVehicleStore';
@@ -243,7 +238,7 @@ export const MaterialStudioView: React.FC = () => {
               <div className="p-3 rounded bg-autoverse-elevated border border-autoverse-border text-[11px] text-slate-300 space-y-1 mt-4">
                 <p className="font-semibold text-autoverse-cyan">🎓 PBR Shader Mechanics</p>
                 <p className="leading-relaxed">
-                  Automotive paint utilizes a two-layer Cook-Torrance BRDF: a base metallic/dielectric pigmented layer, coated with an uncolored clearcoat specular layer with a refractive index ($n \approx 1.5$) reflecting light according to Fresnel’s law.
+                  Automotive paint utilizes a two-layer Cook-Torrance BRDF: a base metallic/dielectric pigmented layer, coated with an uncolored clearcoat specular layer with a refractive index (n &asymp; 1.5) reflecting light according to Fresnel’s law.
                 </p>
               </div>
             )}
