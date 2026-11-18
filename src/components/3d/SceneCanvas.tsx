@@ -43,18 +43,15 @@ export const SceneCanvas: React.FC<SceneCanvasProps> = ({
   const currentModelMeta = customModelMeta || activeModel;
   const currentBinding = customAssetBinding || (currentModelMeta ? assetBindings[currentModelMeta.hash] : undefined);
 
-  // Derive dynamic dimensions for camera framing
+  // Derive dynamic dimensions for camera framing from any vehicle schema or AAGE definition
   const dimensions = useMemo(() => {
-    const raw = (currentConfig.parametricSpec || currentConfig) as any;
-    if (raw?.dimensions) {
-      return {
-        length: Number(raw.dimensions.length) || 4.6,
-        width: Number(raw.dimensions.width) || 2.0,
-        height: Number(raw.dimensions.height) || 1.25
-      };
-    }
-    return { length: 4.6, width: 2.0, height: 1.25 };
-  }, [currentConfig]);
+    const raw = (currentConfig.parametricSpec || currentBinding?.parametricSpec || currentConfig) as any;
+    const dims = raw?.dimensions || raw?.geometry?.dimensions || {};
+    const length = Number(dims.length ?? dims.overall_length_m) || 4.6;
+    const width = Number(dims.width ?? dims.overall_width_m) || 2.0;
+    const height = Number(dims.height ?? dims.overall_height_m) || 1.25;
+    return { length, width, height };
+  }, [currentConfig, currentBinding]);
 
   const hasInterior = useMemo(() => {
     const raw = (currentConfig.parametricSpec || currentConfig) as any;
@@ -151,21 +148,21 @@ export const SceneCanvas: React.FC<SceneCanvasProps> = ({
           />
         )}
 
-        {/* Studio Grid Floor */}
+        {/* Studio Grid Floor (Neutral Studio Slate) */}
         {showGrid && (
           <gridHelper
-            args={[24, 48, '#00F0FF', '#1E2533']}
+            args={[24, 48, '#475569', '#1E293B']}
             position={[0, 0, 0]}
           />
         )}
 
-        {/* Studio Mirror Floor Disk */}
+        {/* Studio Neutral Graphite Floor Disk */}
         <mesh position={[0, -0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <circleGeometry args={[9, 64]} />
           <meshStandardMaterial
-            color="#0B0D12"
-            roughness={0.65}
-            metalness={0.4}
+            color="#14171F"
+            roughness={0.82}
+            metalness={0.15}
           />
         </mesh>
       </Canvas>

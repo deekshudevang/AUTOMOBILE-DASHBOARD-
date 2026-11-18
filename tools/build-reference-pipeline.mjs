@@ -268,3 +268,4 @@ To elevate a vehicle from Tier B to Tier A without violating the Truth Contract 
 }
 
 processVehicles();
+

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useMemo } from 'react';
 import {
   Camera,
   RotateCw,
@@ -27,7 +27,11 @@ import { useVehicleStore } from '../../hooks/useVehicleStore';
 import { CameraPreset, EnvironmentPreset } from '../../types/vehicle';
 import { toHex32 } from '../../utils/joaat';
 import { resolveVehicleColor } from '../../utils/colorUtils';
-import { QualityClassifier, VehicleAssetDatabase } from '@autoverse/authentic-geometry-engine';
+import {
+  QualityClassifier,
+  VehicleAssetDatabase,
+  VehicleModelStatus
+} from '@autoverse/authentic-geometry-engine';
 
 const CAMERA_PRESETS: { id: CameraPreset; label: string }[] = [
   { id: 'isometric', label: '3/4 Iso' },
@@ -61,6 +65,8 @@ export const StudioView: React.FC = () => {
     setEnvironmentPreset,
     isWireframe,
     toggleWireframe,
+    useGeometryEngineV2,
+    toggleGeometryEngineV2,
     isAutoRotate,
     toggleAutoRotate,
     showGrid,
@@ -76,8 +82,38 @@ export const StudioView: React.FC = () => {
 
   const binding = activeModel ? assetBindings[activeModel.hash] : undefined;
   const dbRecord = activeModel ? VehicleAssetDatabase.find(activeModel.hash) : undefined;
-  const classification = binding?.qualityClass || 'CLASS_D_APPROXIMATE';
-  const badge = QualityClassifier.getBadgeInfo(classification);
+  
+  // Dynamically derive fidelity classification and Section 14 Model Status
+  const classification = useMemo(() => {
+    if (!useGeometryEngineV2) {
+      return binding?.qualityClass || 'CLASS_D_APPROXIMATE';
+    }
+    if (binding?.qualityClass === 'CLASS_A_VERIFIED_OEM') {
+      return 'CLASS_A_VERIFIED_OEM';
+    }
+    return 'CLASS_B_VERIFIED_PRODUCTION';
+  }, [useGeometryEngineV2, binding]);
+
+  const modelStatus = useMemo((): VehicleModelStatus => {
+    if (binding?.isCustomUpload && binding?.customMesh) {
+      return 'AUTHENTIC_ASSET_VERIFIED';
+    }
+    if (useGeometryEngineV2) {
+      return 'MODEL_SPECIFIC_RECONSTRUCTION';
+    }
+    if (binding?.qualityClass === 'CLASS_D_APPROXIMATE') {
+      return 'PROCEDURAL_APPROXIMATION';
+    }
+    return 'MODEL_SPECIFIC_RECONSTRUCTION';
+  }, [useGeometryEngineV2, binding]);
+
+  const statusInfo = useMemo(() => {
+    return QualityClassifier.getModelStatusInfo(modelStatus);
+  }, [modelStatus]);
+
+  const badge = useMemo(() => {
+    return QualityClassifier.getBadgeInfo(classification);
+  }, [classification]);
   const paint = resolveVehicleColor(activeConfig.isPrimaryColorCustom, activeConfig.customPrimaryColor, activeConfig.primaryColor);
 
   const toggleFullscreen = () => {
@@ -128,8 +164,8 @@ export const StudioView: React.FC = () => {
             {activeModel?.realWorldModel || activeModel?.displayName || activeFile}
           </h1>
 
-          {/* AAGE Quality Classification Pill */}
-          <div className="flex items-center gap-2 pt-1">
+          {/* AAGE Quality Classification & Model Status Pill */}
+          <div className="flex items-center gap-2 pt-1 flex-wrap">
             <button
               onClick={() => setShowCertificateModal(true)}
               className="flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold border transition-transform hover:scale-105"
@@ -144,15 +180,34 @@ export const StudioView: React.FC = () => {
               <span>{badge.shortLabel}: {badge.badgeTitle}</span>
             </button>
 
-            {badge.requiresApproximationBanner && (
-              <span className="text-[9px] font-mono text-autoverse-muted">
-                (Parametric Template)
-              </span>
-            )}
+            {/* Model Status Badge (Section 14) */}
+            <span
+              className="px-2 py-0.5 rounded text-[9px] font-mono font-bold border"
+              style={{
+                color: statusInfo.hexColor,
+                borderColor: `${statusInfo.hexColor}50`,
+                backgroundColor: `${statusInfo.hexColor}15`
+              }}
+              title={statusInfo.description}
+            >
+              {statusInfo.badgeTitle}
+            </span>
+
+            <button
+              onClick={toggleGeometryEngineV2}
+              className={`px-1.5 py-0.5 rounded text-[9px] font-mono border font-semibold transition-colors ${
+                useGeometryEngineV2
+                  ? 'bg-[#00F0FF]/15 text-[#00F0FF] border-[#00F0FF]/30 hover:bg-[#00F0FF]/25'
+                  : 'bg-amber-500/15 text-amber-400 border-amber-500/30 hover:bg-amber-500/25'
+              }`}
+              title="Toggle between Coachwork V2 Engine and Legacy Engine"
+            >
+              {useGeometryEngineV2 ? 'V2 ENGINE' : 'LEGACY'}
+            </button>
           </div>
 
           {/* Rule 6 Mandatory Banner when using Approximate Procedural Output */}
-          {badge.requiresApproximationBanner && (
+          {statusInfo.requiresPlacard && (
             <div className="p-1.5 rounded bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[10px] font-bold tracking-tight">
               APPROXIMATE PROCEDURAL VEHICLE — NOT AUTHENTIC MODEL GEOMETRY
             </div>

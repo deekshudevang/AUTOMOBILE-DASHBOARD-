@@ -1,0 +1,1690 @@
+[
+  {
+    "file": "10F Red-Carbon.json",
+    "schema": "cherax",
+    "id": 274946574,
+    "name": "10F Red-Carbon",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "2011_Porsche_911GT2RS_997-2.json",
+    "schema": "cherax",
+    "id": 661493923,
+    "name": "2011_Porsche_911GT2RS_997-2",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "2015_LamborghiniHuracan_LP620-2.json",
+    "schema": "cherax",
+    "id": 272929391,
+    "name": "2015_LamborghiniHuracan_LP620-2",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "2018_AudiRS3_Sedan.json",
+    "schema": "cherax",
+    "id": 3050505892,
+    "name": "2018_AudiRS3_Sedan",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "2018_AudiRS5_Coupe.json",
+    "schema": "cherax",
+    "id": 686471183,
+    "name": "2018_AudiRS5_Coupe",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "2020_Koenigsegg_Jesko_Absolut.json",
+    "schema": "cherax",
+    "id": 1748565021,
+    "name": "2020_Koenigsegg_Jesko_Absolut",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "2F2FSUPRA.json",
+    "schema": "cherax",
+    "id": 4080061290,
+    "name": "2F2FSUPRA",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "2F2FSUPRA_Retro_Shade.json",
+    "schema": "cherax",
+    "id": 4080061290,
+    "name": "2F2FSUPRA_Retro_Shade",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "760 LH.json",
+    "schema": "cherax",
+    "id": 4017955470,
+    "name": "760 LH",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "AA  max upgraded.json",
+    "schema": "cherax",
+    "id": 3316510914,
+    "name": "AA  max upgraded",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "acura_nsx_type_s_2022.json",
+    "schema": "parametric",
+    "id": "acura_nsx_type_s_nc1_2022",
+    "name": "NSX Type S",
+    "manufacturer": "Acura",
+    "category": "."
+  },
+  {
+    "file": "AElhAfs.json",
+    "schema": "cherax",
+    "id": 2712905841,
+    "name": "AElhAfs",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "alfa romeo giulia red.json",
+    "schema": "cherax",
+    "id": 3460613305,
+    "name": "alfa romeo giulia red",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "all blue circuit board electric.json",
+    "schema": "cherax",
+    "id": 386089410,
+    "name": "all blue circuit board electric",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "alpine_a110_r_2023.json",
+    "schema": "parametric",
+    "id": "alpine_a110_r_a110_2023",
+    "name": "A110 R",
+    "manufacturer": "Alpine",
+    "category": "."
+  },
+  {
+    "file": "ANNIS ZR360 DRIFT.json",
+    "schema": "cherax",
+    "id": 1923534526,
+    "name": "ANNIS ZR360 DRIFT",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "aston_martin_valkyrie_2022.json",
+    "schema": "parametric",
+    "id": "aston_martin_valkyrie_am_rb_001_2022",
+    "name": "Valkyrie",
+    "manufacturer": "Aston Martin",
+    "category": "."
+  },
+  {
+    "file": "audi r8 ( custom ).json",
+    "schema": "cherax",
+    "id": 274946574,
+    "name": "audi r8 ( custom )",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "AudiBenny.json",
+    "schema": "cherax",
+    "id": 662793086,
+    "name": "AudiBenny",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "audi_r8_v10_performance_2022.json",
+    "schema": "parametric",
+    "id": "audi_r8_v10_performance_type_4s_2022",
+    "name": "R8 V10 Performance",
+    "manufacturer": "Audi",
+    "category": "."
+  },
+  {
+    "file": "AUTOVERSE_VEHICLE_LIBRARY_INDEX.json",
+    "schema": "unknown",
+    "id": "AUTOVERSE_VEHICLE_LIBRARY_INDEX",
+    "name": "AUTOVERSE_VEHICLE_LIBRARY_INDEX",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "Banshee GTS.json",
+    "schema": "cherax",
+    "id": 3634959571,
+    "name": "Banshee GTS",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "Benefactor LRC GT v1.json",
+    "schema": "cherax",
+    "id": 1494708164,
+    "name": "Benefactor LRC GT v1",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "Benefactor LRC GT v2.json",
+    "schema": "cherax",
+    "id": 1494708164,
+    "name": "Benefactor LRC GT v2",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "BEntley.json",
+    "schema": "cherax",
+    "id": 1532171089,
+    "name": "BEntley",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "blackblueScramjet.json",
+    "schema": "cherax",
+    "id": 3656405053,
+    "name": "blackblueScramjet",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "Blista F1.json",
+    "schema": "cherax",
+    "id": 3703315515,
+    "name": "Blista F1",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "blue buffalo.json",
+    "schema": "cherax",
+    "id": 3675036420,
+    "name": "blue buffalo",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "blue collar rig.json",
+    "schema": "cherax",
+    "id": 3105951696,
+    "name": "blue collar rig",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "bmw (1).json",
+    "schema": "cherax",
+    "id": 2709293299,
+    "name": "bmw (1)",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "BMW M3 MINT GREEN.json",
+    "schema": "cherax",
+    "id": 2709293299,
+    "name": "BMW M3 MINT GREEN",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "BMW.json",
+    "schema": "cherax",
+    "id": 2709293299,
+    "name": "BMW",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "Bmw5.json",
+    "schema": "cherax",
+    "id": 2709293299,
+    "name": "Bmw5",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "bmw_m4_csl_2023.json",
+    "schema": "parametric",
+    "id": "bmw_m4_csl_g82_2023",
+    "name": "M4 CSL",
+    "manufacturer": "BMW",
+    "category": "."
+  },
+  {
+    "file": "Bravado Gauntled Mod.json",
+    "schema": "cherax",
+    "id": 3061199846,
+    "name": "Bravado Gauntled Mod",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "broomstick.json",
+    "schema": "cherax",
+    "id": 2069146067,
+    "name": "broomstick",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "bugatti_chiron_super_sport_2022.json",
+    "schema": "parametric",
+    "id": "bugatti_chiron_super_sport_chiron_2022",
+    "name": "Chiron Super Sport",
+    "manufacturer": "Bugatti",
+    "category": "."
+  },
+  {
+    "file": "C6.json",
+    "schema": "cherax",
+    "id": 127317925,
+    "name": "C6",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "CANTUCCIA.json",
+    "schema": "cherax",
+    "id": 2271995207,
+    "name": "CANTUCCIA",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "Cartuccia GT.json",
+    "schema": "cherax",
+    "id": 2271995207,
+    "name": "Cartuccia GT",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "chevrolet_camaro_zl1_1le_2022.json",
+    "schema": "parametric",
+    "id": "chevrolet_camaro_zl1_1le_sixth_generation_2022",
+    "name": "Camaro ZL1 1LE",
+    "manufacturer": "Chevrolet",
+    "category": "."
+  },
+  {
+    "file": "chevrolet_corvette_c7_zr1_2019.json",
+    "schema": "parametric",
+    "id": "chevrolet_corvette_c7_zr1_c7_2019",
+    "name": "Corvette C7 ZR1",
+    "manufacturer": "Chevrolet",
+    "category": "."
+  },
+  {
+    "file": "chevrolet_corvette_z06_2023.json",
+    "schema": "parametric",
+    "id": "chevrolet_corvette_z06_c8_2023",
+    "name": "Corvette Z06",
+    "manufacturer": "Chevrolet",
+    "category": "."
+  },
+  {
+    "file": "coil 2.json",
+    "schema": "cherax",
+    "id": 386089410,
+    "name": "coil 2",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "CometS2.json",
+    "schema": "cherax",
+    "id": 2568944644,
+    "name": "CometS2",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "copo.json",
+    "schema": "cherax",
+    "id": 2536587772,
+    "name": "copo",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "Cyclone II by Ram.json",
+    "schema": "cherax",
+    "id": 386089410,
+    "name": "Cyclone II by Ram",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "cyper.json",
+    "schema": "cherax",
+    "id": 1755697647,
+    "name": "cyper",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "defendybob.json",
+    "schema": "cherax",
+    "id": 2362851406,
+    "name": "defendybob",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "Deluxo Modded.json",
+    "schema": "cherax",
+    "id": 1483171323,
+    "name": "Deluxo Modded",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "dodge_challenger_srt_demon_170_2023.json",
+    "schema": "parametric",
+    "id": "dodge_challenger_srt_demon_170_ld_2023",
+    "name": "Challenger SRT Demon 170",
+    "manufacturer": "Dodge",
+    "category": "."
+  },
+  {
+    "file": "Elegy Retro Custom.json",
+    "schema": "cherax",
+    "id": 196747873,
+    "name": "Elegy Retro Custom",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "enus.json",
+    "schema": "cherax",
+    "id": 330661258,
+    "name": "enus",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "Euros.json",
+    "schema": "cherax",
+    "id": 2038480341,
+    "name": "Euros",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "Fast bike.json",
+    "schema": "cherax",
+    "id": 1353120668,
+    "name": "Fast bike",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "FERRARI12.json",
+    "schema": "cherax",
+    "id": 2271995207,
+    "name": "FERRARI12",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "ferrari_296_gtb_2022.json",
+    "schema": "parametric",
+    "id": "ferrari_296_gtb_f171_2022",
+    "name": "296 GTB",
+    "manufacturer": "Ferrari",
+    "category": "."
+  },
+  {
+    "file": "ferrari_f8_tributo_2020.json",
+    "schema": "parametric",
+    "id": "ferrari_f8_tributo_f142m_2020",
+    "name": "F8 Tributo",
+    "manufacturer": "Ferrari",
+    "category": "."
+  },
+  {
+    "file": "ferrari_fxx_k_evo_2018.json",
+    "schema": "parametric",
+    "id": "ferrari_fxx_k_evo_fxx_k_2018",
+    "name": "FXX-K Evo",
+    "manufacturer": "Ferrari",
+    "category": "."
+  },
+  {
+    "file": "ferrari_laferrari_2014.json",
+    "schema": "parametric",
+    "id": "ferrari_laferrari_f150_2014",
+    "name": "LaFerrari",
+    "manufacturer": "Ferrari",
+    "category": "."
+  },
+  {
+    "file": "fmj mk5 - gas jew2.json",
+    "schema": "cherax",
+    "id": 3287642921,
+    "name": "fmj mk5 - gas jew2",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "ford_gt_2017.json",
+    "schema": "parametric",
+    "id": "ford_gt_2017_second_generation_2017",
+    "name": "GT",
+    "manufacturer": "Ford",
+    "category": "."
+  },
+  {
+    "file": "ford_mustang_shelby_gt500_2022.json",
+    "schema": "parametric",
+    "id": "ford_mustang_shelby_gt500_s550_2022",
+    "name": "Mustang Shelby GT500",
+    "manufacturer": "Ford",
+    "category": "."
+  },
+  {
+    "file": "grotti itali rsx modded.json",
+    "schema": "cherax",
+    "id": 3145241962,
+    "name": "grotti itali rsx modded",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "gtr.json",
+    "schema": "cherax",
+    "id": 3728579874,
+    "name": "gtr",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "Hakuchou Drag.json",
+    "schema": "cherax",
+    "id": 4039289119,
+    "name": "Hakuchou Drag",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "honda.json",
+    "schema": "cherax",
+    "id": 409049982,
+    "name": "honda",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "honda_nsx_type_r_2002.json",
+    "schema": "parametric",
+    "id": "honda_nsx_type_r_na2_2002",
+    "name": "NSX Type R",
+    "manufacturer": "Honda",
+    "category": "."
+  },
+  {
+    "file": "Horus.json",
+    "schema": "cherax",
+    "id": 4017955470,
+    "name": "Horus",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "hypercars\\aston_martin_valkyrie.json",
+    "schema": "2.0",
+    "id": "aston_martin_valkyrie",
+    "name": "Valkyrie",
+    "manufacturer": "Aston Martin",
+    "category": "hypercars"
+  },
+  {
+    "file": "hypercars\\bugatti_bolide.json",
+    "schema": "2.0",
+    "id": "bugatti_bolide",
+    "name": "Bolide",
+    "manufacturer": "Bugatti",
+    "category": "hypercars"
+  },
+  {
+    "file": "hypercars\\bugatti_chiron.json",
+    "schema": "2.0",
+    "id": "bugatti_chiron",
+    "name": "Chiron",
+    "manufacturer": "Bugatti",
+    "category": "hypercars"
+  },
+  {
+    "file": "hypercars\\ferrari_laferrari.json",
+    "schema": "2.0",
+    "id": "ferrari_laferrari",
+    "name": "LaFerrari",
+    "manufacturer": "Ferrari",
+    "category": "hypercars"
+  },
+  {
+    "file": "hypercars\\koenigsegg_jesko.json",
+    "schema": "2.0",
+    "id": "koenigsegg_jesko",
+    "name": "Jesko",
+    "manufacturer": "Koenigsegg",
+    "category": "hypercars"
+  },
+  {
+    "file": "hypercars\\koenigsegg_regera.json",
+    "schema": "2.0",
+    "id": "koenigsegg_regera",
+    "name": "Regera",
+    "manufacturer": "Koenigsegg",
+    "category": "hypercars"
+  },
+  {
+    "file": "hypercars\\mclaren_p1.json",
+    "schema": "2.0",
+    "id": "mclaren_p1",
+    "name": "P1",
+    "manufacturer": "McLaren",
+    "category": "hypercars"
+  },
+  {
+    "file": "hypercars\\pagani_huayra.json",
+    "schema": "2.0",
+    "id": "pagani_huayra",
+    "name": "Huayra",
+    "manufacturer": "Pagani",
+    "category": "hypercars"
+  },
+  {
+    "file": "hypercars\\pagani_utopia.json",
+    "schema": "2.0",
+    "id": "pagani_utopia",
+    "name": "Utopia",
+    "manufacturer": "Pagani",
+    "category": "hypercars"
+  },
+  {
+    "file": "hypercars\\porsche_918_spyder.json",
+    "schema": "2.0",
+    "id": "porsche_918_spyder",
+    "name": "918 Spyder",
+    "manufacturer": "Porsche",
+    "category": "hypercars"
+  },
+  {
+    "file": "iirc.json",
+    "schema": "cherax",
+    "id": 3634959571,
+    "name": "iirc",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "index.json",
+    "schema": "unknown",
+    "id": "index",
+    "name": "index",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "ITALI RSX.json",
+    "schema": "cherax",
+    "id": 3145241962,
+    "name": "ITALI RSX",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "ITALY RSX.json",
+    "schema": "cherax",
+    "id": 3145241962,
+    "name": "ITALY RSX",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "jaguar_f_type_r_coupe_2023.json",
+    "schema": "parametric",
+    "id": "jaguar_f_type_r_coupe_x152_2023",
+    "name": "F-Type R Coupe",
+    "manufacturer": "Jaguar",
+    "category": "."
+  },
+  {
+    "file": "Jap Kanjo.json",
+    "schema": "cherax",
+    "id": 409049982,
+    "name": "Jap Kanjo",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "jdm_cars\\honda_nsx.json",
+    "schema": "2.0",
+    "id": "honda_nsx",
+    "name": "NSX Type R",
+    "manufacturer": "Honda",
+    "category": "jdm_cars"
+  },
+  {
+    "file": "jdm_cars\\mazda_rx_7_fd.json",
+    "schema": "2.0",
+    "id": "mazda_rx_7_fd",
+    "name": "RX-7",
+    "manufacturer": "Mazda",
+    "category": "jdm_cars"
+  },
+  {
+    "file": "jdm_cars\\mitsubishi_lancer_evolution_ix.json",
+    "schema": "2.0",
+    "id": "mitsubishi_lancer_evolution_ix",
+    "name": "Lancer Evolution IX",
+    "manufacturer": "Mitsubishi",
+    "category": "jdm_cars"
+  },
+  {
+    "file": "jdm_cars\\nissan_skyline_gt_r_r34.json",
+    "schema": "2.0",
+    "id": "nissan_skyline_gt_r_r34",
+    "name": "Skyline GT-R",
+    "manufacturer": "Nissan",
+    "category": "jdm_cars"
+  },
+  {
+    "file": "jdm_cars\\subaru_wrx_sti.json",
+    "schema": "2.0",
+    "id": "subaru_wrx_sti",
+    "name": "Impreza WRX STI",
+    "manufacturer": "Subaru",
+    "category": "jdm_cars"
+  },
+  {
+    "file": "KANJO rxs 2.json",
+    "schema": "cherax",
+    "id": 409049982,
+    "name": "KANJO rxs 2",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "Karin Sultan RS Classic.json",
+    "schema": "cherax",
+    "id": 4003946083,
+    "name": "Karin Sultan RS Classic",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "koenigsegg_jesko_attack_2021.json",
+    "schema": "parametric",
+    "id": "koenigsegg_jesko_attack_jesko_2021",
+    "name": "Jesko Attack",
+    "manufacturer": "Koenigsegg",
+    "category": "."
+  },
+  {
+    "file": "KURUMA.json",
+    "schema": "cherax",
+    "id": 410882957,
+    "name": "KURUMA",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "lamborghini_aventador_svj_2019.json",
+    "schema": "parametric",
+    "id": "lamborghini_aventador_svj_lp_770_4_2019",
+    "name": "Aventador SVJ",
+    "manufacturer": "Lamborghini",
+    "category": "."
+  },
+  {
+    "file": "lamborghini_essenza_scv12_2021.json",
+    "schema": "parametric",
+    "id": "lamborghini_essenza_scv12_scv12_2021",
+    "name": "Essenza SCV12",
+    "manufacturer": "Lamborghini",
+    "category": "."
+  },
+  {
+    "file": "lamborghini_huracan_sto_2021.json",
+    "schema": "parametric",
+    "id": "lamborghini_huracan_sto_lb_724_2021",
+    "name": "Huracan STO",
+    "manufacturer": "Lamborghini",
+    "category": "."
+  },
+  {
+    "file": "lamborghini_revuelto_2024.json",
+    "schema": "parametric",
+    "id": "lamborghini_revuelto_lb744_2024",
+    "name": "Revuelto",
+    "manufacturer": "Lamborghini",
+    "category": "."
+  },
+  {
+    "file": "lampadatti.json",
+    "schema": "cherax",
+    "id": 3540279623,
+    "name": "lampadatti",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "lexus_lfa_2012.json",
+    "schema": "parametric",
+    "id": "lexus_lfa_lfa_2012",
+    "name": "LFA",
+    "manufacturer": "Lexus",
+    "category": "."
+  },
+  {
+    "file": "lime green audi l.json",
+    "schema": "cherax",
+    "id": 3400983137,
+    "name": "lime green audi l",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "lotus_emira_v6_2023.json",
+    "schema": "parametric",
+    "id": "lotus_emira_v6_type_131_2023",
+    "name": "Emira V6",
+    "manufacturer": "Lotus",
+    "category": "."
+  },
+  {
+    "file": "Low rider.json",
+    "schema": "cherax",
+    "id": 223258115,
+    "name": "Low rider",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "lrc gt.json",
+    "schema": "cherax",
+    "id": 1494708164,
+    "name": "lrc gt",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "LRC.json",
+    "schema": "cherax",
+    "id": 1494708164,
+    "name": "LRC",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "LSCM Jester RR.json",
+    "schema": "cherax",
+    "id": 1484920335,
+    "name": "LSCM Jester RR",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "luiva.json",
+    "schema": "cherax",
+    "id": 3356898886,
+    "name": "luiva",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "lulli.json",
+    "schema": "cherax",
+    "id": 4080061290,
+    "name": "lulli",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "luxury_cars\\aston_martin_db12.json",
+    "schema": "2.0",
+    "id": "aston_martin_db12",
+    "name": "DB12",
+    "manufacturer": "Aston Martin",
+    "category": "luxury_cars"
+  },
+  {
+    "file": "luxury_cars\\bentley_continental_gt.json",
+    "schema": "2.0",
+    "id": "bentley_continental_gt",
+    "name": "Continental GT",
+    "manufacturer": "Bentley",
+    "category": "luxury_cars"
+  },
+  {
+    "file": "luxury_cars\\bentley_flying_spur.json",
+    "schema": "2.0",
+    "id": "bentley_flying_spur",
+    "name": "Flying Spur",
+    "manufacturer": "Bentley",
+    "category": "luxury_cars"
+  },
+  {
+    "file": "luxury_cars\\bmw_7_series.json",
+    "schema": "2.0",
+    "id": "bmw_7_series",
+    "name": "7 Series",
+    "manufacturer": "BMW",
+    "category": "luxury_cars"
+  },
+  {
+    "file": "luxury_cars\\maserati_mc20.json",
+    "schema": "2.0",
+    "id": "maserati_mc20",
+    "name": "MC20",
+    "manufacturer": "Maserati",
+    "category": "luxury_cars"
+  },
+  {
+    "file": "luxury_cars\\mercedes_benz_s_class.json",
+    "schema": "2.0",
+    "id": "mercedes_benz_s_class",
+    "name": "S-Class",
+    "manufacturer": "Mercedes-Benz",
+    "category": "luxury_cars"
+  },
+  {
+    "file": "luxury_cars\\mercedes_maybach_s_class.json",
+    "schema": "2.0",
+    "id": "mercedes_maybach_s_class",
+    "name": "S-Class",
+    "manufacturer": "Mercedes-Maybach",
+    "category": "luxury_cars"
+  },
+  {
+    "file": "luxury_cars\\porsche_panamera_turbo.json",
+    "schema": "2.0",
+    "id": "porsche_panamera_turbo",
+    "name": "Panamera Turbo",
+    "manufacturer": "Porsche",
+    "category": "luxury_cars"
+  },
+  {
+    "file": "luxury_cars\\rolls_royce_spectre.json",
+    "schema": "2.0",
+    "id": "rolls_royce_spectre",
+    "name": "Spectre",
+    "manufacturer": "Rolls-Royce",
+    "category": "luxury_cars"
+  },
+  {
+    "file": "luxury_cars\\rolls_royce_wraith.json",
+    "schema": "2.0",
+    "id": "rolls_royce_wraith",
+    "name": "Wraith",
+    "manufacturer": "Rolls-Royce",
+    "category": "luxury_cars"
+  },
+  {
+    "file": "m2.json",
+    "schema": "cherax",
+    "id": 1755697647,
+    "name": "m2",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "m3 competition (STD, Isle of man.json",
+    "schema": "cherax",
+    "id": 2709293299,
+    "name": "m3 competition (STD, Isle of man",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "m3.json",
+    "schema": "cherax",
+    "id": 2709293299,
+    "name": "m3",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "m3g80.json",
+    "schema": "cherax",
+    "id": 2709293299,
+    "name": "m3g80",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "maserati_mc20_2022.json",
+    "schema": "parametric",
+    "id": "maserati_mc20_m240_2022",
+    "name": "MC20",
+    "manufacturer": "Maserati",
+    "category": "."
+  },
+  {
+    "file": "mazda_mx_5_miata_2023.json",
+    "schema": "parametric",
+    "id": "mazda_mx_5_miata_nd_2023",
+    "name": "MX-5 Miata",
+    "manufacturer": "Mazda",
+    "category": "."
+  },
+  {
+    "file": "mazda_rx_7_spirit_r_2002.json",
+    "schema": "parametric",
+    "id": "mazda_rx_7_spirit_r_fd3s_2002",
+    "name": "RX-7 Spirit R",
+    "manufacturer": "Mazda",
+    "category": "."
+  },
+  {
+    "file": "mclaren_720s_2018.json",
+    "schema": "parametric",
+    "id": "mclaren_720s_p14_2018",
+    "name": "720S",
+    "manufacturer": "McLaren",
+    "category": "."
+  },
+  {
+    "file": "mclaren_765lt_2021.json",
+    "schema": "parametric",
+    "id": "mclaren_765lt_p14_lt_2021",
+    "name": "765LT",
+    "manufacturer": "McLaren",
+    "category": "."
+  },
+  {
+    "file": "mclaren_p1_2014.json",
+    "schema": "parametric",
+    "id": "mclaren_p1_p1_2014",
+    "name": "P1",
+    "manufacturer": "McLaren",
+    "category": "."
+  },
+  {
+    "file": "mclaren_senna_2019.json",
+    "schema": "parametric",
+    "id": "mclaren_senna_p15_2019",
+    "name": "Senna",
+    "manufacturer": "McLaren",
+    "category": "."
+  },
+  {
+    "file": "mercedes_amg_gt_black_series_2021.json",
+    "schema": "parametric",
+    "id": "mercedes_amg_gt_black_series_c190_2021",
+    "name": "GT Black Series",
+    "manufacturer": "Mercedes-AMG",
+    "category": "."
+  },
+  {
+    "file": "mercedes_amg_one_2023.json",
+    "schema": "parametric",
+    "id": "mercedes_amg_one_r50_2023",
+    "name": "ONE",
+    "manufacturer": "Mercedes-AMG",
+    "category": "."
+  },
+  {
+    "file": "mitsubishi_lancer_evolution_ix_mr_2006.json",
+    "schema": "parametric",
+    "id": "mitsubishi_lancer_evolution_ix_mr_ct9a_2006",
+    "name": "Lancer Evolution IX MR",
+    "manufacturer": "Mitsubishi",
+    "category": "."
+  },
+  {
+    "file": "mK11 STEROROIDS.json",
+    "schema": "cherax",
+    "id": 2069146067,
+    "name": "mK11 STEROROIDS",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "MODDED BY NICOLAS.json",
+    "schema": "cherax",
+    "id": 2042703219,
+    "name": "MODDED BY NICOLAS",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "Modded Schalgen GT with sports b.json",
+    "schema": "cherax",
+    "id": 3787471536,
+    "name": "Modded Schalgen GT with sports b",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "muscle_cars\\chevrolet_camaro_zl1.json",
+    "schema": "2.0",
+    "id": "chevrolet_camaro_zl1",
+    "name": "Camaro ZL1 1LE",
+    "manufacturer": "Chevrolet",
+    "category": "muscle_cars"
+  },
+  {
+    "file": "muscle_cars\\dodge_challenger_srt_demon_170.json",
+    "schema": "2.0",
+    "id": "dodge_challenger_srt_demon_170",
+    "name": "Challenger SRT Demon 170",
+    "manufacturer": "Dodge",
+    "category": "muscle_cars"
+  },
+  {
+    "file": "muscle_cars\\ford_mustang_shelby_gt500.json",
+    "schema": "2.0",
+    "id": "ford_mustang_shelby_gt500",
+    "name": "Mustang Shelby GT500",
+    "manufacturer": "Ford",
+    "category": "muscle_cars"
+  },
+  {
+    "file": "Night RX 05.json",
+    "schema": "cherax",
+    "id": 433954513,
+    "name": "Night RX 05",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "NightShark Modded.json",
+    "schema": "cherax",
+    "id": 433954513,
+    "name": "NightShark Modded",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "Niobe.json",
+    "schema": "cherax",
+    "id": 1881415402,
+    "name": "Niobe",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "nissan_gt_r_nismo_2024.json",
+    "schema": "parametric",
+    "id": "nissan_gt_r_nismo_r35_2024",
+    "name": "GT-R Nismo",
+    "manufacturer": "Nissan",
+    "category": "."
+  },
+  {
+    "file": "nissan_skyline_gt_r_v_spec_ii_2002.json",
+    "schema": "parametric",
+    "id": "nissan_skyline_gt_r_v_spec_ii_r34_2002",
+    "name": "Skyline GT-R V-Spec II",
+    "manufacturer": "Nissan",
+    "category": "."
+  },
+  {
+    "file": "nissan_z_nismo_2024.json",
+    "schema": "parametric",
+    "id": "nissan_z_nismo_rz34_2024",
+    "name": "Z Nismo",
+    "manufacturer": "Nissan",
+    "category": "."
+  },
+  {
+    "file": "pagani_huayra_bc_2017.json",
+    "schema": "parametric",
+    "id": "pagani_huayra_bc_huayra_2017",
+    "name": "Huayra BC",
+    "manufacturer": "Pagani",
+    "category": "."
+  },
+  {
+    "file": "Paragon S.json",
+    "schema": "cherax",
+    "id": 3348919626,
+    "name": "Paragon S",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "paragon.json",
+    "schema": "cherax",
+    "id": 1416466158,
+    "name": "paragon",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "PARIAH.json",
+    "schema": "cherax",
+    "id": 867799010,
+    "name": "PARIAH",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "Pfister Growler  Oak Green.json",
+    "schema": "cherax",
+    "id": 1304459735,
+    "name": "Pfister Growler  Oak Green",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "pink astrale.json",
+    "schema": "cherax",
+    "id": 1596736441,
+    "name": "pink astrale",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "PINKCAR1.json",
+    "schema": "cherax",
+    "id": 2271995207,
+    "name": "PINKCAR1",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "Pinki.json",
+    "schema": "cherax",
+    "id": 687627128,
+    "name": "Pinki",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "pipistrello.json",
+    "schema": "cherax",
+    "id": 4071505793,
+    "name": "pipistrello",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "PORSCHE X-TREME.json",
+    "schema": "cherax",
+    "id": 2515968713,
+    "name": "PORSCHE X-TREME",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "porsche_718_cayman_gt4_rs_2022.json",
+    "schema": "parametric",
+    "id": "porsche_718_cayman_gt4_rs_982_2022",
+    "name": "718 Cayman GT4 RS",
+    "manufacturer": "Porsche",
+    "category": "."
+  },
+  {
+    "file": "porsche_911_dakar_2023.json",
+    "schema": "parametric",
+    "id": "porsche_911_dakar_992_2023",
+    "name": "911 Dakar",
+    "manufacturer": "Porsche",
+    "category": "."
+  },
+  {
+    "file": "porsche_911_gt3_rs_2022.json",
+    "schema": "parametric",
+    "id": "porsche_911_gt3_rs_992_2022",
+    "name": "911 GT3 RS",
+    "manufacturer": "Porsche",
+    "category": "."
+  },
+  {
+    "file": "porsche_911_gt3_rs_992_2022.json",
+    "schema": "parametric",
+    "id": "porsche_911_gt3_rs_992_2022",
+    "name": "911 GT3 RS",
+    "manufacturer": "Porsche",
+    "category": "."
+  },
+  {
+    "file": "porsche_911_turbo_s_2021.json",
+    "schema": "parametric",
+    "id": "porsche_911_turbo_s_992_2021",
+    "name": "911 Turbo S",
+    "manufacturer": "Porsche",
+    "category": "."
+  },
+  {
+    "file": "porsche_918_spyder_2015.json",
+    "schema": "parametric",
+    "id": "porsche_918_spyder_918_2015",
+    "name": "918 Spyder",
+    "manufacturer": "Porsche",
+    "category": "."
+  },
+  {
+    "file": "porsche_935_2019.json",
+    "schema": "parametric",
+    "id": "porsche_935_2019_991_2_based_2019",
+    "name": "935 (2019)",
+    "manufacturer": "Porsche",
+    "category": "."
+  },
+  {
+    "file": "PROGEN LUIVA.json",
+    "schema": "cherax",
+    "id": 3356898886,
+    "name": "PROGEN LUIVA",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "purple porsche 911.json",
+    "schema": "cherax",
+    "id": 2272483501,
+    "name": "purple porsche 911",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "PursuitIgnus.json",
+    "schema": "cherax",
+    "id": 4255883207,
+    "name": "PursuitIgnus",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "rimac_nevera_2022.json",
+    "schema": "parametric",
+    "id": "rimac_nevera_c_two_2022",
+    "name": "Nevera",
+    "manufacturer": "Rimac",
+    "category": "."
+  },
+  {
+    "file": "RO-86.json",
+    "schema": "cherax",
+    "id": 3929093893,
+    "name": "RO-86",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "rolls_royce_spectre_2024.json",
+    "schema": "parametric",
+    "id": "rolls_royce_spectre_rr25_2024",
+    "name": "Spectre",
+    "manufacturer": "Rolls-Royce",
+    "category": "."
+  },
+  {
+    "file": "rx7.json",
+    "schema": "cherax",
+    "id": 1923534526,
+    "name": "rx7",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "S  T  X.json",
+    "schema": "cherax",
+    "id": 3675036420,
+    "name": "S  T  X",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "Sentinel GTS.json",
+    "schema": "cherax",
+    "id": 2709293299,
+    "name": "Sentinel GTS",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "special_edition\\porsche_935.json",
+    "schema": "2.0",
+    "id": "porsche_935",
+    "name": "935",
+    "manufacturer": "Porsche",
+    "category": "special_edition"
+  },
+  {
+    "file": "Specter Classic.json",
+    "schema": "cherax",
+    "id": 1074745671,
+    "name": "Specter Classic",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "sports_cars\\audi_r8_v10_performance.json",
+    "schema": "2.0",
+    "id": "audi_r8_v10_performance",
+    "name": "R8 V10 Performance",
+    "manufacturer": "Audi",
+    "category": "sports_cars"
+  },
+  {
+    "file": "sports_cars\\bmw_m4_csl.json",
+    "schema": "2.0",
+    "id": "bmw_m4_csl",
+    "name": "M4 CSL",
+    "manufacturer": "BMW",
+    "category": "sports_cars"
+  },
+  {
+    "file": "sports_cars\\chevrolet_corvette_c8_z06.json",
+    "schema": "2.0",
+    "id": "chevrolet_corvette_c8_z06",
+    "name": "Corvette C8 Z06",
+    "manufacturer": "Chevrolet",
+    "category": "sports_cars"
+  },
+  {
+    "file": "sports_cars\\ford_gt.json",
+    "schema": "2.0",
+    "id": "ford_gt",
+    "name": "GT",
+    "manufacturer": "Ford",
+    "category": "sports_cars"
+  },
+  {
+    "file": "sports_cars\\lexus_lfa.json",
+    "schema": "2.0",
+    "id": "lexus_lfa",
+    "name": "LFA",
+    "manufacturer": "Lexus",
+    "category": "sports_cars"
+  },
+  {
+    "file": "sports_cars\\mercedes_amg_gt_r.json",
+    "schema": "2.0",
+    "id": "mercedes_amg_gt_r",
+    "name": "GT R",
+    "manufacturer": "Mercedes-AMG",
+    "category": "sports_cars"
+  },
+  {
+    "file": "sports_cars\\nissan_gt_r_r35.json",
+    "schema": "2.0",
+    "id": "nissan_gt_r_r35",
+    "name": "GT-R Nismo",
+    "manufacturer": "Nissan",
+    "category": "sports_cars"
+  },
+  {
+    "file": "sports_cars\\porsche_911_gt3_rs.json",
+    "schema": "2.0",
+    "id": "porsche_911_gt3_rs",
+    "name": "911 GT3 RS",
+    "manufacturer": "Porsche",
+    "category": "sports_cars"
+  },
+  {
+    "file": "sports_cars\\porsche_911_turbo_s.json",
+    "schema": "2.0",
+    "id": "porsche_911_turbo_s",
+    "name": "911 Turbo S",
+    "manufacturer": "Porsche",
+    "category": "sports_cars"
+  },
+  {
+    "file": "sports_cars\\toyota_gr_supra.json",
+    "schema": "2.0",
+    "id": "toyota_gr_supra",
+    "name": "GR Supra",
+    "manufacturer": "Toyota",
+    "category": "sports_cars"
+  },
+  {
+    "file": "subaru_impreza_wrx_sti_2006.json",
+    "schema": "parametric",
+    "id": "subaru_impreza_wrx_sti_gd_2006",
+    "name": "Impreza WRX STI",
+    "manufacturer": "Subaru",
+    "category": "."
+  },
+  {
+    "file": "supercars\\ferrari_296_gtb.json",
+    "schema": "2.0",
+    "id": "ferrari_296_gtb",
+    "name": "296 GTB",
+    "manufacturer": "Ferrari",
+    "category": "supercars"
+  },
+  {
+    "file": "supercars\\ferrari_488_pista.json",
+    "schema": "2.0",
+    "id": "ferrari_488_pista",
+    "name": "488 Pista",
+    "manufacturer": "Ferrari",
+    "category": "supercars"
+  },
+  {
+    "file": "supercars\\ferrari_f8_tributo.json",
+    "schema": "2.0",
+    "id": "ferrari_f8_tributo",
+    "name": "F8 Tributo",
+    "manufacturer": "Ferrari",
+    "category": "supercars"
+  },
+  {
+    "file": "supercars\\ferrari_sf90_stradale.json",
+    "schema": "2.0",
+    "id": "ferrari_sf90_stradale",
+    "name": "SF90 Stradale",
+    "manufacturer": "Ferrari",
+    "category": "supercars"
+  },
+  {
+    "file": "supercars\\lamborghini_aventador_svj.json",
+    "schema": "2.0",
+    "id": "lamborghini_aventador_svj",
+    "name": "Aventador SVJ",
+    "manufacturer": "Lamborghini",
+    "category": "supercars"
+  },
+  {
+    "file": "supercars\\lamborghini_huracan_sto.json",
+    "schema": "2.0",
+    "id": "lamborghini_huracan_sto",
+    "name": "Huracan STO",
+    "manufacturer": "Lamborghini",
+    "category": "supercars"
+  },
+  {
+    "file": "supercars\\lamborghini_revuelto.json",
+    "schema": "2.0",
+    "id": "lamborghini_revuelto",
+    "name": "Revuelto",
+    "manufacturer": "Lamborghini",
+    "category": "supercars"
+  },
+  {
+    "file": "supercars\\mclaren_720s.json",
+    "schema": "2.0",
+    "id": "mclaren_720s",
+    "name": "720S",
+    "manufacturer": "McLaren",
+    "category": "supercars"
+  },
+  {
+    "file": "supercars\\mclaren_765lt.json",
+    "schema": "2.0",
+    "id": "mclaren_765lt",
+    "name": "765LT",
+    "manufacturer": "McLaren",
+    "category": "supercars"
+  },
+  {
+    "file": "supercars\\mclaren_artura.json",
+    "schema": "2.0",
+    "id": "mclaren_artura",
+    "name": "Artura",
+    "manufacturer": "McLaren",
+    "category": "supercars"
+  },
+  {
+    "file": "suzume.json",
+    "schema": "cherax",
+    "id": 687627128,
+    "name": "suzume",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "t20.json",
+    "schema": "cherax",
+    "id": 1663218586,
+    "name": "t20",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "TANK MODERN.json",
+    "schema": "cherax",
+    "id": 2859440138,
+    "name": "TANK MODERN",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "tezeract.json",
+    "schema": "cherax",
+    "id": 1031562256,
+    "name": "tezeract",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "toyota_2000gt_1967.json",
+    "schema": "parametric",
+    "id": "toyota_2000gt_mf10_1967",
+    "name": "2000GT",
+    "manufacturer": "Toyota",
+    "category": "."
+  },
+  {
+    "file": "toyota_gr_supra_2023.json",
+    "schema": "parametric",
+    "id": "toyota_gr_supra_a90_2023",
+    "name": "GR Supra",
+    "manufacturer": "Toyota",
+    "category": "."
+  },
+  {
+    "file": "track_cars\\ferrari_fxx_k_evo.json",
+    "schema": "2.0",
+    "id": "ferrari_fxx_k_evo",
+    "name": "FXX-K Evo",
+    "manufacturer": "Ferrari",
+    "category": "track_cars"
+  },
+  {
+    "file": "U.F.O.json",
+    "schema": "cherax",
+    "id": 1483171323,
+    "name": "U.F.O",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "urus.json",
+    "schema": "cherax",
+    "id": 3126015148,
+    "name": "urus",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "Veleno GT.json",
+    "schema": "cherax",
+    "id": 3316510914,
+    "name": "Veleno GT",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "vigitane.json",
+    "schema": "cherax",
+    "id": 3052358707,
+    "name": "vigitane",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "W124.json",
+    "schema": "cherax",
+    "id": 4151380270,
+    "name": "W124",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "Y-Cinquemila.json",
+    "schema": "cherax",
+    "id": 2767531027,
+    "name": "Y-Cinquemila",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "yellow challanger.json",
+    "schema": "cherax",
+    "id": 3308022675,
+    "name": "yellow challanger",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "Yellow F1 Supercar.json",
+    "schema": "cherax",
+    "id": 4171974011,
+    "name": "Yellow F1 Supercar",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "Zonda.json",
+    "schema": "cherax",
+    "id": 4017955470,
+    "name": "Zonda",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "Zorrusso.json",
+    "schema": "cherax",
+    "id": 3612858749,
+    "name": "Zorrusso",
+    "manufacturer": "Unknown",
+    "category": "."
+  },
+  {
+    "file": "ZR.json",
+    "schema": "cherax",
+    "id": 2436313176,
+    "name": "ZR",
+    "manufacturer": "Unknown",
+    "category": "."
+  }
+]

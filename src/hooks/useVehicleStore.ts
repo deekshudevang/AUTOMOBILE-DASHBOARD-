@@ -27,12 +27,14 @@ interface VehicleStoreState {
   activeView: 'dashboard' | 'library' | 'studio' | 'explorer' | 'customizer' | 'comparison' | 'assetManager' | 'history' | 'export' | 'settings';
   presentationMode: PresentationMode;
   setPresentationMode: (mode: PresentationMode) => void;
-  
+
   // 3D Scene Controls
   cameraPreset: CameraPreset;
   cameraTrigger: number;
   environmentPreset: EnvironmentPreset;
   isWireframe: boolean;
+  useGeometryEngineV2: boolean;
+  toggleGeometryEngineV2: () => void;
   showNormals: boolean;
   toggleShowNormals: () => void;
   isAutoRotate: boolean;
@@ -75,7 +77,7 @@ interface VehicleStoreState {
   undo: () => void;
   redo: () => void;
   resetConfig: () => void;
-  
+
   // Quick Customizer Actions
   setPrimaryColorIndex: (index: number) => void;
   setCustomPrimaryColor: (rgb: RGBColor) => void;
@@ -235,6 +237,8 @@ export const useVehicleStore = create<VehicleStoreState>((set, get) => ({
   cameraTrigger: Date.now(),
   environmentPreset: 'studio-dark',
   isWireframe: false,
+  useGeometryEngineV2: true,
+  toggleGeometryEngineV2: () => set(state => ({ useGeometryEngineV2: !state.useGeometryEngineV2 })),
   showNormals: false,
   toggleShowNormals: () => set(state => ({ showNormals: !state.showNormals })),
   isAutoRotate: false,

@@ -9,6 +9,13 @@ export type GeometryQualityClass =
   | 'CLASS_C_RECONSTRUCTED'
   | 'CLASS_D_APPROXIMATE';
 
+export type VehicleModelStatus =
+  | 'AUTHENTIC_ASSET_VERIFIED'
+  | 'MODEL_SPECIFIC_RECONSTRUCTION'
+  | 'PROCEDURAL_APPROXIMATION'
+  | 'MODEL_UNAVAILABLE'
+  | 'VALIDATION_PENDING';
+
 export type SupportedGeometryFormat =
   | 'glb'
   | 'gltf'

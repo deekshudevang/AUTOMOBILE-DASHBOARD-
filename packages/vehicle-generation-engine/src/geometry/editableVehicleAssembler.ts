@@ -42,7 +42,8 @@ export class EditableVehicleAssembler {
     const materialsMap = this.buildMaterialsMap(spec.materials, overrides, options?.wireframe);
 
     // 2. Build Monocoque Body Shell (if cross sections exist)
-    if (spec.bodyGeometry?.crossSections && spec.bodyGeometry.crossSections.length >= 2) {
+    const hasLoftedShell = !!(spec.bodyGeometry?.crossSections && spec.bodyGeometry.crossSections.length >= 2);
+    if (hasLoftedShell) {
       const bodyShellMesh = this.buildLoftedBodyShell(spec, materialsMap, overrides);
       bodyShellMesh.name = 'component_body_shell';
       root.add(bodyShellMesh);
@@ -779,8 +780,49 @@ export class EditableVehicleAssembler {
     length: number,
     material: THREE.Material
   ): THREE.Mesh {
-    const geo = new THREE.BoxGeometry(width, height, length);
+    // Generate curved aerodynamic panel geometry with double curvature (never flat BoxGeometry)
+    const uSteps = 8;
+    const vSteps = 8;
+    const positions: number[] = [];
+    const indices: number[] = [];
+    const uvs: number[] = [];
+
+    const hw = width / 2;
+    const hh = height / 2;
+    const hl = length / 2;
+
+    for (let i = 0; i <= uSteps; i++) {
+      const u = i / uSteps;
+      const un = u * 2 - 1;
+      for (let j = 0; j <= vSteps; j++) {
+        const v = j / vSteps;
+        const vn = v * 2 - 1;
+        const x = un * hw;
+        const z = vn * hl;
+        const curveY = 0.015 * (1 - un ** 2) * (1 - vn ** 2);
+        const y = -hh + v * height + curveY;
+        positions.push(x, y, z);
+        uvs.push(u, v);
+      }
+    }
+
+    for (let i = 0; i < uSteps; i++) {
+      for (let j = 0; j < vSteps; j++) {
+        const a = i * (vSteps + 1) + j;
+        const b = (i + 1) * (vSteps + 1) + j;
+        const c = (i + 1) * (vSteps + 1) + (j + 1);
+        const d = i * (vSteps + 1) + (j + 1);
+        indices.push(a, b, c);
+        indices.push(a, c, d);
+      }
+    }
+
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    geo.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+    geo.setIndex(indices);
     geo.computeVertexNormals();
+
     const mesh = new THREE.Mesh(geo, material);
     mesh.name = `${id}_panel`;
     mesh.castShadow = true;

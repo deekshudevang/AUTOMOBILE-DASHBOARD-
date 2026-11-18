@@ -90,3 +90,4 @@ describe('AutoVerse 3D — Schema V2 Migration Pipeline (Phase D)', () => {
     expect(group).toBeDefined();
   });
 });
+

@@ -10,6 +10,8 @@ const VEHICLES = [
   { id: 'lamborghini_aventador_svj', file: 'supercars/lamborghini_aventador_svj.json' }
 ];
 
+const BASE_ARTIFACT_DIR = 'C:\\Users\\deeks\\.gemini\\antigravity\\brain\\e8596c04-6833-4bac-91e5-2b61fbb37287\\rollout';
+
 const ANGLES = [
   { preset: 'front', filename: 'front.png' },
   { preset: 'rear', filename: 'rear.png' },
@@ -22,16 +24,15 @@ const ANGLES = [
 ];
 
 async function main() {
-  console.log('Launching headless Chrome for pilot vehicle screenshots...');
+  console.log('Launching headless Chrome for 24-view rollout capture...');
   const browser = await puppeteer.launch({
     executablePath: CHROME_PATH,
     headless: 'new',
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
-      '--use-gl=angle',
-      '--use-angle=swiftshader',
       '--enable-webgl',
+      '--ignore-gpu-blocklist',
       '--window-size=1600,1000'
     ]
   });
@@ -44,39 +45,47 @@ async function main() {
   await new Promise(r => setTimeout(r, 2000));
 
   for (const veh of VEHICLES) {
-    const dir = path.resolve(`docs/pilot/${veh.id}`);
+    const dir = path.resolve(`docs/rollout/${veh.id}`);
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+
+    const artifactDir = path.join(BASE_ARTIFACT_DIR, veh.id);
+    if (!fs.existsSync(artifactDir)) fs.mkdirSync(artifactDir, { recursive: true });
 
     console.log(`Loading vehicle ${veh.id} (${veh.file})...`);
     await page.evaluate(async (fileName) => {
       const store = (window).__autoverse_store;
       if (store) {
         await store.getState().loadVehicleByFile(fileName);
-        store.getState().setPresentationMode('showroom'); // Clean showroom presentation
+        store.getState().setPresentationMode('studio');
+        store.setState({ isAutoRotate: false, useGeometryEngineV2: true });
       }
     }, veh.file);
 
-    await new Promise(r => setTimeout(r, 1500));
+    await new Promise(r => setTimeout(r, 2000));
 
     for (const angle of ANGLES) {
-      console.log(`  Capturing ${angle.preset} -> ${angle.filename}...`);
+      console.log(`  [${veh.id}] Capturing ${angle.preset} -> ${angle.filename}...`);
       await page.evaluate((preset) => {
         const store = (window).__autoverse_store;
         if (store) {
           store.getState().setCameraPreset(preset);
+          store.setState({ isAutoRotate: false });
         }
       }, angle.preset);
 
       // Allow camera transition to settle smoothly
-      await new Promise(r => setTimeout(r, 800));
+      await new Promise(r => setTimeout(r, 1200));
 
       const outPath = path.join(dir, angle.filename);
       await page.screenshot({ path: outPath });
+
+      const artifactPath = path.join(artifactDir, angle.filename);
+      fs.copyFileSync(outPath, artifactPath);
     }
   }
 
   await browser.close();
-  console.log('Successfully captured all 8 angles for 3 pilot vehicles.');
+  console.log('Successfully captured all 24 angles for Wave 1 pilots.');
 }
 
 main().catch(err => {

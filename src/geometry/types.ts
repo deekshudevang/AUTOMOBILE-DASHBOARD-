@@ -35,6 +35,7 @@ export type ComponentSemanticType =
   | 'side_glass_l'
   | 'side_glass_r'
   | 'rear_glass'
+  | 'rear_window'
   | 'headlight_l'
   | 'headlight_r'
   | 'taillight_l'
@@ -151,10 +152,22 @@ export interface GeometryQualityReport {
   overallDimensions: { pass: boolean; tolerance: string; deltaMm: Record<string, number> };
   groundContact: { pass: boolean; deltaYMm: number };
   symmetry: { pass: boolean; maxDeviationMm: number };
-  noFloatingGeometry: { pass: boolean; orphanIslands: number };
+  noFloatingGeometry: { pass: boolean; orphanIslands: number; maxDetachedGapMm: number };
   manifoldBody: { pass: boolean; openEdges: number };
   normalsAndShading: { pass: boolean; facetedPanels: number };
   componentization: { pass: boolean; componentCount: number };
   triangleBudget: { pass: boolean; count: number; budget: number };
+  noPrimitivePanels: { pass: boolean; primitiveBoxesFound: string[] };
+  curvaturePresent: { pass: boolean; flatPanelsFound: string[]; minCurvatureMm: number };
+  wheelArchFit: { pass: boolean; occludedWheels: string[] };
+  spatialConnectivity: { pass: boolean; maxSeparationMm: number; unattachedComponents: string[] };
+  surfaceContinuity: { pass: boolean; maxNormalAngleDeg: number; discontinuousEdges: number };
+  shutLineSpacing: { pass: boolean; minGapMm: number; maxGapMm: number; collisions: string[] };
+  wheelVisibility: { pass: boolean; minVisibilityPercent: number; unoccludedWheels: Record<string, number> };
+  appendageAnchoring: { pass: boolean; maxAnchorGapMm: number; detachedAppendages: string[] };
+  plateAttachment: { pass: boolean; frontPlateDeltaMm: number; rearPlateDeltaMm: number };
+  renderSanity: { pass: boolean; estimatedLuminance: number };
+  provenanceConsistency: { pass: boolean; declaredTier: string; earnedTier: string };
+  distinctness?: { pass: boolean; outputHash: string; triangleCount: number };
   allPassed: boolean;
 }

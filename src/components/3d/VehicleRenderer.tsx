@@ -6,7 +6,9 @@ import { resolveVehicleColor } from '../../utils/colorUtils';
 import { getGTAColor } from '../../data/gtaColorPalette';
 import { NeonUnderglow } from './NeonUnderglow';
 import { LicensePlate3D } from './LicensePlate3D';
+import { ModelUnavailableDisplay } from './ModelUnavailableDisplay';
 import { ProceduralChassisGenerator, ParametricGeometryBuilder, EditableVehicleAssembler } from '@autoverse/vehicle-generation-engine';
+import { VehicleGeometryEngine, SchemaV2Migrator } from '../../geometry';
 import { useVehicleStore } from '../../hooks/useVehicleStore';
 
 interface VehicleRendererProps {
@@ -28,7 +30,8 @@ export const VehicleRenderer: React.FC<VehicleRendererProps> = ({
     selectComponent,
     isMeasuring,
     setMeasurementPoint,
-    showNormals
+    showNormals,
+    useGeometryEngineV2
   } = useVehicleStore();
 
   // Primary Paint material resolution
@@ -60,8 +63,78 @@ export const VehicleRenderer: React.FC<VehicleRendererProps> = ({
     return mod15 > 0 ? mod15 * 0.015 : 0;
   }, [config.mods]);
 
+  // Automotive Authentic Geometry Engine (AAGE V2) - Authentic Componentized Assembly
+  const v2Result = useMemo(() => {
+    if (!useGeometryEngineV2) return null;
+    const rawSpec = (config.parametricSpec || ((config as any).geometry?.body_shell ? (config as any) : config)) as any;
+    const vehicleId = modelMeta?.codeName || (modelMeta as any)?.id || 'porsche_911_gt3_rs';
+    const def = SchemaV2Migrator.migrate(rawSpec, vehicleId);
+
+    // Apply active custom colors
+    if (def.materials?.body_paint) {
+      def.materials.body_paint.color = primaryPaint.hex;
+    }
+    if (def.materials?.rim) {
+      def.materials.rim.color = wheelColor.hex;
+    }
+
+    const engine = new VehicleGeometryEngine();
+    const group = engine.loadVehicle(def);
+    const report = engine.getValidationReport();
+    const components = engine.getComponents();
+
+    // Attach required debug metadata to root object
+    group.userData = {
+      isVehicleGeometryEngineV2: true,
+      generatorId: 'coachwork_generator_v2',
+      version: '2.0.0',
+      vehicleId: def.meta.id,
+      fidelityTier: def.geometry.fidelityTier,
+      archetype: def.meta.archetype,
+      triangleCount: report.triangleBudget.count,
+      componentCount: components.length,
+      qualityReport: report
+    };
+
+    // Apply wireframe if requested
+    if (isWireframe) {
+      group.traverse(child => {
+        if ((child as THREE.Mesh).isMesh) {
+          const m = (child as THREE.Mesh).material;
+          if (m) {
+            if (Array.isArray(m)) m.forEach(mat => { (mat as any).wireframe = true; });
+            else (m as any).wireframe = true;
+          }
+        }
+      });
+    }
+
+    // Apply component overrides if any
+    if (componentOverrides) {
+      Object.entries(componentOverrides).forEach(([id, override]) => {
+        if (override.visible === false) {
+          engine.setVisible(id, false);
+        }
+        if ((override as any).color) {
+          engine.applyMaterial(id, { color: (override as any).color });
+        }
+      });
+    }
+
+    return { engine, group, report, components };
+  }, [useGeometryEngineV2, config, modelMeta, primaryPaint.hex, wheelColor.hex, isWireframe, componentOverrides]);
+
+  useEffect(() => {
+    return () => {
+      if (v2Result) {
+        v2Result.engine.dispose();
+      }
+    };
+  }, [v2Result]);
+
   // Schema 2.0 Editable Component Assembly (AutoVerse 50 Vehicle Library)
   const schema2Body = useMemo(() => {
+    if (useGeometryEngineV2) return null;
     const rawSpec = (config.parametricSpec || config) as any;
     if (rawSpec?.schemaVersion === '2.0') {
       return EditableVehicleAssembler.build(rawSpec as VehicleSchema2, {
@@ -71,7 +144,7 @@ export const VehicleRenderer: React.FC<VehicleRendererProps> = ({
       });
     }
     return null;
-  }, [config.parametricSpec, config, componentOverrides, selectedComponentId, isWireframe]);
+  }, [useGeometryEngineV2, config.parametricSpec, config, componentOverrides, selectedComponentId, isWireframe]);
 
   // Clean up GPU geometries and materials when assembly changes or unmounts
   useEffect(() => {
@@ -84,7 +157,7 @@ export const VehicleRenderer: React.FC<VehicleRendererProps> = ({
 
   // Dedicated parametric specification model (e.g. Porsche 911 GT3 RS 992 or AutoVerse 50 Supercars)
   const parametricBody = useMemo(() => {
-    if (schema2Body) return null;
+    if (useGeometryEngineV2 || schema2Body) return null;
     const spec = config.parametricSpec || ((config as any).geometry?.body_shell ? (config as any) : null);
     if (!spec || !spec.geometry?.body_shell?.longitudinal_sections) return null;
     return ParametricGeometryBuilder.build(spec, {
@@ -92,11 +165,11 @@ export const VehicleRenderer: React.FC<VehicleRendererProps> = ({
       customWheelColorHex: wheelColor.hex,
       wireframe: isWireframe
     });
-  }, [schema2Body, config.parametricSpec, (config as any).geometry, primaryPaint.hex, wheelColor.hex, isWireframe]);
+  }, [useGeometryEngineV2, schema2Body, config.parametricSpec, (config as any).geometry, primaryPaint.hex, wheelColor.hex, isWireframe]);
 
   // Procedural sculpted chassis assembly (Rule 6 compliant: sculpted real geometry, honest label)
   const proceduralBody = useMemo(() => {
-    if (schema2Body || parametricBody) return null;
+    if (useGeometryEngineV2 || schema2Body || parametricBody) return null;
     return ProceduralChassisGenerator.generateSculptedBody(
       modelMeta?.category || 'Coupe',
       primaryPaint.hex,
@@ -108,7 +181,7 @@ export const VehicleRenderer: React.FC<VehicleRendererProps> = ({
         camberDeg: -0.035
       }
     );
-  }, [schema2Body, parametricBody, modelMeta?.category, primaryPaint.hex, secondaryPaint.hex, wheelColor.hex, isWireframe]);
+  }, [useGeometryEngineV2, schema2Body, parametricBody, modelMeta?.category, primaryPaint.hex, secondaryPaint.hex, wheelColor.hex, isWireframe]);
 
   // Direct 3D Raycasting Component Click Handler
   const handlePointerDown = useCallback((e: any) => {
@@ -133,6 +206,16 @@ export const VehicleRenderer: React.FC<VehicleRendererProps> = ({
     return (
       <group position={[0, -suspensionDrop, 0]}>
         <primitive object={assetBinding.customMesh} />
+        <NeonUnderglow neonKits={config.neonKits} />
+      </group>
+    );
+  }
+
+  // Priority 1: V2 Automotive Authentic Geometry Engine (Coachwork V2)
+  if (useGeometryEngineV2 && v2Result?.group) {
+    return (
+      <group position={[0, -suspensionDrop, 0]}>
+        <primitive object={v2Result.group} onPointerDown={handlePointerDown} />
         <NeonUnderglow neonKits={config.neonKits} />
       </group>
     );
@@ -200,8 +283,17 @@ export const VehicleRenderer: React.FC<VehicleRendererProps> = ({
     );
   }
 
-  // Fallback procedural chassis
-  if (!proceduralBody) return null;
+  // Fallback procedural chassis or explicit unavailable warning (prevents silent blank screen)
+  if (!proceduralBody) {
+    const rawSpec = (config.parametricSpec || config) as any;
+    const dims = rawSpec?.dimensions || { length: 4.6, width: 2.0, height: 1.25 };
+    return (
+      <ModelUnavailableDisplay
+        dimensions={dims}
+        vehicleName={modelMeta?.displayName || 'Vehicle'}
+      />
+    );
+  }
 
   // Render High-Fidelity Parametric Procedural Vehicle
   return (

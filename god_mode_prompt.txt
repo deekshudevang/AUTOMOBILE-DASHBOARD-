@@ -1,0 +1,1389 @@
+<USER_REQUEST>
+AUTOVERSE 3D — GOD MODE MASTER ENGINEERING PROMPT
+
+COMPLETE REPOSITORY TRANSFORMATION
+
+REAL-WORLD VEHICLE DIGITAL TWINS · AUTHENTIC 3D GEOMETRY · AUTOMOTIVE CAD · JSON RECONSTRUCTION · ADVANCED CUSTOMIZATION
+
+---
+
+0. MASTER MISSION
+
+You are an elite multidisciplinary engineering team consisting of:
+
+- Principal Automotive Software Architect
+- Automotive CAD and Surface Modeling Engineer
+- Senior Three.js / WebGL Engineer
+- Blender and GLTF Pipeline Specialist
+- Procedural Geometry Engineer
+- Automotive Digital Twin Engineer
+- Vehicle Physics and Proportion Specialist
+- JSON Schema and Data Architecture Engineer
+- PBR Materials and Rendering Specialist
+- UI/UX Design Engineer
+- Backend and Database Engineer
+- Quality Assurance Engineer
+- Performance Optimization Engineer
+- Application Security Engineer
+
+Your responsibility is to transform the ENTIRE EXISTING AUTOVERSE 3D REPOSITORY into a professional, production-grade, real-world automotive visualization and customization platform.
+
+You must inspect, understand, repair, reconstruct, integrate, test and validate the entire system.
+
+Do not build an unrelated replacement application.
+
+Preserve the existing architecture where practical and improve it systematically.
+
+THE MOST IMPORTANT PROBLEM
+
+Currently, different cars are displaying essentially the same generic vehicle geometry, with only their colours and some materials changing.
+
+This must be eliminated completely.
+
+The application must create or load a genuinely different vehicle model according to the exact selected vehicle name, manufacturer, generation and variant.
+
+Examples:
+
+- Porsche 911 GT3 RS must have actual 911 GT3 RS design characteristics.
+- Porsche 911 Turbo S must have its own Turbo S geometry.
+- Lamborghini Aventador SVJ must have actual Aventador proportions.
+- Lamborghini Huracan STO must have its own body design.
+- Ferrari SF90 Stradale must have SF90 geometry.
+- Ferrari 488 GTB must have 488 geometry.
+- Nissan GT-R R35 must have actual R35 proportions.
+- BMW M4 G82 must have actual G82 bodywork.
+- Mercedes-AMG GT must have actual AMG GT styling.
+- McLaren 720S must have actual 720S geometry.
+
+The same rule applies to every SUV, sedan, hatchback, muscle car, hypercar, sports car, luxury vehicle, electric vehicle and special edition.
+
+Changing a car must change its actual model, body geometry, silhouette, dimensions and exterior design—not merely its colour.
+
+---
+
+1. EXECUTION GOVERNANCE
+
+Before implementation:
+
+1. Discover the entire repository structure.
+2. Read existing project documentation.
+3. Identify the application architecture.
+4. Identify the current 3D engine.
+5. Identify all existing vehicle assets.
+6. Identify all JSON databases and schemas.
+7. Identify every consumer of vehicle configuration.
+8. Identify existing build, test and deployment systems.
+9. Establish a baseline of working functionality.
+10. Create a Git branch or recoverable backup.
+
+Create an execution plan in task.md.
+
+Work sequentially, but do not wait for manual approval between independent engineering phases.
+
+Do not stop after writing documentation.
+
+Do not produce a theoretical implementation plan and claim the task is complete.
+
+Actually modify the source files, assets, data structures, rendering pipeline and application integrations.
+
+Do not overwrite unrelated user work.
+
+Do not delete existing vehicle records simply because they are incomplete.
+
+Do not fabricate successful test results.
+
+---
+
+2. COMPLETE REPOSITORY-WIDE AUDIT
+
+Inspect every relevant directory and file.
+
+Source code
+
+- Frontend.
+- Backend.
+- Rendering engine.
+- Geometry generators.
+- Vehicle selectors.
+- Configuration managers.
+- Asset loaders.
+- Customization modules.
+- State management.
+- API integrations.
+- Database models.
+- Build scripts.
+- Tests.
+
+Data and configuration
+
+Inspect every:
+
+- .json
+- .jsonc
+- .json5
+- Vehicle specification file.
+- Geometry configuration.
+- Material configuration.
+- Wheel configuration.
+- Component manifest.
+- Asset manifest.
+- Model registry.
+- Database seed.
+- API fixture.
+- Customization definition.
+- Import/export definition.
+
+3D assets
+
+Inspect:
+
+- GLB.
+- GLTF.
+- OBJ.
+- FBX.
+- STL.
+- BLEND.
+- Texture assets.
+- HDRI environments.
+- Normal maps.
+- Roughness maps.
+- Metallic maps.
+- Displacement maps.
+
+Identify:
+
+- Generic geometry reused across vehicles.
+- Duplicate meshes.
+- Incorrect dimensions.
+- Incorrect asset paths.
+- Missing components.
+- Unused vehicle JSONs.
+- Placeholder models.
+- Inconsistent coordinate systems.
+- Incorrect model selection.
+- Hardcoded generic dimensions.
+- Incompatible customization assets.
+
+Generate:
+
+docs/REPOSITORY_AUDIT.md
+docs/JSON_INVENTORY.md
+docs/VEHICLE_GEOMETRY_AUDIT.md
+docs/ASSET_INVENTORY.md
+docs/DEPENDENCY_MAP.md
+docs/BASELINE_TEST_REPORT.md
+
+Do not assume a file is unused simply because its name is unfamiliar. Trace its references first.
+
+---
+
+3. REAL-WORLD VEHICLE RESEARCH ENGINE
+
+Research every vehicle individually.
+
+Use the exact:
+
+- Manufacturer.
+- Model.
+- Generation.
+- Model year.
+- Variant.
+- Trim.
+- Body style.
+
+Research using:
+
+1. Official manufacturer websites.
+2. Official press releases.
+3. Manufacturer press kits.
+4. Technical brochures.
+5. Official vehicle specifications.
+6. Manufacturer photography.
+7. Licensed automotive CAD data.
+8. Licensed 3D models.
+9. Reputable automotive technical references.
+
+Use different reference views:
+
+- Front.
+- Rear.
+- Left.
+- Right.
+- Front three-quarter.
+- Rear three-quarter.
+- Top.
+- Interior when applicable.
+
+Research the actual design characteristics.
+
+For each vehicle collect:
+
+- Overall length.
+- Overall width.
+- Overall height.
+- Wheelbase.
+- Front track.
+- Rear track.
+- Front overhang.
+- Rear overhang.
+- Ground clearance.
+- Wheelbase-to-length relationship.
+- Wheel diameter.
+- Wheel width.
+- Tyre dimensions.
+- Hood length.
+- Roof profile.
+- Windshield angle.
+- Rear glass angle.
+- Body style.
+- Number of doors.
+- Seating configuration where relevant.
+- Engine layout where relevant.
+- Exhaust configuration.
+- Aerodynamic design features.
+
+Never confuse different generations or variants.
+
+Maintain separate records for different vehicle generations when their exterior geometry differs.
+
+Research confidence
+
+Assign each vehicle:
+
+- VERIFIED_REFERENCE
+- PARTIALLY_VERIFIED
+- INSUFFICIENT_REFERENCE
+- UNAVAILABLE
+
+Keep source URLs and reference metadata.
+
+Never claim manufacturer-accurate CAD precision when using photographs and estimated dimensions.
+
+Never invent missing specifications.
+
+---
+
+4. COMPLETE VEHICLE DATABASE RECONSTRUCTION
+
+This is a mandatory repository-wide operation.
+
+Inspect and modify every existing vehicle-related JSON file.
+
+Do not merely create new sample files.
+
+Update the original vehicle definitions and every dependent reference.
+
+If the existing architecture needs migration, perform a controlled migration and preserve backward compatibility where possible.
+
+Recommended logical structure:
+
+vehicles/
+manufacturers/
+models/
+components/
+materials/
+wheels/
+body_kits/
+lighting/
+references/
+schemas/
+
+Example individual vehicle structure:
+
+vehicles/models/porsche/911_gt3_rs_992/
+vehicle.json
+dimensions.json
+geometry.json
+exterior.json
+lighting.json
+wheels.json
+materials.json
+customization.json
+compatibility.json
+references.json
+validation.json
+
+Use the repository's established naming conventions if they are already better.
+
+4.1 Vehicle identity JSON
+
+Every model must have a stable unique ID.
+
+Example:
+
+{
+"id": "porsche_911_gt3_rs_992",
+"manufacturer": "Porsche",
+"model": "911 GT3 RS",
+"generation": "992",
+"year": 2024,
+"variant": "GT3 RS",
+"category": "sports_car",
+"bodyStyle": "coupe",
+"geometryId": "porsche_911_gt3_rs_992_geometry",
+"dimensionsId": "porsche_911_gt3_rs_992_dimensions",
+"referenceId": "porsche_911_gt3_rs_992_references",
+"customizationProfileId": "porsche_911_gt3_rs_992_customization",
+"asset": {
+"format": "glb",
+"path": "assets/vehicles/porsche/911_gt3_rs/model.glb",
+"status": "not_verified"
+},
+"referenceStatus": "partially_verified",
+"geometryStatus": "requires_implementation"
+}
+
+This is a schema example, not verified vehicle data. Populate actual values based on the repository and research.
+
+4.2 Dimensions JSON
+
+Maintain independent measurements for every vehicle.
+
+Use millimetres in the source specification.
+
+Centralize conversion into rendering units.
+
+4.3 Geometry JSON
+
+Include vehicle-specific geometry parameters.
+
+Do not assign the same body dimensions and curves to unrelated cars.
+
+4.4 Exterior JSON
+
+Define independent:
+
+- Front fascia.
+- Rear fascia.
+- Hood.
+- Front bumper.
+- Rear bumper.
+- Front splitter.
+- Rear diffuser.
+- Side skirts.
+- Door panels.
+- Fenders.
+- Roof.
+- Windows.
+- Mirrors.
+- Grilles.
+- Air intakes.
+- Vents.
+- Spoilers.
+- Rear wings.
+
+4.5 Lighting JSON
+
+Define model-specific headlights, DRLs, taillights, positioning and housing geometry.
+
+4.6 Wheels JSON
+
+Define original wheel dimensions and optional aftermarket configurations.
+
+4.7 Customization JSON
+
+Define the customization options available for that exact vehicle.
+
+4.8 Compatibility JSON
+
+Specify which components fit which vehicles and generations.
+
+4.9 References JSON
+
+Store reference URLs, view types, source descriptions, verification status and research dates.
+
+4.10 Schema validation
+
+Create formal schemas and validate all vehicle definitions.
+
+Reject invalid references, duplicate IDs, missing required fields and incompatible types.
+
+Do not allow silent fallback to a generic vehicle definition.
+
+---
+
+5. VEHICLE-SPECIFIC 3D GEOMETRY ENGINE
+
+This is the central engineering priority.
+
+Remove the current generic shared body implementation from the active vehicle selection pipeline.
+
+Build a modular geometry engine with separate vehicle identity and reusable technical utilities.
+
+Use this asset priority:
+
+1. Licensed manufacturer-specific CAD or 3D assets.
+2. Verified vehicle-specific GLB/GLTF assets.
+3. Dedicated procedural geometry based on reference information.
+4. Hybrid procedural and imported geometry.
+
+A generic placeholder must never be presented as the actual selected vehicle.
+
+Individual geometry requirements
+
+Each vehicle must have its own:
+
+- Main body shell.
+- Hood.
+- Front fenders.
+- Rear fenders.
+- Roof.
+- Doors.
+- Side panels.
+- Front bumper.
+- Rear bumper.
+- Headlights.
+- Taillights.
+- Grille.
+- Air intakes.
+- Windows.
+- Mirrors.
+- Wheels.
+- Tyres.
+- Brake discs.
+- Brake calipers.
+- Spoiler.
+- Rear wing.
+- Diffuser.
+- Underbody.
+
+Geometry engineering
+
+Support:
+
+- Bezier curves.
+- Catmull-Rom curves.
+- Spline surfaces.
+- Parametric surfaces.
+- Extrusion geometry.
+- Lathe geometry.
+- Custom BufferGeometry.
+- Vertex manipulation.
+- Normals.
+- UV mapping.
+- Indexed geometry.
+- Surface smoothing.
+- Subdivision where appropriate.
+- Boolean-like component workflows where supported.
+
+Use proper automotive surface transitions.
+
+Avoid simple box-based construction for complex body panels.
+
+Avoid visibly disconnected panels, floating parts, incorrect wheel arches and overlapping geometry.
+
+Every vehicle must have a recognizable silhouette.
+
+Critical silhouette test
+
+Render every vehicle in a single black material.
+
+Remove:
+
+- Paint colours.
+- Decals.
+- Brand graphics.
+- Textures.
+- Decorative visual effects.
+
+The vehicle must remain identifiable from its shape and proportions.
+
+If different cars still look identical, their geometry is not complete.
+
+---
+
+6. VEHICLE DESIGN IDENTITY SYSTEM
+
+Build independent visual profiles.
+
+Examples:
+
+Porsche 911 GT3 RS
+
+- 992-generation roofline.
+- Distinctive front lighting.
+- GT3 RS front fascia.
+- Wide wheel arches.
+- Characteristic rear aerodynamic wing.
+- Model-specific rear diffuser.
+
+Porsche 911 Turbo S
+
+- Turbo-specific body treatment.
+- Different aerodynamic design.
+- Turbo-specific bumper and rear details.
+- Correct generation-specific proportions.
+
+Lamborghini Aventador SVJ
+
+- Low wedge-shaped body.
+- Sharp angular fascia.
+- Aventador-specific headlight design.
+- Distinctive side intakes.
+- Rear engine-cover geometry.
+- SVJ aerodynamic design.
+
+Lamborghini Huracan STO
+
+- Huracan-specific proportions.
+- STO front design.
+- Unique bonnet and aero treatment.
+- Rear wing and rear fascia.
+
+Ferrari SF90 Stradale
+
+- SF90 body proportions.
+- Model-specific front fascia.
+- Distinctive lighting.
+- Sculpted side surfaces.
+- Correct rear configuration.
+
+Nissan GT-R R35
+
+- R35 proportions.
+- Characteristic front fascia.
+- Signature circular rear lamps.
+- Muscular rear quarter panels.
+- Quad exhaust layout.
+
+BMW M4 G82
+
+- G82-specific body shape.
+- Distinctive front grille.
+- Model-specific bonnet.
+- Coupe roofline.
+- Correct front and rear light arrangements.
+
+These are identity requirements, not universal geometry templates.
+
+Every actual model must be researched separately.
+
+---
+
+7. VEHICLE ASSET PIPELINE
+
+Build a robust asset pipeline.
+
+Support:
+
+- GLB.
+- GLTF.
+- Texture assets.
+- Material libraries.
+- Model metadata.
+- LOD variants.
+- Optional procedural geometry.
+
+For each asset:
+
+- Verify the path.
+- Verify the file.
+- Verify its format.
+- Verify scale.
+- Verify orientation.
+- Verify material slots.
+- Verify mesh names.
+- Verify attachment points.
+- Verify bounding boxes.
+- Verify model identity.
+
+Use a consistent coordinate system.
+
+Document:
+
+- Forward axis.
+- Up axis.
+- Left/right convention.
+- Unit scale.
+- Origin location.
+- Wheel positions.
+- Ground contact plane.
+
+Create import validation scripts.
+
+Do not accept an asset merely because it loads successfully.
+
+Verify that it actually represents the assigned vehicle.
+
+---
+
+8. ADVANCED CUSTOMIZATION ENGINE
+
+Customization must operate on actual 3D components.
+
+Exterior
+
+- Paint.
+- Metallic paint.
+- Matte paint.
+- Pearl paint.
+- Carbon fibre.
+- Hood.
+- Bumpers.
+- Splitters.
+- Side skirts.
+- Diffusers.
+- Spoilers.
+- Wings.
+- Mirrors.
+- Roof.
+- Fender extensions.
+- Widebody kits.
+- Grilles.
+- Exhaust tips.
+
+Wheels
+
+- Rim designs.
+- Spoke patterns.
+- Rim diameter.
+- Rim width.
+- Wheel offset.
+- Tyre width.
+- Tyre profile.
+- Brake discs.
+- Brake calipers.
+
+Lighting
+
+- Headlight appearance.
+- DRL design.
+- Taillight appearance.
+- Legal lighting configurations.
+
+Interior, if supported
+
+- Dashboard.
+- Steering wheel.
+- Seats.
+- Centre console.
+- Trim.
+- Upholstery.
+- Interior materials.
+- Instrument cluster.
+
+Component compatibility
+
+Every component needs:
+
+- Unique ID.
+- Compatible model IDs.
+- Compatible generations.
+- Geometry reference.
+- Attachment point.
+- Transform.
+- Material slots.
+- Installation constraints.
+- Cost metadata where supported.
+
+Do not allow incompatible parts to be attached.
+
+A widebody kit for one vehicle must not automatically fit another.
+
+---
+
+9. REALISTIC MATERIAL AND RENDERING ENGINE
+
+Implement professional automotive visualization.
+
+Use physically based rendering.
+
+Support:
+
+- Metallic.
+- Roughness.
+- Clearcoat.
+- Clearcoat roughness.
+- Normal maps.
+- Ambient occlusion.
+- Environment maps.
+- Glass transmission where supported.
+- Carbon fibre.
+- Rubber.
+- Chrome.
+- Brushed metal.
+- Painted metal.
+- Interior materials.
+
+Lighting
+
+Implement:
+
+- Studio lighting.
+- HDRI reflections.
+- Key lights.
+- Fill lights.
+- Rim lights.
+- Contact shadows.
+- Ambient lighting.
+
+Cameras
+
+Support:
+
+- Front.
+- Rear.
+- Left side.
+- Right side.
+- Top.
+- Front three-quarter.
+- Rear three-quarter.
+- Free orbit.
+- Close-up component views.
+
+Automatically frame each vehicle according to its dimensions.
+
+Do not use one fixed camera distance for cars of completely different sizes.
+
+---
+
+10. VEHICLE CONFIGURATOR UI/UX RECONSTRUCTION
+
+Audit the complete frontend.
+
+The interface must accurately reflect the selected vehicle.
+
+When a vehicle is selected, update:
+
+- Vehicle name.
+- Manufacturer.
+- Generation.
+- Model year.
+- Vehicle image.
+- 3D geometry.
+- Dimensions.
+- Specifications.
+- Available customization.
+- Compatible components.
+- Material options.
+- Camera framing.
+
+Create a polished automotive configurator experience.
+
+Vehicle selection
+
+Support filtering by:
+
+- Manufacturer.
+- Category.
+- Body style.
+- Model year.
+- Generation.
+- Price range where data exists.
+- Performance class where data exists.
+
+Configuration interface
+
+Organize:
+
+- Exterior.
+- Paint.
+- Wheels.
+- Aerodynamics.
+- Lighting.
+- Interior.
+- Specifications.
+
+Show only options supported by the selected model.
+
+Provide:
+
+- Undo.
+- Redo.
+- Reset.
+- Save configuration.
+- Load configuration.
+- Export configuration.
+- Compare vehicles.
+
+Maintain responsive desktop and mobile layouts.
+
+Do not allow UI labels to become disconnected from the actual loaded geometry.
+
+---
+
+11. COMPLETE JSON REPOSITORY MIGRATION
+
+Inspect and update every relevant JSON file throughout the project.
+
+Do not only edit files under vehicles/.
+
+Inspect:
+
+- Frontend public data.
+- Frontend source configuration.
+- Backend static data.
+- Vehicle APIs.
+- Database seed files.
+- Component catalogues.
+- Asset manifests.
+- Materials.
+- Wheel libraries.
+- Customization presets.
+- Test fixtures.
+- Demo data.
+- Import/export schemas.
+- Application settings.
+
+For each file:
+
+1. Identify its purpose.
+2. Identify its consumers.
+3. Identify its schema.
+4. Identify dependencies.
+5. Update the correct vehicle references.
+6. Validate syntax.
+7. Validate schema.
+8. Validate references.
+9. Validate asset paths.
+10. Run dependent tests.
+
+Never change unrelated JSON files unnecessarily.
+
+Never perform blind global replacements.
+
+Create migration reports with original path, changes, reason, dependencies and test results.
+
+If database data must be migrated, implement reversible migrations and preserve user-created configurations.
+
+---
+
+12. VEHICLE DIGITAL TWIN DATA MODEL
+
+Establish a single source of truth for vehicle identity.
+
+Architecture:
+
+Vehicle Registry
+↓
+Vehicle Metadata
+↓
+Reference Specification
+↓
+Geometry Definition
+↓
+3D Asset
+↓
+Exterior Components
+↓
+Material Definition
+↓
+Customization Compatibility
+↓
+Rendered Vehicle
+
+The frontend and backend must resolve the same canonical vehicle ID.
+
+Do not maintain contradictory vehicle identities in multiple disconnected JSON databases.
+
+Use schema versioning.
+
+Support:
+
+- Migration.
+- Validation.
+- Version compatibility.
+- Configuration serialization.
+- Configuration restoration.
+
+Save user customizations without changing the original base vehicle definition.
+
+---
+
+13. PHYSICS AND DIMENSIONAL ACCURACY
+
+Where the application supports vehicle physics or dimensional calculations, ensure:
+
+- Correct scale.
+- Correct wheelbase.
+- Correct track width.
+- Correct tyre dimensions.
+- Correct centreline.
+- Correct wheel placement.
+- Correct ground clearance.
+- Correct steering pivot.
+- Correct wheel rotation axes.
+
+Separate visual customization from physics parameters.
+
+Do not let a visual wheel change accidentally corrupt the physical wheelbase or steering geometry.
+
+---
+
+14. SECURITY, STABILITY AND DATA INTEGRITY
+
+Inspect the repository for:
+
+- Unsafe external asset loading.
+- Untrusted file paths.
+- JSON parsing failures.
+- Unsafe URL handling.
+- Asset injection.
+- Broken API validation.
+- Unvalidated import files.
+- Excessive file sizes.
+- Resource leaks.
+- Memory exhaustion.
+- Dependency vulnerabilities.
+
+Validate imported files and configuration payloads.
+
+Do not execute arbitrary code from imported vehicle JSON.
+
+Keep external asset loading restricted to trusted or explicitly approved sources.
+
+Do not expose credentials, tokens or secrets in public configuration files.
+
+---
+
+15. PERFORMANCE OPTIMIZATION
+
+Implement:
+
+- Lazy vehicle loading.
+- Asset caching.
+- Geometry caching.
+- Texture compression.
+- LOD.
+- Efficient material sharing.
+- Proper GPU resource disposal.
+- Optimized shadow maps.
+- Instancing for repeated non-body components.
+- Efficient scene management.
+- Responsive loading indicators.
+- Asset preloading for likely next selections.
+
+Do not sacrifice model identity or critical geometry details for performance.
+
+Set reasonable performance budgets and profile actual runtime behaviour.
+
+---
+
+16. AUTOMATED VALIDATION FRAMEWORK
+
+Create automated validation scripts using the existing project stack.
+
+Required checks:
+
+JSON
+
+- Syntax.
+- Schema.
+- Duplicate IDs.
+- Missing fields.
+- Invalid paths.
+- Broken references.
+- Unsupported versions.
+
+Assets
+
+- File existence.
+- Format.
+- Dimensions.
+- Mesh presence.
+- Material presence.
+- Scale.
+- Orientation.
+- Bounding boxes.
+
+Geometry
+
+- Body mesh identity.
+- Silhouette differences.
+- Duplicate body detection.
+- Wheel positioning.
+- Component attachment.
+- Model-specific dimensions.
+
+Customization
+
+- Compatibility.
+- Geometry attachment.
+- Material slots.
+- Reset.
+- Save.
+- Restore.
+
+Application
+
+- Build.
+- Type checking.
+- Unit tests.
+- Integration tests.
+- End-to-end tests.
+- Runtime rendering.
+- Vehicle switching.
+
+Create:
+
+scripts/validate-vehicles
+scripts/validate-json
+scripts/validate-assets
+scripts/validate-geometry
+scripts/validate-customization
+
+Use the actual language and tools already present in the repository.
+
+---
+
+17. VISUAL QUALITY ASSURANCE
+
+Every vehicle must undergo individual visual verification.
+
+Capture:
+
+1. Front.
+2. Rear.
+3. Left.
+4. Right.
+5. Front three-quarter.
+6. Rear three-quarter.
+7. Top.
+8. Black silhouette.
+
+Compare with corresponding reference views.
+
+Assess:
+
+- Overall silhouette.
+- Proportions.
+- Hood.
+- Roof.
+- Windows.
+- Fenders.
+- Lighting.
+- Bumpers.
+- Wheels.
+- Rear design.
+- Aerodynamic components.
+
+Create a visual validation report.
+
+Where possible, use image overlays, landmark comparisons and dimensional measurements.
+
+Never mark a vehicle verified solely because the 3D scene rendered without an error.
+
+Distinguish:
+
+- Asset loaded.
+- Geometry structurally valid.
+- Reference matched.
+- Visually verified.
+
+These are separate completion states.
+
+---
+
+18. VEHICLE MODEL COVERAGE
+
+Preserve every existing registered vehicle.
+
+Build a complete inventory.
+
+Prioritize vehicles by:
+
+1. Existing catalogue usage.
+2. User-facing visibility.
+3. Available reference quality.
+4. Existing asset availability.
+5. Implementation feasibility.
+
+Work in batches without losing individual vehicle tracking.
+
+Do not create 100 superficial generic vehicles.
+
+Prioritize accurate models.
+
+A vehicle must not be marked complete until its geometry and identity are validated.
+
+---
+
+19. TASK.MD AUTONOMOUS EXECUTION TRACKER
+
+Create or update task.md.
+
+Track every phase and every vehicle separately.
+
+Use these statuses:
+
+- NOT STARTED
+- AUDITED
+- RESEARCHING
+- REFERENCE VERIFIED
+- JSON UPDATED
+- GEOMETRY IN PROGRESS
+- GEOMETRY COMPLETED
+- ASSET INTEGRATED
+- CUSTOMIZATION COMPLETED
+- TESTING
+- VISUAL VALIDATION
+- VERIFIED
+- BLOCKED
+
+Record:
+
+- Files changed.
+- Assets created.
+- Tests executed.
+- Failures found.
+- Failures fixed.
+- Remaining blockers.
+- Evidence links or file paths.
+
+Update task.md after each meaningful implementation milestone.
+
+Do not mark completion based on intention.
+
+---
+
+20. REQUIRED DOCUMENTATION
+
+Maintain:
+
+docs/MASTER_ARCHITECTURE.md
+docs/REPOSITORY_AUDIT.md
+docs/JSON_INVENTORY.md
+docs/JSON_MIGRATION_REPORT.md
+docs/VEHICLE_REFERENCE_RESEARCH.md
+docs/VEHICLE_GEOMETRY_ARCHITECTURE.md
+docs/VEHICLE_ASSET_PIPELINE.md
+docs/VEHICLE_CUSTOMIZATION.md
+docs/VEHICLE_COMPATIBILITY.md
+docs/VEHICLE_VISUAL_VALIDATION.md
+docs/PERFORMANCE_REPORT.md
+docs/SECURITY_REPORT.md
+docs/FINAL_VERIFICATION_REPORT.md
+task.md
+
+Documentation must describe implemented behaviour, not planned behaviour disguised as completed work.
+
+---
+
+21. AUTONOMOUS EXECUTION PROTOCOL
+
+Execute the following order:
+
+PHASE A — Repository discovery and backup.
+
+PHASE B — Architecture and dependency audit.
+
+PHASE C — Complete JSON and vehicle inventory.
+
+PHASE D — Real-world reference research.
+
+PHASE E — Vehicle schema and data reconstruction.
+
+PHASE F — Individual geometry implementation.
+
+PHASE G — 3D asset integration.
+
+PHASE H — Exterior, lighting and wheel reconstruction.
+
+PHASE I — Customization and compatibility engine.
+
+PHASE J — Rendering and materials.
+
+PHASE K — Frontend integration.
+
+PHASE L — Backend and database integration.
+
+PHASE M — Automated validation.
+
+PHASE N — Visual reference validation.
+
+PHASE O — Performance and security optimization.
+
+PHASE P — Complete application regression testing.
+
+PHASE Q — Documentation and final audit.
+
+Complete each phase before marking it finished.
+
+If one vehicle is blocked by unavailable source assets, continue with other vehicles.
+
+If external research is unavailable, use available verified local references and clearly record the limitation.
+
+Do not fabricate data.
+
+Do not stop because one tool, package or asset fails.
+
+Find technically valid alternatives.
+
+Do not remove existing working functionality.
+
+Do not create fake success reports.
+
+Do not stop after generating prompts, plans or JSON examples.
+
+Implement the actual changes.
+
+---
+
+22. FINAL ACCEPTANCE TESTS
+
+The entire system must pass the following:
+
+TEST 1 — VEHICLE IDENTITY
+
+Select different vehicle manufacturers.
+
+Confirm every selected vehicle loads its own geometry.
+
+TEST 2 — SAME MANUFACTURER
+
+Select two different models from the same manufacturer.
+
+Confirm their body geometry and design are different.
+
+TEST 3 — GENERATION
+
+Select different generations of the same model.
+
+Confirm generation-specific styling and dimensions.
+
+TEST 4 — SILHOUETTE
+
+Render all models in black.
+
+Confirm distinct silhouettes.
+
+TEST 5 — JSON CONSISTENCY
+
+Validate every relevant JSON file.
+
+Confirm all references resolve.
+
+TEST 6 — CUSTOMIZATION
+
+Change body panels, wheels, spoilers and paint.
+
+Confirm actual geometry and materials update correctly.
+
+TEST 7 — PERSISTENCE
+
+Save and reload configurations.
+
+Confirm the correct vehicle and modifications are restored.
+
+TEST 8 — REGRESSION
+
+Confirm existing application functionality remains operational.
+
+TEST 9 — PERFORMANCE
+
+Profile loading, rendering and memory usage.
+
+TEST 10 — EVIDENCE
+
+Produce reports and screenshots for actual verified work.
+
+---
+
+23. FINAL DEFINITION OF DONE
+
+AutoVerse 3D is not finished simply because:
+
+- The application opens.
+- Cars render.
+- Colours change.
+- JSON files parse.
+- A vehicle name appears.
+- A model loads without an exception.
+
+It is finished only when:
+
+[ ] Every existing vehicle has been inventoried.
+
+[ ] Every relevant JSON file has been audited and corrected.
+
+[ ] All dependent mappings have been updated.
+
+[ ] Every vehicle has independent identity metadata.
+
+[ ] Every vehicle has its own dimensions.
+
+[ ] Every vehicle has dedicated body geometry or a verified model asset.
+
+[ ] Different models have visibly different silhouettes.
+
+[ ] Different generations have correct design differences.
+
+[ ] Model-specific headlights and taillights exist.
+
+[ ] Model-specific front and rear designs exist.
+
+[ ] Model-specific wheels and body proportions exist.
+
+[ ] Every selected vehicle loads the correct geometry.
+
+[ ] Customization modifies the actual model.
+
+[ ] Component compatibility is enforced.
+
+[ ] No silent generic body fallback exists.
+
+[ ] All JSON and asset references validate.
+
+[ ] Visual comparison evidence exists.
+
+[ ] Automated tests pass.
+
+[ ] Production build succeeds.
+
+[ ] Existing features continue working.
+
+[ ] Documentation and task.md reflect actual completion.
+
+---
+
+FINAL COMMAND
+
+START NOW.
+
+Inspect the entire existing AutoVerse 3D repository.
+
+Then execute every phase sequentially.
+
+Modify all relevant source code, all vehicle-related JSON files, all dependent configurations, all geometry definitions, all vehicle assets and all customization systems.
+
+Do not just explain what needs to be done.
+
+Do not stop at a few example cars.
+
+Do not merely change the vehicle colours.
+
+Do not reuse a universal body mesh for unrelated cars.
+
+Do not invent manufacturer specifications or claim unsupported accuracy.
+
+Build the actual vehicle-specific geometry and connect it to the running application.
+
+Preserve existing functionality and validate every meaningful change.
+
+Continue autonomously through independent tasks until the project is genuinely complete or a clearly documented external blocker remains.
+
+THE ULTIMATE OBJECTIVE:
+
+When a user selects any car in AutoVerse 3D, the application must display the correct real-world vehicle design, with its own body shape, dimensions, silhouette, headlights, grille, bumpers, roofline, wheels, rear design and compatible customization options.
+
+A Porsche must look like a Porsche.
+
+A Lamborghini must look like a Lamborghini.
+
+A Ferrari must look like a Ferrari.
+
+Every individual model must be recognizable as its own real vehicle.
+
+AUTOVERSE 3D MUST BECOME A REAL AUTOMOTIVE DIGITAL-TWIN AND CONFIGURATION PLATFORM — NOT A GENERIC 3D CAR COLOUR CHANGER.
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-11-17T20:28:48+05:30.
+
+The user's current state is as follows:
+Other open documents:
+- c:\WINDOWS\system32\npx (LANGUAGE_UNSPECIFIED)
+- c:\Users\deeks\Downloads\cars\src\geometry\archetypes\midEngineSupercarGenerator.ts (LANGUAGE_UNSPECIFIED)
+- c:\Users\deeks\Downloads\cars\TASK.md (LANGUAGE_UNSPECIFIED)
+- c:\Users\deeks\Downloads\cars\tests\qa-failure-paths.test.ts (LANGUAGE_UNSPECIFIED)
+- c:\Users\deeks\Downloads\cars\scripts\verify-phase10-responsive.cjs (LANGUAGE_UNSPECIFIED)
+</ADDITIONAL_METADATA>

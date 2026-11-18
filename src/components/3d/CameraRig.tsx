@@ -30,45 +30,51 @@ export const CameraRig: React.FC<CameraRigProps> = ({
   const targetLook = useRef<THREE.Vector3>(new THREE.Vector3());
   const isTransitioning = useRef<boolean>(true);
 
-  // Derive dynamic camera presets from actual vehicle dimensions
+  // Derive dynamic camera presets from actual vehicle dimensions & bounding envelope
   const { positions, targets, minDistance, maxDistance } = useMemo(() => {
-    const L = Math.max(dimensions.length, 3.0);
-    const W = Math.max(dimensions.width, 1.4);
+    const L = Math.max(dimensions.length, 3.2);
+    const W = Math.max(dimensions.width, 1.5);
     const H = Math.max(dimensions.height, 1.0);
     const R = Math.sqrt((L / 2) ** 2 + (W / 2) ** 2 + (H / 2) ** 2);
-    const D = R * 1.85;
 
-    const centerY = H * 0.42;
+    const centerY = H * 0.45;
+
+    // Viewport framing distances derived from FOV (45 deg) with 20-30% buffer
+    const distFront = Math.max(L * 0.5 + 2.8, (W * 0.5) / Math.tan(THREE.MathUtils.degToRad(22.5)) * 1.35);
+    const distRear = distFront;
+    const distSide = Math.max(W * 0.5 + 3.2, (L * 0.5) / Math.tan(THREE.MathUtils.degToRad(22.5)) * 1.25);
+    const distTop = Math.max((L * 0.5) / Math.tan(THREE.MathUtils.degToRad(22.5)) * 1.28, 8.5);
+    const distIso = Math.max(R * 1.95, 5.8);
 
     const pos: Record<CameraPreset, [number, number, number]> = {
-      isometric: [D * 0.72, H * 1.35, D * 0.72],
-      front: [0.0, H * 0.88, D * 1.08],
-      rear: [0.0, H * 0.88, -D * 1.08],
-      left: [-D * 1.08, H * 0.88, 0.0],
-      right: [D * 1.08, H * 0.88, 0.0],
-      top: [0.0, D * 1.45, 0.01],
-      wheel: [-W * 0.75, H * 0.4, L * 0.28],
-      interior: [0.28, H * 0.78, 0.08],
-      wing: [0.0, H * 1.35, -L * 0.58]
+      isometric: [distIso * 0.65, H * 1.25, distIso * 0.65],
+      front: [0.0, H * 0.65, distFront],
+      rear: [0.0, H * 0.65, -distRear],
+      left: [-distSide, H * 0.58, 0.0],
+      right: [distSide, H * 0.58, 0.0],
+      top: [0.0, distTop, 0.001],
+      wheel: [-W * 0.46 - 1.45, H * 0.28 + 0.35, L * 0.26 + 0.65],
+      interior: [0.26, H * 0.78, 0.05],
+      wing: [0.0, H * 1.45, -L * 0.44 - 1.85]
     };
 
     const look: Record<CameraPreset, [number, number, number]> = {
       isometric: [0, centerY, 0],
-      front: [0, centerY, L * 0.15],
-      rear: [0, centerY, -L * 0.15],
+      front: [0, centerY, 0],
+      rear: [0, centerY, 0],
       left: [0, centerY, 0],
       right: [0, centerY, 0],
       top: [0, 0, 0],
-      wheel: [-W * 0.5, H * 0.25, L * 0.28],
+      wheel: [-W * 0.46, H * 0.28, L * 0.26],
       interior: [-0.08, H * 0.65, 0.25],
-      wing: [0.0, H * 0.95, -L * 0.42]
+      wing: [0.0, H * 0.92, -L * 0.44]
     };
 
     return {
       positions: pos,
       targets: look,
-      minDistance: Math.max(R * 0.6, 1.2),
-      maxDistance: R * 4.2
+      minDistance: Math.max(R * 0.4, 0.8),
+      maxDistance: R * 4.8
     };
   }, [dimensions.length, dimensions.width, dimensions.height]);
 

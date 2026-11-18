@@ -158,22 +158,25 @@ export class WheelAssemblyGenerator {
     const lipGeo = new THREE.TorusGeometry(rimR * 0.98, 0.012, 16, 32);
     lipGeo.rotateY(Math.PI / 2);
     const lip = new THREE.Mesh(lipGeo, material);
-    lip.position.x = width * 0.42;
+    lip.position.x = width * 0.44;
     group.add(lip);
 
+    // Outer spoke plane position (outboard towards viewer)
+    const spokePlaneX = width * 0.40 - offsetM * 0.15;
+
     // Central hub
-    const hubR = rimR * 0.28;
-    const hubGeo = new THREE.CylinderGeometry(hubR, hubR, 0.04, 24);
+    const hubR = rimR * 0.24;
+    const hubGeo = new THREE.CylinderGeometry(hubR, hubR, 0.03, 24);
     hubGeo.rotateZ(Math.PI / 2);
     const hub = new THREE.Mesh(hubGeo, material);
-    hub.position.x = width * 0.38 - offsetM;
+    hub.position.x = spokePlaneX;
     group.add(hub);
 
     // Center-lock nut or lug circle
     const centerNutGeo = new THREE.CylinderGeometry(0.035, 0.04, 0.03, 6);
     centerNutGeo.rotateZ(Math.PI / 2);
     const centerNut = new THREE.Mesh(centerNutGeo, material);
-    centerNut.position.x = width * 0.42 - offsetM;
+    centerNut.position.x = spokePlaneX + 0.015;
     group.add(centerNut);
 
     // Spokes based on style
@@ -181,10 +184,10 @@ export class WheelAssemblyGenerator {
     for (let i = 0; i < spokeCount; i++) {
       const angle = (i * 2 * Math.PI) / spokeCount;
 
-      const spokeGeo = new THREE.BoxGeometry(0.02, rimR * 0.72, 0.025);
+      const spokeGeo = new THREE.BoxGeometry(0.018, rimR * 0.72, 0.022);
       const spoke = new THREE.Mesh(spokeGeo, material);
 
-      spoke.position.x = width * 0.38 - offsetM;
+      spoke.position.x = spokePlaneX;
       spoke.position.y = Math.cos(angle) * (rimR * 0.52);
       spoke.position.z = Math.sin(angle) * (rimR * 0.52);
       spoke.rotation.x = -angle;
@@ -193,16 +196,16 @@ export class WheelAssemblyGenerator {
 
       if (style === 'center_lock_y_spoke' || style === 'gt_mesh') {
         // Y-split spoke branch
-        const branchGeo = new THREE.BoxGeometry(0.016, rimR * 0.35, 0.018);
+        const branchGeo = new THREE.BoxGeometry(0.014, rimR * 0.35, 0.016);
         const branchL = new THREE.Mesh(branchGeo, material);
-        branchL.position.x = spoke.position.x;
+        branchL.position.x = spokePlaneX;
         branchL.position.y = Math.cos(angle - 0.12) * (rimR * 0.75);
         branchL.position.z = Math.sin(angle - 0.12) * (rimR * 0.75);
         branchL.rotation.x = -(angle - 0.12);
         group.add(branchL);
 
         const branchR = new THREE.Mesh(branchGeo, material);
-        branchR.position.x = spoke.position.x;
+        branchR.position.x = spokePlaneX;
         branchR.position.y = Math.cos(angle + 0.12) * (rimR * 0.75);
         branchR.position.z = Math.sin(angle + 0.12) * (rimR * 0.75);
         branchR.rotation.x = -(angle + 0.12);
@@ -224,24 +227,24 @@ export class WheelAssemblyGenerator {
   ): THREE.Group {
     const group = new THREE.Group();
 
-    // Brake Rotor Disc
+    // Brake Rotor Disc positioned behind the spokes (inboard)
     const rotorR = rimR * 0.74;
-    const rotorThick = 0.026;
+    const rotorThick = 0.022;
     const rotorGeo = new THREE.CylinderGeometry(rotorR, rotorR, rotorThick, 32);
     rotorGeo.rotateZ(Math.PI / 2);
     const rotor = new THREE.Mesh(rotorGeo, discMat);
-    rotor.position.x = 0.06;
+    rotor.position.x = 0.01;
     group.add(rotor);
 
     // Multi-piston Monobloc Caliper (clamped to upper front quadrant)
-    const caliperWidth = 0.07;
-    const caliperHeight = rotorR * 0.58;
-    const caliperDepth = 0.09;
+    const caliperWidth = 0.045;
+    const caliperHeight = rotorR * 0.55;
+    const caliperDepth = 0.08;
 
     const caliperGeo = new THREE.BoxGeometry(caliperWidth, caliperHeight, caliperDepth);
     const caliper = new THREE.Mesh(caliperGeo, caliperMat);
 
-    caliper.position.set(0.065, rotorR * 0.68, rotorR * 0.42);
+    caliper.position.set(0.025, rotorR * 0.65, rotorR * 0.40);
     caliper.rotation.x = -Math.PI / 6;
 
     group.add(caliper);

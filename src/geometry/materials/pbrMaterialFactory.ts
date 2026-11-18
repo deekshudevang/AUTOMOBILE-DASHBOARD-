@@ -14,7 +14,8 @@ export class PbrMaterialFactory {
           roughness: def.roughness ?? 0.18,
           clearcoat: def.clearcoat ?? 1.0,
           clearcoatRoughness: def.clearcoatRoughness ?? 0.04,
-          wireframe
+          wireframe,
+          side: THREE.DoubleSide
         });
 
       case 'tyre_rubber':
@@ -35,12 +36,13 @@ export class PbrMaterialFactory {
 
       case 'carbon_fiber':
         return new THREE.MeshPhysicalMaterial({
-          color: new THREE.Color(def.color || '#111215'),
-          roughness: 0.35,
-          metalness: 0.4,
-          clearcoat: 0.7,
-          clearcoatRoughness: 0.1,
-          wireframe
+          color: new THREE.Color(def.color || '#15171A'),
+          roughness: 0.55,
+          metalness: 0.20,
+          clearcoat: 0.20,
+          clearcoatRoughness: 0.25,
+          wireframe,
+          side: THREE.DoubleSide
         });
 
       case 'transmissive_glass':
@@ -51,7 +53,8 @@ export class PbrMaterialFactory {
           transparent: true,
           roughness: 0.05,
           ior: 1.52,
-          wireframe
+          wireframe,
+          side: THREE.DoubleSide
         });
 
       case 'emissive_light':
@@ -61,7 +64,8 @@ export class PbrMaterialFactory {
           emissiveIntensity: def.emissiveIntensity ?? 1.8,
           roughness: 0.1,
           metalness: 0.2,
-          wireframe
+          wireframe,
+          side: THREE.DoubleSide
         });
 
       case 'interior_leather':
@@ -70,7 +74,8 @@ export class PbrMaterialFactory {
           color: new THREE.Color(def.color || '#1E232A'),
           roughness: 0.75,
           metalness: 0.1,
-          wireframe
+          wireframe,
+          side: THREE.DoubleSide
         });
     }
   }
@@ -93,10 +98,10 @@ export class PbrMaterialFactory {
       }),
       glass: this.createMaterial({
         type: 'transmissive_glass',
-        color: '#1C2533',
+        color: '#0E1724',
         roughness: 0.04,
-        metalness: 0.0,
-        transmission: 0.94
+        metalness: 0.15,
+        transmission: 0.60
       }),
       tyre: this.createMaterial({
         type: 'tyre_rubber',
@@ -144,3 +149,4 @@ export class PbrMaterialFactory {
     };
   }
 }
+

@@ -37,7 +37,7 @@ const NAV_ITEMS: NavItem[] = [
 ];
 
 export const NavigationSidebar: React.FC = () => {
-  const { activeView, setActiveView, activeFile, activeModel, isDirty } = useVehicleStore();
+  const { activeView, setActiveView, activeFile, activeModel, isDirty, allFiles } = useVehicleStore();
 
   return (
     <>
@@ -83,12 +83,16 @@ export const NavigationSidebar: React.FC = () => {
                     </span>
                     <span className="hidden md:inline">{item.label}</span>
                   </div>
-                  {item.badge && (
+                  {item.id === 'library' ? (
+                    <span className="hidden md:inline text-[10px] font-mono px-1.5 py-0.2 rounded bg-autoverse-overlay text-slate-300">
+                      {allFiles.length}
+                    </span>
+                  ) : item.badge ? (
                     <span className="hidden md:inline text-[10px] font-mono px-1.5 py-0.2 rounded bg-autoverse-overlay text-slate-300">
                       {item.badge}
                     </span>
-                  )}
-                  {isActive && !item.badge && (
+                  ) : null}
+                  {isActive && item.id !== 'library' && !item.badge && (
                     <div className="hidden md:block w-1.5 h-1.5 rounded-full bg-autoverse-cyan" />
                   )}
                 </button>

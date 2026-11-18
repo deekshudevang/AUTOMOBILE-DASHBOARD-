@@ -1,14 +1,14 @@
 # AutoVerse 3D — Vehicle Geometry Enhancement Quality Summary
 
-Generated on 2026-11-15T15:22:38.315Z across Phase E Pilot Fleet.
+Generated on 2026-11-18T12:27:27.234Z across Phase E Pilot Fleet.
 
 ## Section 7 Quality Gates Verification Status
 
 | Vehicle | Archetype | Fidelity Tier | Overall Dimensions (±1%) | Ground Contact (<1mm) | Symmetry (<1mm) | Non-Floating | Components | Triangles | All Passed |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Porsche 911 GT3 RS (992, 2022)** | `rear_engine_coupe` | Tier B (Spec-accurate) | PASS (0mm / 34mm) | PASS (0mm) | PASS (0mm) | PASS (0 orphans) | PASS (33 parts) | PASS (10,036) | **PASS** |
-| **Ferrari 488 Pista (2018)** | `mid_engine_supercar` | Tier B (Spec-accurate) | PASS (0mm / 34mm) | PASS (0mm) | PASS (0mm) | PASS (0 orphans) | PASS (33 parts) | PASS (10,036) | **PASS** |
-| **Lamborghini Aventador SVJ (2018)** | `mid_engine_hypercar` | Tier B (Spec-accurate) | PASS (0mm / 34mm) | PASS (0mm) | PASS (0mm) | PASS (0 orphans) | PASS (33 parts) | PASS (10,036) | **PASS** |
+| **Porsche 911 GT3 RS (992, 2022)** | `rear_engine_coupe` | Tier B (Spec-accurate) | PASS (0mm / 34mm) | PASS (0mm) | PASS (0mm) | PASS (0 orphans) | PASS (52 parts) | PASS (38,296) | **PASS** |
+| **Ferrari 488 Pista (2018)** | `mid_engine_supercar` | Tier B (Spec-accurate) | PASS (0mm / 34mm) | PASS (0mm) | PASS (0mm) | PASS (0 orphans) | PASS (51 parts) | PASS (39,400) | **PASS** |
+| **Lamborghini Aventador SVJ (2018)** | `mid_engine_hypercar` | Tier B (Spec-accurate) | PASS (0mm / 34mm) | PASS (0mm) | PASS (0mm) | PASS (0 orphans) | PASS (54 parts) | PASS (38,308) | **PASS** |
 
 ## Provenance & Verification Evidence
 

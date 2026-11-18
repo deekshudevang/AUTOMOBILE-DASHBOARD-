@@ -43,7 +43,8 @@ export class VehicleGeometryEngine {
       def.geometry.dimensions,
       defaultMats,
       def.meta.archetype,
-      (def.shutLineGapMm || 3) / 1000
+      (def.shutLineGapMm || 3) / 1000,
+      def.meta.id
     );
     root.add(panelsGroup);
     this.nodes = [...panelNodes];
@@ -96,7 +97,7 @@ export class VehicleGeometryEngine {
     });
 
     // 5. Evaluate Quality Gates
-    this.qualityReport = QualityGates.evaluateAssembly(root, def.geometry.dimensions);
+    this.qualityReport = QualityGates.evaluateAssembly(root, def.geometry.dimensions, 1.0, def.geometry.fidelityTier);
 
     // Attach provenance metadata
     root.userData = {
@@ -234,3 +235,4 @@ export class VehicleGeometryEngine {
     this.qualityReport = null;
   }
 }
+

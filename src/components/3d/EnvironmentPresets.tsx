@@ -16,25 +16,25 @@ export const EnvironmentPresets: React.FC<EnvironmentPresetsProps> = ({
       {/* Studio Lighting Setups */}
       {preset === 'studio-dark' && (
         <>
-          <ambientLight intensity={0.4} />
-          {/* Main Key Spot Light */}
+          <ambientLight intensity={0.6} />
+          {/* Main Key Soft Spot Light */}
           <spotLight
-            position={[5, 8, 5]}
-            angle={0.6}
-            penumbra={0.8}
-            intensity={2.8}
+            position={[5, 9, 5]}
+            angle={0.65}
+            penumbra={0.85}
+            intensity={3.2}
             castShadow={showShadows}
             shadow-mapSize={[2048, 2048]}
             shadow-bias={-0.0001}
             color="#FFFFFF"
           />
-          {/* Fill Light with slight cool tone */}
-          <directionalLight position={[-6, 4, -4]} intensity={1.2} color="#94A3B8" />
-          {/* Cyan Rim Accent */}
-          <directionalLight position={[0, 5, -8]} intensity={1.8} color="#00F0FF" />
-          {/* Ground bounce */}
-          <directionalLight position={[0, -2, 0]} intensity={0.2} color="#1E293B" />
-          <Environment preset="night" />
+          {/* Fill Light (Soft Neutral Automotive Lighting) */}
+          <directionalLight position={[-6, 5, -4]} intensity={1.6} color="#E2E8F0" />
+          {/* Crisp Rear Rim / Shoulder Light */}
+          <directionalLight position={[0, 6, -7]} intensity={2.2} color="#F1F5F9" />
+          {/* Subtle Ground Bounce */}
+          <directionalLight position={[0, -2, 0]} intensity={0.4} color="#334155" />
+          <Environment preset="studio" />
         </>
       )}
 

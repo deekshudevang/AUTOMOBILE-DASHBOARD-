@@ -71,7 +71,7 @@ export class SchemaV2Migrator {
       ground_clearance_m: Number(dims.groundClearance ?? dims.ground_clearance_m ?? 0.1)
     };
 
-    const archetype = this.mapToArchetype(vehicle.category || vehicle.bodyStyle || '');
+    const archetype = this.mapToArchetype(vehicle.category || vehicle.bodyStyle || '', vehicle.id, vehicle.model);
 
     const frontWheel: WheelAssemblySpec = {
       rimDiameterInches: raw.wheels?.front?.rimDiameterInches ?? 20,
@@ -193,7 +193,7 @@ export class SchemaV2Migrator {
         model: vehicle.model || id,
         generation: vehicle.generation || '',
         year: Number(vehicle.model_year_reference || 2023),
-        archetype: this.mapToArchetype(vehicle.body_style || ''),
+        archetype: this.mapToArchetype(vehicle.body_style || '', id, vehicle.model),
         provenanceLevel: 'verified'
       },
       geometry: {
@@ -376,15 +376,15 @@ export class SchemaV2Migrator {
     };
   }
 
-  private static mapToArchetype(str: string): ChassisArchetype {
-    const s = str.toLowerCase();
-    if (s.includes('rear-engine') || s.includes('rear_engine') || s.includes('911')) {
+  private static mapToArchetype(str: string, vehicleId?: string, model?: string): ChassisArchetype {
+    const s = `${str} ${vehicleId || ''} ${model || ''}`.toLowerCase();
+    if (s.includes('911') || s.includes('gt3_rs') || s.includes('rear-engine') || s.includes('rear_engine') || s.includes('comet_gt3rs')) {
       return 'rear_engine_coupe';
     }
-    if (s.includes('hypercar') || s.includes('chiron') || s.includes('jesko') || s.includes('valkyrie') || s.includes('svj')) {
+    if (s.includes('svj') || s.includes('aventador') || s.includes('revuelto') || s.includes('hypercar') || s.includes('chiron') || s.includes('jesko') || s.includes('valkyrie')) {
       return 'mid_engine_hypercar';
     }
-    if (s.includes('mid-engine') || s.includes('mid_engine') || s.includes('supercar') || s.includes('pista') || s.includes('ferrari')) {
+    if (s.includes('pista') || s.includes('488') || s.includes('ferrari') || s.includes('mid-engine') || s.includes('mid_engine') || s.includes('supercar')) {
       return 'mid_engine_supercar';
     }
     if (s.includes('sedan') || s.includes('saloon')) {
@@ -399,7 +399,7 @@ export class SchemaV2Migrator {
     if (s.includes('tuner') || s.includes('jdm') || s.includes('drift')) {
       return 'jdm_tuner_performance';
     }
-    if (s.includes('prototype') || s.includes('gt3') || s.includes('cup') || s.includes('track')) {
+    if (s.includes('prototype') || s.includes('track')) {
       return 'track_special_prototype';
     }
     return 'front_engine_gt_coupe';

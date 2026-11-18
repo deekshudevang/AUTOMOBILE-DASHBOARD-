@@ -1,9 +1,20 @@
 import {
   GeometryQualityClass,
+  VehicleModelStatus,
   GeometryProvenance,
   AuthenticVehicleMetadata,
   GeometryValidationReport
 } from '../types';
+
+export interface ModelStatusInfo {
+  status: VehicleModelStatus;
+  label: string;
+  badgeTitle: string;
+  hexColor: string;
+  description: string;
+  isModelSpecific: boolean;
+  requiresPlacard: boolean;
+}
 
 export interface QualityBadgeInfo {
   classification: GeometryQualityClass;
@@ -36,6 +47,65 @@ export interface ProvenanceCertificate {
  * Guarantees that approximate or reconstructed models are never advertised as OEM geometry.
  */
 export class QualityClassifier {
+  /**
+   * Section 14: Model status resolution hierarchy
+   */
+  static getModelStatusInfo(status: VehicleModelStatus): ModelStatusInfo {
+    switch (status) {
+      case 'AUTHENTIC_ASSET_VERIFIED':
+        return {
+          status,
+          label: 'AUTHENTIC ASSET',
+          badgeTitle: 'AUTHENTIC ASSET VERIFIED',
+          hexColor: '#10B981', // Emerald
+          description: 'Official OEM CAD or licensed engineering asset verified against manufacturer blueprints.',
+          isModelSpecific: true,
+          requiresPlacard: false
+        };
+      case 'MODEL_SPECIFIC_RECONSTRUCTION':
+        return {
+          status,
+          label: 'MODEL-SPECIFIC',
+          badgeTitle: 'MODEL-SPECIFIC RECONSTRUCTION',
+          hexColor: '#00F0FF', // Cyan
+          description: 'Discrete, model-tailored parametric coachwork lofted from OEM dimensional coordinates.',
+          isModelSpecific: true,
+          requiresPlacard: false
+        };
+      case 'PROCEDURAL_APPROXIMATION':
+        return {
+          status,
+          label: 'APPROXIMATE',
+          badgeTitle: 'PROCEDURAL APPROXIMATION',
+          hexColor: '#F59E0B', // Amber
+          description: 'Generic procedural archetype. Geometry is an approximation and not verified model-specific.',
+          isModelSpecific: false,
+          requiresPlacard: true
+        };
+      case 'MODEL_UNAVAILABLE':
+        return {
+          status,
+          label: 'UNAVAILABLE',
+          badgeTitle: 'MODEL GEOMETRY UNAVAILABLE',
+          hexColor: '#EF4444', // Red
+          description: 'No verified CAD asset or model-specific reconstruction is currently available.',
+          isModelSpecific: false,
+          requiresPlacard: true
+        };
+      case 'VALIDATION_PENDING':
+      default:
+        return {
+          status: 'VALIDATION_PENDING',
+          label: 'PENDING',
+          badgeTitle: 'VALIDATION PENDING',
+          hexColor: '#94A3B8', // Slate
+          description: 'Asset geometry is awaiting automated dimensional tolerance validation.',
+          isModelSpecific: false,
+          requiresPlacard: false
+        };
+    }
+  }
+
   /**
    * Resolves the official quality classification based on provenance, license, and dimensional tolerance
    */

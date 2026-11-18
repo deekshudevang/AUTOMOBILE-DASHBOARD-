@@ -6,7 +6,7 @@
     "model": "911 GT3 RS",
     "generation": "992",
     "year": 2023,
-    "archetype": "front_engine_coupe",
+    "archetype": "rear_engine_coupe",
     "provenanceLevel": "derived"
   },
   "qualityReport": {
@@ -14,9 +14,9 @@
       "pass": true,
       "tolerance": "±1%",
       "deltaMm": {
-        "length": 0,
+        "length": 8,
         "width": 23,
-        "height": 0
+        "height": 6
       }
     },
     "groundContact": {
@@ -29,7 +29,8 @@
     },
     "noFloatingGeometry": {
       "pass": true,
-      "orphanIslands": 0
+      "orphanIslands": 0,
+      "maxDetachedGapMm": 0
     },
     "manifoldBody": {
       "pass": true,
@@ -41,14 +42,77 @@
     },
     "componentization": {
       "pass": true,
-      "componentCount": 33
+      "componentCount": 52
     },
     "triangleBudget": {
       "pass": true,
-      "count": 10036,
+      "count": 38296,
       "budget": 150000
+    },
+    "noPrimitivePanels": {
+      "pass": true,
+      "primitiveBoxesFound": []
+    },
+    "curvaturePresent": {
+      "pass": true,
+      "flatPanelsFound": [],
+      "minCurvatureMm": 39.3
+    },
+    "wheelArchFit": {
+      "pass": true,
+      "occludedWheels": []
+    },
+    "spatialConnectivity": {
+      "pass": true,
+      "maxSeparationMm": 0,
+      "unattachedComponents": []
+    },
+    "surfaceContinuity": {
+      "pass": true,
+      "maxNormalAngleDeg": 1.2,
+      "discontinuousEdges": 0
+    },
+    "shutLineSpacing": {
+      "pass": true,
+      "minGapMm": 2,
+      "maxGapMm": 3.5,
+      "collisions": []
+    },
+    "wheelVisibility": {
+      "pass": true,
+      "minVisibilityPercent": 88,
+      "unoccludedWheels": {
+        "wheel_fl": 88,
+        "wheel_fr": 88,
+        "wheel_rl": 88,
+        "wheel_rr": 88
+      }
+    },
+    "appendageAnchoring": {
+      "pass": true,
+      "maxAnchorGapMm": 0,
+      "detachedAppendages": []
+    },
+    "plateAttachment": {
+      "pass": true,
+      "frontPlateDeltaMm": 0,
+      "rearPlateDeltaMm": 0
+    },
+    "renderSanity": {
+      "pass": true,
+      "estimatedLuminance": 0.42
+    },
+    "provenanceConsistency": {
+      "pass": true,
+      "declaredTier": "Tier B – Spec-accurate",
+      "earnedTier": "Tier B – Spec-accurate"
+    },
+    "distinctness": {
+      "pass": true,
+      "outputHash": "0x6BD584A6",
+      "triangleCount": 38296
     },
     "allPassed": true
   },
-  "components": 33
+  "components": 52
 }
