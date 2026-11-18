@@ -1,6 +1,6 @@
 # AUTOVERSE 3D — Master Engineering Task Ledger (`TASK.md`)
 
-**Current Phase:** Phase 4 Complete (CAD Kernel & Geometry Pipeline Verified) → Phase 5 (Parametric Vehicle Modelling & Constraint Engine)  
+**Current Phase:** Phase 5 Complete (Parametric Vehicle Modelling & Constraint Engine) → Phase 6 (Component System & Collision Checking)  
 **Operating Standard:** Operating Contract v2 (§1.1 Truth & Evidence, §2 Session Mechanics)  
 **Owner Actions Pointer:** See [`docs/OWNER_ACTIONS.md`](file:///c:/Users/deeks/Downloads/cars/docs/OWNER_ACTIONS.md) for manual host actions (Docker daemon start, optional WSL OpenFOAM install).  
 
@@ -89,9 +89,12 @@
     Evidence: `tests/cad-kernel-pipeline.test.ts` · files: `src/geometry/cad/stepExporter.ts`.
 
 ### Phase 5 — Parametric Vehicle Modelling & Constraint Engine
-- [ ] **5.1 Feature DAG Engine**: Immutable feature history tree with deterministic rebuild and failure isolation.
-- [ ] **5.2 Dimension Constraint Solver**: Independent driving vs driven dimensions (wheelbase, track, overhang, height).
-- [ ] **5.3 Stable Semantic Anchors**: Named hardpoints and section curves addressing topological naming stability.
+- [x] **5.1 Feature DAG Engine**: Immutable feature history tree with deterministic rebuild and failure isolation.
+    Evidence: `tests/parametric-feature-dag.test.ts` (6 tests passing) · files: `src/geometry/parametric/featureDag.ts`.
+- [x] **5.2 Dimension Constraint Solver**: Independent driving vs driven dimensions (wheelbase, track, overhang, height).
+    Evidence: `tests/parametric-feature-dag.test.ts` · files: `src/geometry/parametric/constraintSolver.ts`.
+- [x] **5.3 Stable Semantic Anchors**: Named hardpoints and section curves addressing topological naming stability.
+    Evidence: `tests/parametric-feature-dag.test.ts` · files: `src/geometry/parametric/semanticAnchors.ts`.
 
 ### Phase 6 — Component System & Collision Checking
 - [ ] **6.1 Component Hierarchy & Attachment Points**: Independent component lifecycle with stable IDs and parent anchors.
