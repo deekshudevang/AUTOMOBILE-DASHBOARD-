@@ -216,6 +216,20 @@ export class FeatureDagEngine {
     return false;
   }
 
+  public serialize(): string {
+    return JSON.stringify(Array.from(this.features.values()), null, 2);
+  }
+
+  public static deserialize(jsonStr: string): FeatureDagEngine {
+    const dag = new FeatureDagEngine();
+    const list = JSON.parse(jsonStr) as FeatureNode[];
+    for (const node of list) {
+      dag.features.set(node.id, { ...node });
+    }
+    dag.recordCheckpoint();
+    return dag;
+  }
+
   private restoreSnapshot(snap: FeatureDagSnapshot): void {
     this.features.clear();
     for (const [id, f] of Object.entries(snap.features)) {
@@ -224,3 +238,5 @@ export class FeatureDagEngine {
     this.version = snap.version;
   }
 }
+
+export { FeatureDagEngine as FeatureDag };

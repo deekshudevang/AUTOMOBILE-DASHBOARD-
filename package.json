@@ -10,7 +10,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "benchmark:ahmed": "tsx scripts/run-ahmed-benchmark.ts"
+    "benchmark:ahmed": "tsx scripts/run-ahmed-benchmark.ts",
+    "benchmark:drivaer": "tsx scripts/run-drivaer-benchmark.ts"
   },
   "dependencies": {
     "@fastify/cors": "^11.4.1",
