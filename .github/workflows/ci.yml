@@ -1,0 +1,50 @@
+name: AutoVerse Engineering CI
+
+on:
+  push:
+    branches: [ main, master, feat/* ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install Node Dependencies
+        run: npm ci
+
+      - name: Run Test Suite (Vitest)
+        run: npm test
+
+      - name: Run Ahmed Body Benchmark Validation
+        run: npm run benchmark:ahmed
+
+      - name: Run DrivAer Generic Car Benchmark Validation
+        run: npm run benchmark:drivaer
+
+      - name: Build Production Frontend Bundle
+        run: npm run build
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install fastapi pydantic sqlalchemy pytest uvicorn
+
+      - name: Run Python Backend Unit Tests
+        run: |
+          pytest

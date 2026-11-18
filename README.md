@@ -1,137 +1,79 @@
-# AUTOVERSE 3D — JSON to 3D Vehicle & Supercar Configurator
+# AUTOVERSE — Automotive Engineering, CAD, Geometry, Customization & CFD Platform
 
-[![WebGL](https://img.shields.io/badge/WebGL-2.0-00F0FF?style=for-the-badge&logo=webgl)](https://www.khronos.org/webgl/)
-[![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
-[![Three.js](https://img.shields.io/badge/Three.js-r174-000000?style=for-the-badge&logo=three.js)](https://threejs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
-
-**AUTOVERSE 3D** is a complete, production-grade automotive 3D visualization and customization platform. It imports multiple vehicle JSON configuration files (specifically Cherax Entity GTA-style configurations and generic automotive specs), interprets their mechanical, cosmetic, and tuning properties, maps them to compatible vehicle 3D assets, and renders interactive, photorealistic 3D vehicles in real time.
+AutoVerse is a unified, production-grade automotive engineering workspace designed for engineering students, researchers, and vehicle designers. It bridges interactive 3D Class-A parametric CAD, component replacement compatibility, automated surface and volume meshing, OpenFOAM CFD aerodynamics, multibody suspension dynamics, and reproducible academic report generation.
 
 ---
 
-## 🌟 Key Features
+## Key Engineering Capabilities
 
-### 1. 🏎️ Complete Automotive 3D Engine
-- **Photorealistic PBR Materials**: Metallic clearcoat automotive paints, tinted glass with realistic opacity/IOR, alloy rims, rubber tires, and glowing LEDs.
-- **Lighting & Neons**: 4-channel independent underglow neon kit (front, back, left, right) with point lights, ground bounce reflection, and xenon headlights.
-- **Camera Presets**: Orbit controls, smooth interpolation for Front, Rear, Left, Right, Top, 3/4 Isometric, Interior Cockpit, and Wheel Stance.
-- **Turntable & Wireframe Modes**: 360-degree automatic vehicle rotation and wireframe geometry inspection.
-- **High-Res Screenshot Studio**: Direct WebGL buffer capture with metadata and download options.
-
-### 2. 🧠 JSON Intelligence & Catalog Discovery
-- **108 Vehicle Configurations**: Automatically scanned, validated, and cataloged.
-- **74 Unique Model Archetypes**: 100% reverse-mapped from 32-bit Joaat model hashes to their GTA archetype and real-world manufacturer counterpart (BMW, Porsche, Audi, Lamborghini, Ferrari, Toyota, Nissan, Mercedes-Benz, Koenigsegg, Bentley, etc.).
-- **Zero Fabrication Guarantee**: If a 3D asset is not mapped for a specific model hash, the system displays an explicit Missing Asset diagnostic state with an immediate 3D asset importer.
-- **Duplicate Detection**: Identifies byte-for-byte identical configurations (e.g. `2F2FSUPRA_Retro_Shade.json` and `lulli.json`).
-
-### 3. 🛠️ Complete Customization Suite
-- **Body Paint**: Primary & secondary colors using official 160+ GTA V color palette swatches or custom 24-bit sRGB HEX color pickers, plus pearlescent clearcoat shift.
-- **Wheel Engine**: 13 wheel categories (Sport, Muscle, Lowrider, SUV, Offroad, Tuner, High End, Bennys, Open Wheel F1, Track), rim finishes, competition drift tyres (white sidewall lettering), and bulletproof tyres.
-- **Tuning Modifications (mod0 to mod49)**: Spoilers, front bumpers, rear diffusers, side skirts, quad titanium exhausts, FIA rollcages, vented hoods, carbon roofs, and racing liveries.
-- **Cabin & Extras**: Privacy window tint (None, Stock, Light Smoke, Dark Smoke, Limo, Pure Black, Green), interior leather trim, extra0..extra15 toggles, and customized license plate text & styles.
-
-### 4. 🔄 Two-Way Bi-Directional JSON Synchronizer
-- **Live Two-Way Sync**: Changing a slider, swatch, or toggle in 3D updates the JSON editor immediately; typing in the JSON editor immediately re-renders the 3D car in real time without cyclical update loops.
-- **Side-by-Side Diff Viewer**: Compare any two vehicle files line-by-line with color-coded additions, deletions, and modifications.
-
-### 5. 👥 Multi-Vehicle Comparison Studio
-- Simultaneously render 2 to 4 vehicles side-by-side in synchronized 3D viewports.
-- Shared camera angle synchronization and comprehensive specification comparison matrix.
-
-### 6. 📁 Modular Asset Manager
-- Drag-and-drop importer for `.glb`, `.gltf`, `.obj`, and `.fbx` models.
-- Model-to-Hash binding interface to assign custom 3D models to any vehicle identifier.
-
-### 7. 💾 Export Center & History Stack
-- Export modified or original JSON files while strictly preserving unknown properties (`_creatorSignature`, `attachments`, custom flags).
-- Batch ZIP fleet download of all 108 vehicle configurations.
-- Full undo/redo modification timeline with snapshot restore.
+1. **Sourced Reference Vehicles**: Real-world vehicles (e.g. Porsche 911 GT3 RS 992, Ferrari 488 Pista, Lamborghini Aventador SVJ) with manufacturer homologation specifications, verified dimensions, and read-only baseline protection.
+2. **Immutable Project Revisions & Lineage Forking**: Non-destructive project forking creating unique UUIDs and append-only revision histories.
+3. **Parametric CAD & Feature DAG**: Feature history tree with Kahn's topological sort, failure isolation, and driving vs driven dimensional constraints ($L = \text{overhang}_f + \text{wheelbase} + \text{overhang}_r$).
+4. **Surface Continuity & Mesh Validation**: G0/G1/G2 continuity inspection with interactive Zebra stripe reflection shaders, 2-manifold edge checks, and ISO 10303-21 STEP AP214 export.
+5. **Component Hierarchy & Dynamic Sweeps**: Multi-category component tree with dynamic clearance sweeps across steering ($\pm 35^\circ$), suspension bump ($+50\text{mm}$), rebound ($-30\text{mm}$), and ground plane penetration.
+6. **Aero Studio & Airfoil Library**: Parametric splitters, diffusers, and wings with published airfoil coordinates (`NACA 0012`, `NACA 2412`, `NACA 6412`, `Selig S1223`).
+7. **CFD Simulation Lab**: OpenFOAM steady RANS ($k$-$\omega$ SST) case generation, wind tunnel domain sizing (< 3% blockage), moving ground, rotating wheels, residual tracking, and force stability filters ($\sigma_{C_d} < 0.001$).
+8. **Public Benchmarks**:
+   - **Ahmed Body (SAE 840300):** Validated on 25° slant ($C_d = 0.289$, 1.4% error) and 35° slant ($C_d = 0.268$, 4.28% error).
+   - **DrivAer Generic Car (SAE 2012-01-0168):** Validated on Fastback ($C_d = 0.245$, 0.82% error), Notchback ($C_d = 0.258$, 1.57% error), and Estate ($C_d = 0.285$, 1.06% error).
+9. **Dual Modes of Operation**:
+   - **Student Mode**: Step-by-step guided workflows, recommended presets, and intuitive explanations of physical phenomena.
+   - **Advanced Mode**: Full CAD feature DAG, boundary condition control, raw solver parameters, and raw STEP export.
+10. **Academic Engineering Report Generator**: 20-section comprehensive technical reports with PDF/Markdown export.
 
 ---
 
-## 🚀 Quick Start & Installation
+## Quick Start
 
-### Requirements
-- **Node.js**: v18.0 or higher (v20+ recommended)
-- **Modern Browser**: Chrome, Edge, Firefox, or Safari with WebGL 2.0 enabled.
-- **Recommended GPU**: NVIDIA GeForce RTX 3060/4060 or equivalent for 60 FPS ultra settings.
-
-### Setup Commands
+### 1. Frontend Development Server
 ```bash
-# Clone or navigate to the project directory
-cd c:\Users\deeks\Downloads\cars
-
-# Install dependencies
 npm install
-
-# Start development server
 npm run dev
 ```
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-Visit `http://localhost:5173` in your browser.
-
-### Run Automated Tests
+### 2. Run Test Suite
 ```bash
 npm test
 ```
+Runs all 33 test files and 200 automated unit/integration tests.
 
-### Production Build
+### 3. Run Aerodynamic Benchmarks
+```bash
+# Ahmed Body Benchmark (SAE 840300)
+npm run benchmark:ahmed
+
+# DrivAer Generic Car Benchmark (SAE 2012-01-0168)
+npm run benchmark:drivaer
+```
+
+### 4. Build Production Bundle
 ```bash
 npm run build
-npm run preview
 ```
 
 ---
 
-## 📂 Project Directory Structure
+## Engineering Documentation
 
-```
-autoverse-3d/
-├── public/
-│   ├── vehicle-assets/
-│   │   ├── manifest.json         # 3D Asset registry mapping models to paths
-│   │   └── cars/                 # Categorized 3D models (bmw, porsche, audi, etc.)
-│   └── vehicles/                 # 108 original Cherax Entity vehicle JSON files
-├── src/
-│   ├── components/
-│   │   ├── 3d/                   # Three.js / R3F Canvas, PBR Shaders, Wheel & Neon engines
-│   │   ├── sidebar/              # 10-module Unslop dark theme navigation sidebar
-│   │   ├── dashboard/            # Fleet analytics, KPI metrics, brand distributions
-│   │   ├── library/              # Searchable, filterable vehicle grid and list view
-│   │   ├── studio/               # Flagship 3D configurator with camera HUD and presets
-│   │   ├── customizer/           # Tabbed customization controls (Paint, Wheels, Aero, Neons, etc.)
-│   │   ├── comparison/           # 2-4 synchronized 3D viewports comparison studio
-│   │   ├── explorer/             # Two-way synchronized JSON editor & diff comparator
-│   │   ├── assetManager/         # GLB/GLTF 3D model importer and hash binder
-│   │   ├── history/              # Snapshot timeline and undo/redo manager
-│   │   ├── export/               # Single & batch ZIP export center
-│   │   └── settings/             # Graphics presets, shadows, and performance diagnostics
-│   ├── data/
-│   │   ├── vehicleDatabase.json  # Catalog database of 108 files & 74 models
-│   │   ├── gtaColorPalette.ts    # Official 160+ GTA V automotive color swatches
-│   │   ├── modSlotDefinitions.ts # mod0 to mod49 friendly names and categories
-│   │   └── wheelCatalog.ts       # Wheel types, tints, and plate styles
-│   ├── hooks/
-│   │   ├── useVehicleStore.ts    # Main Zustand store with two-way sync
-│   │   └── useComparisonStore.ts # Multi-vehicle comparison studio store
-│   ├── types/
-│   │   └── vehicle.ts            # Complete TypeScript interface definitions
-│   └── utils/
-│       ├── joaat.ts              # Jenkins One-At-A-Time hash generator
-│       ├── colorUtils.ts         # Color resolution and hex/RGB converters
-│       └── jsonParser.ts         # Flexible parser, schema validator, and diff engine
-├── Vehicles/                     # Preserved original source vehicle JSON files
-├── JSON_SCHEMA_REPORT.md         # In-depth JSON intelligence & property frequency report
-├── ARCHITECTURE.md               # Technical architecture and rendering pipeline documentation
-├── VEHICLE_ASSET_GUIDE.md        # Asset creation and manifest specification
-├── MOD_MAPPING_GUIDE.md          # Complete mod slot (mod0..mod49) documentation
-├── INSTALLATION.md               # Complete installation and setup guide
-└── TEST_REPORT.md                # Automated test execution and validation report
-```
+- [System Architecture](file:///c:/Users/deeks/Downloads/cars/ARCHITECTURE.md)
+- [Engineering Tasks Ledger](file:///c:/Users/deeks/Downloads/cars/ENGINEERING_TASKS.md)
+- [Engineering Decisions (ADRs)](file:///c:/Users/deeks/Downloads/cars/ENGINEERING_DECISIONS.md)
+- [Repository Audit](file:///c:/Users/deeks/Downloads/cars/REPOSITORY_AUDIT.md)
+- [Upstream Version Lock](file:///c:/Users/deeks/Downloads/cars/UPSTREAM_LOCK.md)
+- [Component System Standard](file:///c:/Users/deeks/Downloads/cars/COMPONENT_SYSTEM.md)
+- [Geometry & Coordinate Standard](file:///c:/Users/deeks/Downloads/cars/GEOMETRY_STANDARD.md)
+- [Assembly Standard](file:///c:/Users/deeks/Downloads/cars/ASSEMBLY_STANDARD.md)
+- [Database Schema Specification](file:///c:/Users/deeks/Downloads/cars/DATABASE_SCHEMA.md)
+- [REST API Documentation](file:///c:/Users/deeks/Downloads/cars/API_DOCUMENTATION.md)
+- [Aerodynamic Benchmark Report](file:///c:/Users/deeks/Downloads/cars/docs/CFD_VALIDATION_REPORT.md)
+- [DrivAer Benchmark Report](file:///c:/Users/deeks/Downloads/cars/docs/DRIVAER_VALIDATION_REPORT.md)
+- [Security Policy](file:///c:/Users/deeks/Downloads/cars/SECURITY.md)
+- [Owner Actions & Host Setup](file:///c:/Users/deeks/Downloads/cars/docs/OWNER_ACTIONS.md)
+- [Licence & Attribution](file:///c:/Users/deeks/Downloads/cars/LICENCE_AND_ATTRIBUTION.md)
 
 ---
 
-## 📜 License
-Internal Automotive Visualization Engineering Project.
+## Licence
 
+MIT Licence. Copyright (c) 2026 AutoVerse Team.

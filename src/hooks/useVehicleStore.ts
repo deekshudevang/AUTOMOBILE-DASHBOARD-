@@ -8,8 +8,40 @@ import { parseVehicleJson } from '../utils/jsonParser';
 import { parametricFiles, parametricModels, parametricBindings } from '../data/parametricCatalog';
 
 export type PresentationMode = 'studio' | 'engineering' | 'showroom' | 'comparison';
+export type EngineeringMode = 'student' | 'advanced';
+
+export type ActiveView =
+  | 'dashboard'
+  | 'library'
+  | 'projects'
+  | 'studio'
+  | 'componentLibrary'
+  | 'componentEditor'
+  | 'assembly'
+  | 'cadDesigner'
+  | 'geometryEditor'
+  | 'materialStudio'
+  | 'aeroStudio'
+  | 'cfdLab'
+  | 'meshGenerator'
+  | 'dynamics'
+  | 'results'
+  | 'reports'
+  | 'learning'
+  | 'assetManager'
+  | 'settings'
+  | 'customizer'
+  | 'comparison'
+  | 'explorer'
+  | 'history'
+  | 'export';
 
 interface VehicleStoreState {
+  // Mode Selection: Student vs. Advanced
+  engineeringMode: EngineeringMode;
+  setEngineeringMode: (mode: EngineeringMode) => void;
+  toggleEngineeringMode: () => void;
+
   // Database & Catalog
   allFiles: VehicleFileSummary[];
   allModels: VehicleModelMetadata[];
@@ -24,7 +56,7 @@ interface VehicleStoreState {
   historyIndex: number;
 
   // Navigation & View
-  activeView: 'dashboard' | 'library' | 'studio' | 'explorer' | 'customizer' | 'comparison' | 'assetManager' | 'history' | 'export' | 'settings';
+  activeView: ActiveView;
   presentationMode: PresentationMode;
   setPresentationMode: (mode: PresentationMode) => void;
 
@@ -210,6 +242,10 @@ const defaultModel = porscheGt3RsModel;
 const initialFallbackConfig: CheraxVehicleConfig = porscheInitialConfig;
 
 export const useVehicleStore = create<VehicleStoreState>((set, get) => ({
+  engineeringMode: 'student',
+  setEngineeringMode: (mode: EngineeringMode) => set({ engineeringMode: mode }),
+  toggleEngineeringMode: () => set(state => ({ engineeringMode: state.engineeringMode === 'student' ? 'advanced' : 'student' })),
+
   allFiles: [porscheGt3RsFile, ...parametricFiles.filter(f => f.fileName !== 'porsche_911_gt3_rs_2022.json'), ...(vehicleDatabaseRaw.files as any)],
   allModels: [porscheGt3RsModel, ...parametricModels.filter(m => m.hash !== 706080074), ...(vehicleDatabaseRaw.models as any)],
   activeFile: defaultFile.fileName,

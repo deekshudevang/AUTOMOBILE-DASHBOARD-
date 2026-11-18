@@ -1,78 +1,113 @@
-# AUTOVERSE 3D — System Architecture & Technical Specification
+# AutoVerse — System Architecture & Technical Specification
 
-## 1. Architectural Overview
+**Platform:** Automotive Engineering, Parametric CAD, Customization & CFD Simulation  
+**Document ID:** `AV-ARCH-001`  
+**Revision:** 2.0.0  
 
-AUTOVERSE 3D is designed with a reactive, unidirectional data flow powered by **Zustand**, driving a **React Three Fiber (Three.js)** WebGL rendering pipeline, with zero-latency bidirectional synchronization with a raw JSON editor.
+---
 
+## 1. System Vision & Architecture
+
+AutoVerse is an integrated automotive engineering environment that unites parametric Class-A surface CAD, component assembly compatibility, automated surface/volume meshing, computational fluid dynamics (OpenFOAM), multibody suspension kinematics, and academic report generation.
+
+```text
++---------------------------------------------------------------------------------------------------+
+|                                        AUTOVERSE CLIENT                                           |
+|                     (React 18, TypeScript, Three.js, React Three Fiber, Tailwind CSS)             |
+|                                                                                                   |
+|  [Student Mode / Advanced Mode]  [19 Integrated Modules]  [Bi-directional 3D Viewport & Tree]      |
++---------------------------------------------------------------------------------------------------+
+                               |                                        |
+                      (REST / OpenAPI JSON)                    (Web Worker Message Bus)
+                               v                                        v
++-------------------------------------------------------+    +--------------------------------------+
+|             FASTAPI ENGINEERING BACKEND               |    |       CLIENT GEOMETRY ENGINE         |
+|  (Python 3.14, SQLAlchemy, Pydantic, SQLite/Postgres) |    |  - Three.js WebGL Presentation       |
+|                                                       |    |  - Parametric Feature DAG Rebuilder  |
+|  - Vehicle & Component Registries                     |    |  - Dimension Constraint Solver       |
+|  - Project Revisions & Append-Only History            |    |  - G0/G1/G2 Continuity Analyzer      |
+|  - Assembly Compatibility Engine                      |    |  - Dynamic Collision Sweeper         |
+|  - Engineering Report Generator                       |    |  - Calibrated Reference Planes       |
+|  - Simulation Job Queue & Results Cache               |    |  - STEP AP214 & STL Exporters        |
++-------------------------------------------------------+    +--------------------------------------+
+                               |
+              +----------------+----------------+
+              |                                 |
+              v                                 v
++-----------------------------+   +-----------------------------+
+|    OPENFOAM CFD WORKER      |   |   VEHICLE DYNAMICS WORKER   |
+|  - Domain Generator (< 3%)  |   |  - Multibody Kinematics     |
+|  - SnappyHexMesh DSL        |   |  - Suspension Travel Sweep  |
+|  - k-omega SST RANS Solver  |   |  - Camber Gain / Scrub Rad  |
+|  - Force Convergence Monitor|   |  - CFD Aero Downforce Map   |
+|  - Residual Tracker         |   |  - Steering Lock Envelope   |
++-----------------------------+   +-----------------------------+
 ```
-┌────────────────────────────────────────────────────────────────────────┐
-│                              AUTOVERSE 3D                              │
-└────────────────────────────────────────────────────────────────────────┘
-                                    │
-           ┌────────────────────────┴────────────────────────┐
-           ▼                                                 ▼
-┌─────────────────────────┐                       ┌─────────────────────┐
-│    Zustand Store        │◄─── Two-Way Sync ────►│    JSON Explorer    │
-│  (useVehicleStore.ts)   │                       │  (Monaco/Textarea)  │
-└─────────────────────────┘                       └─────────────────────┘
-           │
-           ├────────────────────────┬────────────────────────┐
-           ▼                        ▼                        ▼
-┌─────────────────────┐  ┌─────────────────────┐  ┌─────────────────────┐
-│  3D Studio Engine   │  │ Vehicle Library &   │  │ Comparison Studio   │
-│  - Three.js Canvas  │  │ Dashboard Analytics │  │ - Multi-Canvas      │
-│  - PBR Materials    │  │ - 108 Configurations│  │   Synchronization   │
-│  - Customizer Panel │  │ - 74 Unique Models  │  │ - Diff Matrix       │
-└─────────────────────┘  └─────────────────────┘  └─────────────────────┘
+
+---
+
+## 2. Directory Structure (§4)
+
+```text
+autoverse/
+├── apps/
+│   └── web/                   # Vite + React + Three.js Frontend
+├── services/
+│   ├── api/                   # Python FastAPI Backend
+│   ├── cad-worker/            # Asynchronous B-rep CAD Worker
+│   ├── mesh-worker/           # Gmsh / snappyHexMesh Worker
+│   ├── cfd-worker/            # OpenFOAM Simulation Worker
+│   └── dynamics-worker/       # Chrono Multibody Dynamics Worker
+├── packages/
+│   ├── shared-types/          # Universal TypeScript Types
+│   ├── project-schema/        # JSON Schemas for Project Bundles
+│   ├── geometry-contracts/    # Geometry Interfaces & Invariants
+│   └── component-contracts/   # Component Compatibility Interfaces
+├── engineering/
+│   ├── cad/                   # CadQuery / OpenCascade Adapters
+│   ├── geometry/              # Lofting & Surface Analysis
+│   ├── meshing/               # Mesh Generation & Quality Gates
+│   ├── cfd/                   # OpenFOAM Case Generators
+│   ├── dynamics/              # Vehicle Kinematic Solvers
+│   └── benchmarks/            # Ahmed Body & DrivAer Suites
+├── docs/                      # Engineering Architecture & Standards
+└── tests/                     # Unit, Integration & Regression Suites
 ```
 
 ---
 
-## 2. Rendering Pipeline & Shaders
+## 3. Coordinate Systems & Engineering Conventions
 
-### A. Clearcoat Automotive Body Paint
-Vehicle bodywork is rendered using `THREE.MeshPhysicalMaterial` with:
-- `roughness`: 0.15 - 0.25 (tuned based on metallic vs matte palette)
-- `metalness`: 0.85 - 0.95
-- `clearcoat`: 0.95 - 1.0 (creates the optical illusion of deep automotive lacquer)
-- `clearcoatRoughness`: 0.08
-- `color`: dynamically evaluated from custom sRGB `{r, g, b}` or mapped GTA palette swatch.
-
-### B. Realistic Glass
-Window glass is rendered using high transmission PBR parameters:
-- `transmission`: 0.85
-- `ior` (Index of Refraction): 1.52 (automotive safety glass)
-- `roughness`: 0.05
-- `opacity`: dynamically scaled by `windowTint` (0.15 for clear glass to 0.98 for limo tint).
-
-### C. 4-Channel Independent Neon Underglow
-Neon underglow utilizes hardware-accelerated ground-level `THREE.PointLight` nodes with distance attenuation and quadratic decay ($decay = 2$), coupled with additive blending emissive light tubes under the rocker panels.
-
-### D. Dynamic HTML5 Canvas License Plates
-License plates are synthesized into runtime `THREE.CanvasTexture` instances with 8x anisotropic filtering, accurately rendering San Andreas and North Yankton state emblems, borders, registration tags, and uppercase 8-character vehicle identifiers.
+- **Authoritative Internal Standard:** ISO 8855 / SAE J670 right-handed Cartesian coordinate system:
+  - $+X$: Forward towards vehicle front bumper.
+  - $+Y$: Port / Left towards driver side.
+  - $+Z$: Upwards perpendicular to ground plane.
+  - Symmetry Plane: $Y = 0$.
+  - Ground Level: $Z = 0$ (vehicle stands at positive ground clearance).
+- **Units:** SI Units throughout (length in metres $\text{m}$, mass in kilograms $\text{kg}$, force in Newtons $\text{N}$, pressure in Pascals $\text{Pa}$, velocity in $\text{m/s}$). UI displays convenient engineering units (millimetres $\text{mm}$, $\text{km/h}$) via explicit converters.
+- **Rendering Boundary:** Three.js uses $+X$ right, $+Y$ up, $-Z$ forward. All transforms occur strictly at the view boundary:
+  $$x_{3D} = -y_\text{SAE}, \quad y_{3D} = z_\text{SAE}, \quad z_{3D} = -x_\text{SAE}$$
 
 ---
 
-## 3. Data Schema & Model Identification
+## 4. Modes of Operation
 
-### Jenkins One-At-A-Time (`joaat`) Hash Architecture
-Every Cherax Entity vehicle configuration declares a 32-bit model identifier. The engine computes:
-
-$$\text{hash} = \text{joaat}(\text{vehicle\_name})$$
-
-All 74 distinct model IDs in the provided dataset were systematically matched against official GTA V vehicle definitions and mapped to their real-world vehicle counterparts.
-
-### Two-Way Synchronization Architecture
-To avoid circular loops between the 3D customizer controls and the text-based JSON editor:
-1. Keystrokes in the raw JSON editor trigger non-recording updates (`updateConfig(updater, false)`).
-2. The 3D view observes the active configuration state and updates Three.js material uniform properties directly.
-3. Sliders and color pickers in the customizer push to the store and record history snapshots only on commit, preventing memory bloat.
+1. **Student Mode**:
+   - Guided step-by-step engineering workflows.
+   - Recommended solver and mesh presets (Basic, Standard, Fine).
+   - Clear qualitative explanations of physical phenomena (boundary layers, induced drag, camber gain).
+   - Validation warning explanations with suggested remediation.
+2. **Advanced Mode**:
+   - Full parametric feature DAG history inspector.
+   - Direct numerical constraint solver inputs.
+   - OpenFOAM boundary condition and turbulence parameter tuning ($k, \omega, \nu_t, y^+$).
+   - B-rep solid CAD operations and raw STEP AP214 export.
 
 ---
 
-## 4. Performance Optimization (RTX 4060 Target)
+## 5. Truth Contract & Provenance Integrity
 
-- **Preserve Drawing Buffer**: WebGL renderer is initialized with `preserveDrawingBuffer: true`, allowing instantaneous high-resolution snapshot captures without canvas repainting.
-- **Resource Disposal**: On switching vehicles, unmounted geometry buffers, textures, and material shaders are cleanly dereferenced to prevent GPU VRAM exhaustion.
-- **Tone Mapping**: `ACESFilmicToneMapping` ensures realistic highlights without blown-out specular highlights on white or chrome paint jobs.
-
+Every aerodynamic and dynamic result emitted by AutoVerse carries a strict tri-state provenance badge:
+- `[CFD]`: Numerical solver execution with verified residual convergence and force stability.
+- `[ANALYTIC]`: Closed-form empirical equation with cited literature equations.
+- `[ILLUSTRATIVE]`: Visual-only rendering with zero engineering validity.
