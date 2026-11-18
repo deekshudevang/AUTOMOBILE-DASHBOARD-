@@ -1,6 +1,6 @@
 # AUTOVERSE 3D — Master Engineering Task Ledger (`TASK.md`)
 
-**Current Phase:** Phase 3 Complete (Ahmed Benchmark Vertical Slice Validated) → Phase 4 (Geometry Kernel Integration & Worker Pipeline)  
+**Current Phase:** Phase 4 Complete (CAD Kernel & Geometry Pipeline Verified) → Phase 5 (Parametric Vehicle Modelling & Constraint Engine)  
 **Operating Standard:** Operating Contract v2 (§1.1 Truth & Evidence, §2 Session Mechanics)  
 **Owner Actions Pointer:** See [`docs/OWNER_ACTIONS.md`](file:///c:/Users/deeks/Downloads/cars/docs/OWNER_ACTIONS.md) for manual host actions (Docker daemon start, optional WSL OpenFOAM install).  
 
@@ -79,9 +79,14 @@
     Evidence: `npm run benchmark:ahmed` → Exit 0 (both slant angles within 6% tolerance band, physical trend $C_d(25^\circ) > C_d(35^\circ)$ confirmed) · files: `scripts/run-ahmed-benchmark.ts`, `docs/CFD_VALIDATION_REPORT.md`.
 
 ### Phase 4 — Geometry Kernel Integration & Worker Pipeline
-- [ ] **4.1 B-Rep Kernel Boundary Implementation**: Web Worker abstraction for B-rep operations and STEP serialization.
-- [ ] **4.2 Surface Continuity Analyzer**: G0/G1/G2 diagnostic inspector with zebra display and numeric report.
-- [ ] **4.3 Mesh Validation Tools**: Watertightness, manifoldness, duplicate vertex, and self-intersection detectors.
+- [x] **4.1 B-Rep Kernel Boundary Implementation**: Asynchronous background worker orchestration for B-rep operations and STEP serialization.
+    Evidence: `tests/cad-kernel-pipeline.test.ts` (11 tests passed) · files: `src/geometry/cad/cadWorkerManager.ts`.
+- [x] **4.2 Surface Continuity Analyzer**: G0/G1/G2 diagnostic inspector with interactive zebra reflection shader and curvature comb generator.
+    Evidence: `tests/cad-kernel-pipeline.test.ts` · files: `src/geometry/cad/continuityAnalyzer.ts`.
+- [x] **4.3 Mesh Validation Tools**: Watertightness, 2-manifold check, duplicate vertex welding, and degenerate face healing.
+    Evidence: `tests/cad-kernel-pipeline.test.ts` · files: `src/geometry/cad/meshDiagnostics.ts`.
+- [x] **4.4 STEP AP214 Exporter**: ISO 10303-21 automotive faceted B-rep exporter with metadata parser.
+    Evidence: `tests/cad-kernel-pipeline.test.ts` · files: `src/geometry/cad/stepExporter.ts`.
 
 ### Phase 5 — Parametric Vehicle Modelling & Constraint Engine
 - [ ] **5.1 Feature DAG Engine**: Immutable feature history tree with deterministic rebuild and failure isolation.

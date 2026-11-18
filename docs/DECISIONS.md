@@ -101,3 +101,29 @@ This log records significant architectural, design, and engineering decisions th
 - **Alternatives Considered:**
   1. Force all CAD and CFD into the browser render thread (Rejected: causes catastrophic browser crashes and memory exhaustion).
   2. Proprietary closed-source cloud solver APIs (Rejected: requires user credentials and paid subscriptions; violates open, reproducible engineering contract).
+
+---
+
+## Decision 009: ISO 8855 / SAE Coordinate Standard & B-Rep Kernel Precision Conventions
+- **Date:** 2026-11-18
+- **Status:** Approved
+- **Context:** Section 5.2 mandates defining engineering conventions once and enforcing them everywhere to avoid axis inversion and unit conversion errors across CAD import, Three.js rendering, and OpenFOAM simulation.
+- **Decision:**
+  1. Internal Coordinate System: Strict ISO 8855 / SAE Automotive coordinate frame:
+     - $+X$: Forward (longitudinal, toward front bumper).
+     - $+Y$: Left / Port (transverse lateral).
+     - $+Z$: Up (vertical, perpendicular to ground plane).
+     - Symmetry plane: $Y = 0$.
+     - Origin $(0, 0, 0)$: Ground center directly below front axle centerline.
+  2. Render Boundary Transformation:
+     - Conversion from SAE $(x, y, z)$ to Three.js WebGL coordinates $(x_{3D}, y_{3D}, z_{3D})$ is strictly confined to the render boundary:
+       $x_{3D} = -y_\text{SAE}$, $y_{3D} = z_\text{SAE}$, $z_{3D} = -x_\text{SAE}$.
+     - All underlying CAD geometry, STEP files, and OpenFOAM cases operate directly in the SAE coordinate frame.
+  3. Tolerances:
+     - Modeling tolerance $\epsilon_\text{model} = 10^{-5}\text{m}$ ($0.01\text{mm}$).
+     - Sewing tolerance $\epsilon_\text{sew} = 10^{-4}\text{m}$ ($0.1\text{mm}$).
+     - Linear deflection $\delta_\text{mesh} = 10^{-3}\text{m}$ ($1.0\text{mm}$).
+     - Angular deflection $\theta_\text{mesh} = 15.0^\circ$.
+- **Alternatives Considered:**
+  1. Use Three.js Y-up coordinates internally (Rejected: breaks OpenFOAM aerodynamic standard conventions and standard automotive CAD exports).
+  2. Ad-hoc coordinate flipping in shaders (Rejected: introduces fragile inverted normal bugs and incorrect force signs).
