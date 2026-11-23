@@ -61,7 +61,8 @@ export const CameraRig: React.FC<CameraRigProps> = ({
       passenger_seat: [W * 0.22, H * 0.76, -0.05],
       engine_bay: [0.0, H * 1.15, L * 0.28],
       boot: [0.0, H * 1.1, -L * 0.42],
-      wing: [0.0, H * 1.45, -L * 0.44 - 1.85]
+      wing: [0.0, H * 1.45, -L * 0.44 - 1.85],
+      full_inspection: [distIso * 0.82, H * 1.75, distIso * 0.82]
     };
 
     const look: Record<CameraPreset, [number, number, number]> = {
@@ -79,7 +80,8 @@ export const CameraRig: React.FC<CameraRigProps> = ({
       passenger_seat: [W * 0.22, H * 0.60, 0.45],
       engine_bay: [0.0, H * 0.35, L * 0.26],
       boot: [0.0, H * 0.4, -L * 0.4],
-      wing: [0.0, H * 0.92, -L * 0.44]
+      wing: [0.0, H * 0.92, -L * 0.44],
+      full_inspection: [0, centerY * 1.1, 0]
     };
 
     return {

@@ -144,6 +144,9 @@
       if (viewName === 'three_quarter') {
         camera.position.set(4.6, 2.0, 4.6);
         camera.lookAt(0, 0.58, 0);
+      } else if (viewName === 'full_inspection') {
+        camera.position.set(4.8, 2.6, 4.4);
+        camera.lookAt(0, 0.55, 0);
       } else if (viewName === 'cockpit') {
         // Position inside cockpit looking toward driver instruments & center console
         camera.position.set(-0.32, 0.95, -0.05);

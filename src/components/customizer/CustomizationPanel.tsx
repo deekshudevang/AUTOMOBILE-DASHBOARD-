@@ -49,6 +49,7 @@ import { EngineeringOverlay } from '../modes/EngineeringOverlay';
 import { ShowroomOverlay } from '../modes/ShowroomOverlay';
 import { ComparisonDiffPanel } from '../modes/ComparisonDiffPanel';
 import { VehicleAccessPanel } from './VehicleAccessPanel';
+import { VehicleSelectionModal } from '../gallery/VehicleSelectionModal';
 import libraryIndex from '../../../public/vehicles/index.json';
 
 type ConfigCategory =
@@ -171,6 +172,7 @@ export const CustomizationPanel: React.FC = () => {
   const [isBuildsModalOpen, setIsBuildsModalOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
+  const [isVehicleModalOpen, setIsVehicleModalOpen] = useState(false);
 
   // Expanded component groups state
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
@@ -584,6 +586,15 @@ export const CustomizationPanel: React.FC = () => {
                 className="w-full bg-[#161C28] border border-[#1E2533] rounded px-2.5 py-1.5 pl-8 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-[#00F0FF]"
               />
             </div>
+
+            {/* Quick 50 Fleet Models Modal Button */}
+            <button
+              onClick={() => setIsVehicleModalOpen(true)}
+              className="w-full py-1.5 px-2 rounded bg-[#161C28] hover:bg-[#1E2533] border border-[#273244] hover:border-[#00F0FF] text-[11px] font-medium text-cyan-300 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+            >
+              <Car className="w-3.5 h-3.5 text-[#00F0FF]" />
+              <span>Browse All 50 Fleet Models...</span>
+            </button>
           </div>
 
           {/* Vehicle Selector List */}
@@ -829,6 +840,8 @@ export const CustomizationPanel: React.FC = () => {
                   Format: {schema2Spec ? 'Schema 2.0 (Component Limited)' : 'Cherax Entity (Monolithic Body)'}
                 </div>
               </div>
+            ) : activeCategory === 'access' ? (
+              <VehicleAccessPanel />
             ) : selectedComponent ? (
               /* Component Selected Inspector */
               <div className="space-y-4">
@@ -1199,10 +1212,6 @@ export const CustomizationPanel: React.FC = () => {
             ) : (
               /* Category Dedicated Studio Panes when no single component is selected */
               <div className="space-y-4">
-                {activeCategory === 'access' && (
-                  <VehicleAccessPanel />
-                )}
-
                 {activeCategory === 'paint' && (
                   <div className="space-y-3">
                     <div className="p-3 rounded-lg bg-[#11141C] border border-[#1E2533] space-y-2">
@@ -1651,6 +1660,12 @@ export const CustomizationPanel: React.FC = () => {
       <SavedBuildsModal
         isOpen={isBuildsModalOpen}
         onClose={() => setIsBuildsModalOpen(false)}
+      />
+
+      {/* 50 Vehicle Fleet Selection Modal */}
+      <VehicleSelectionModal
+        isOpen={isVehicleModalOpen}
+        onClose={() => setIsVehicleModalOpen(false)}
       />
     </div>
   );

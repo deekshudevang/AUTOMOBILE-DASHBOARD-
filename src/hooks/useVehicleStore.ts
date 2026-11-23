@@ -446,20 +446,39 @@ export const useVehicleStore = create<VehicleStoreState>((set, get) => ({
     });
   },
   openAllApertures: () => {
+    const state = get();
+    const rawSpec = (state.activeConfig?.parametricSpec || state.activeConfig) as any;
+    const vehicleId = (rawSpec?.vehicle?.id || state.activeFile || '').toLowerCase();
+    const is4Door =
+      rawSpec?.kinematics?.opening?.doorCount === 4 ||
+      rawSpec?.dimensions?.doors === 4 ||
+      vehicleId.includes('evolution') ||
+      vehicleId.includes('evo') ||
+      vehicleId.includes('wrx') ||
+      vehicleId.includes('sti') ||
+      vehicleId.includes('s_class') ||
+      vehicleId.includes('7_series') ||
+      vehicleId.includes('flying_spur') ||
+      vehicleId.includes('panamera');
+
     set({
       openingState: {
         doorFrontLeft: 1.0,
         doorFrontRight: 1.0,
-        doorRearLeft: 1.0,
-        doorRearRight: 1.0,
+        doorRearLeft: is4Door ? 1.0 : 0.0,
+        doorRearRight: is4Door ? 1.0 : 0.0,
         hood: 1.0,
         boot: 1.0
-      }
+      },
+      cameraPreset: 'full_inspection',
+      cameraTrigger: Date.now()
     });
   },
   closeAllApertures: () => {
     set({
-      openingState: DEFAULT_OPENING_STATE
+      openingState: DEFAULT_OPENING_STATE,
+      cameraPreset: 'isometric',
+      cameraTrigger: Date.now()
     });
   },
 
@@ -656,59 +675,145 @@ export const useVehicleStore = create<VehicleStoreState>((set, get) => ({
           componentOverrides: {},
           overrideHistory: [{}],
           overrideHistoryIndex: 0,
+          openingState: DEFAULT_OPENING_STATE,
+          cameraPreset: 'isometric',
           cameraTrigger: Date.now()
         });
         return true;
       }
 
-      const fileInfo = get().allFiles.find(f => f.fileName === fileName);
+      const fileInfo = get().allFiles.find(f =>
+        f.fileName === fileName ||
+        f.fileName.endsWith(`/${fileName}`) ||
+        f.fileName.replace(/\.json$/, '') === fileName.replace(/\.json$/, '') ||
+        f.fileName.split('/').pop() === fileName.split('/').pop() ||
+        f.fileName.split('/').pop()?.replace(/\.json$/, '') === fileName.replace(/\.json$/, '')
+      );
       if (!fileInfo) return false;
 
       const modelInfo = get().allModels.find(m => m.hash === fileInfo.modelHash) || null;
+      const binding = get().assetBindings[fileInfo.modelHash];
 
-      // Fetch the actual JSON file from public/vehicles/ (split by / so subdirectories like supercars/ are intact)
-      const filePath = fileName.split('/').map(segment => encodeURIComponent(segment)).join('/');
-      const res = await fetch(`/vehicles/${filePath}`);
-      let loadedConfig: CheraxVehicleConfig;
-      if (res.ok) {
-        const text = await res.text();
-        const parsed = parseVehicleJson(text);
-        if (parsed.success && parsed.config) {
-          loadedConfig = parsed.config;
-        } else {
-          throw new Error(parsed.error || 'Parse failed');
+      let loadedConfig: CheraxVehicleConfig | null = null;
+
+      // Try fetching from public/vehicles/ if window/fetch is available
+      try {
+        const filePath = fileInfo.fileName.split('/').map(segment => encodeURIComponent(segment)).join('/');
+        const res = await fetch(`/vehicles/${filePath}`);
+        if (res && res.ok) {
+          const text = await res.text();
+          const parsed = parseVehicleJson(text);
+          if (parsed.success && parsed.config) {
+            loadedConfig = parsed.config;
+          }
         }
-      } else {
-        // Fallback to database summary
-        loadedConfig = {
-          format: "Cherax Entity",
-          type: 1,
-          model: fileInfo.modelHash,
-          baseFlags: 1073808655,
-          mods: {},
-          wheelType: fileInfo.wheelType,
-          tyreSmokeColor: fileInfo.tyreSmokeColor,
-          neonKits: fileInfo.neonKits,
-          primaryColor: fileInfo.primaryColor,
-          secondaryColor: fileInfo.secondaryColor,
-          pearlescentColor: fileInfo.pearlescentColor,
-          isPrimaryColorCustom: fileInfo.isPrimaryColorCustom,
-          customPrimaryColor: fileInfo.customPrimaryColor,
-          isSecondaryColorCustom: fileInfo.isSecondaryColorCustom,
-          customSecondaryColor: fileInfo.customSecondaryColor,
-          windowTint: fileInfo.windowTint,
-          wheelColor: fileInfo.wheelColor,
-          interiorColor: fileInfo.interiorColor,
-          dashBoardColor: fileInfo.dashBoardColor,
-          plateText: fileInfo.plateText,
-          plateTextIndex: fileInfo.plateTextIndex,
-          bulletproofTyres: fileInfo.bulletproofTyres,
-          driftTyres: fileInfo.driftTyres
-        };
+      } catch (err) {
+        // Fetch failed or environment without web server
+      }
+
+      // In Node.js / testing environments, read directly from public/vehicles/ on disk
+      if (!loadedConfig && typeof window === 'undefined') {
+        try {
+          const fs = await import('fs');
+          const path = await import('path');
+          const localPath = path.resolve(process.cwd(), 'public', 'vehicles', fileInfo.fileName);
+          if (fs.existsSync(localPath)) {
+            const raw = JSON.parse(fs.readFileSync(localPath, 'utf-8'));
+            loadedConfig = {
+              format: "Cherax Entity",
+              type: 1,
+              model: fileInfo.modelHash,
+              baseFlags: 1073808655,
+              mods: {},
+              extras: {},
+              wheelType: fileInfo.wheelType ?? 0,
+              tyreSmokeColor: fileInfo.tyreSmokeColor ?? { r: 255, g: 255, b: 255 },
+              neonKits: fileInfo.neonKits ?? { left: false, right: false, front: false, back: false, color: { r: 0, g: 0, b: 0 } },
+              primaryColor: fileInfo.primaryColor ?? 0,
+              secondaryColor: fileInfo.secondaryColor ?? 0,
+              pearlescentColor: fileInfo.pearlescentColor ?? 0,
+              isPrimaryColorCustom: true,
+              customPrimaryColor: fileInfo.customPrimaryColor ?? { r: 160, g: 30, b: 30 },
+              isSecondaryColorCustom: true,
+              customSecondaryColor: fileInfo.customSecondaryColor ?? { r: 25, g: 25, b: 25 },
+              windowTint: fileInfo.windowTint ?? 1,
+              wheelColor: fileInfo.wheelColor ?? 0,
+              interiorColor: fileInfo.interiorColor ?? 0,
+              dashBoardColor: fileInfo.dashBoardColor ?? 0,
+              plateText: fileInfo.plateText ?? "AUTOVERSE",
+              plateTextIndex: fileInfo.plateTextIndex ?? 0,
+              bulletproofTyres: true,
+              driftTyres: false,
+              parametricSpec: raw
+            };
+          }
+        } catch {
+          // ignore
+        }
+      }
+
+      if (!loadedConfig) {
+        if (binding?.parametricSpec) {
+          loadedConfig = {
+            format: "Cherax Entity",
+            type: 1,
+            model: fileInfo.modelHash,
+            baseFlags: 1073808655,
+            mods: {},
+            extras: {},
+            wheelType: fileInfo.wheelType ?? 0,
+            tyreSmokeColor: fileInfo.tyreSmokeColor ?? { r: 255, g: 255, b: 255 },
+            neonKits: fileInfo.neonKits ?? { left: false, right: false, front: false, back: false, color: { r: 0, g: 0, b: 0 } },
+            primaryColor: fileInfo.primaryColor ?? 0,
+            secondaryColor: fileInfo.secondaryColor ?? 0,
+            pearlescentColor: fileInfo.pearlescentColor ?? 0,
+            isPrimaryColorCustom: true,
+            customPrimaryColor: fileInfo.customPrimaryColor ?? { r: 160, g: 30, b: 30 },
+            isSecondaryColorCustom: true,
+            customSecondaryColor: fileInfo.customSecondaryColor ?? { r: 25, g: 25, b: 25 },
+            windowTint: fileInfo.windowTint ?? 1,
+            wheelColor: fileInfo.wheelColor ?? 0,
+            interiorColor: fileInfo.interiorColor ?? 0,
+            dashBoardColor: fileInfo.dashBoardColor ?? 0,
+            plateText: fileInfo.plateText ?? "AUTOVERSE",
+            plateTextIndex: fileInfo.plateTextIndex ?? 0,
+            bulletproofTyres: true,
+            driftTyres: false,
+            parametricSpec: binding.parametricSpec
+          };
+        } else {
+          loadedConfig = {
+            format: "Cherax Entity",
+            type: 1,
+            model: fileInfo.modelHash,
+            baseFlags: 1073808655,
+            mods: {},
+            wheelType: fileInfo.wheelType,
+            tyreSmokeColor: fileInfo.tyreSmokeColor,
+            neonKits: fileInfo.neonKits,
+            primaryColor: fileInfo.primaryColor,
+            secondaryColor: fileInfo.secondaryColor,
+            pearlescentColor: fileInfo.pearlescentColor,
+            isPrimaryColorCustom: fileInfo.isPrimaryColorCustom,
+            customPrimaryColor: fileInfo.customPrimaryColor,
+            isSecondaryColorCustom: fileInfo.isSecondaryColorCustom,
+            customSecondaryColor: fileInfo.customSecondaryColor,
+            windowTint: fileInfo.windowTint,
+            wheelColor: fileInfo.wheelColor,
+            interiorColor: fileInfo.interiorColor,
+            dashBoardColor: fileInfo.dashBoardColor,
+            plateText: fileInfo.plateText,
+            plateTextIndex: fileInfo.plateTextIndex,
+            bulletproofTyres: fileInfo.bulletproofTyres,
+            driftTyres: fileInfo.driftTyres
+          };
+        }
+      } else if (!loadedConfig.parametricSpec && binding?.parametricSpec) {
+        loadedConfig.parametricSpec = binding.parametricSpec;
       }
 
       set({
-        activeFile: fileName,
+        activeFile: fileInfo.fileName,
         activeModel: modelInfo,
         activeConfig: loadedConfig,
         originalConfig: loadedConfig,
@@ -720,6 +825,8 @@ export const useVehicleStore = create<VehicleStoreState>((set, get) => ({
         componentOverrides: {},
         overrideHistory: [{}],
         overrideHistoryIndex: 0,
+        openingState: DEFAULT_OPENING_STATE,
+        cameraPreset: 'isometric',
         cameraTrigger: Date.now()
       });
       return true;

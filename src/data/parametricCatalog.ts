@@ -6,16 +6,20 @@ export const parametricFiles: VehicleFileSummary[] = [];
 export const parametricModels: VehicleModelMetadata[] = [];
 export const parametricBindings: Record<number, VehicleAssetBinding> = {};
 
-function mapCategory(cat: string): 'Supercar' | 'Sports Car' | 'Tuner / Compact' | 'Muscle' | 'SUV / Offroad' | 'Special / Concept' {
+function mapCategory(cat: string): string {
   switch (cat) {
     case 'supercars':
-    case 'hypercars':
-    case 'track_cars':
       return 'Supercar';
+    case 'hypercars':
+      return 'Hypercar';
+    case 'track_cars':
+      return 'Track Car';
     case 'sports_cars':
       return 'Sports Car';
+    case 'luxury_cars':
+      return 'Luxury Car';
     case 'jdm_cars':
-      return 'Tuner / Compact';
+      return 'JDM Performance';
     case 'muscle_cars':
       return 'Muscle';
     default:

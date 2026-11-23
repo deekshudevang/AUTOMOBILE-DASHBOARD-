@@ -82,7 +82,7 @@ export interface VehicleModelMetadata {
   displayName: string;
   manufacturer: string;
   realWorldModel: string;
-  category: 'Supercar' | 'Sports Car' | 'Tuner / Compact' | 'Muscle' | 'SUV / Offroad' | 'Special / Concept';
+  category: string;
   configurations: VehicleFileSummary[];
 }
 
@@ -144,7 +144,8 @@ export type CameraPreset =
   | 'engine_bay'
   | 'boot'
   | 'wheel'
-  | 'wing';
+  | 'wing'
+  | 'full_inspection';
 
 export type EnvironmentPreset = 'studio-dark' | 'cyber-neon' | 'showroom' | 'desert-dawn' | 'sunset-boulevard';
 

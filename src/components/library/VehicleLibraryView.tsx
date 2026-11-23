@@ -24,16 +24,19 @@ import { VehicleFileSummary } from '../../types/vehicle';
 const CATEGORIES = [
   'All Categories',
   'Supercar',
+  'Hypercar',
   'Sports Car',
-  'Tuner / Compact',
-  'SUV / Offroad',
+  'Luxury Car',
+  'JDM Performance',
   'Muscle',
+  'Track Car',
   'Special / Concept'
 ];
 
 export const VehicleLibraryView: React.FC = () => {
   const { allFiles, allModels, assetBindings, loadVehicleByFile, setActiveView } = useVehicleStore();
 
+  const [fleetTab, setFleetTab] = useState<'schema2' | 'all'>('schema2');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [selectedManufacturer, setSelectedManufacturer] = useState('All');
@@ -45,12 +48,23 @@ export const VehicleLibraryView: React.FC = () => {
   // Modal inspection state
   const [inspectedVehicle, setInspectedVehicle] = useState<VehicleFileSummary | null>(null);
 
+  const isSchema2Vehicle = (veh: VehicleFileSummary) => {
+    return (
+      veh.fileName.includes('/') ||
+      veh.fileName.startsWith('porsche_911_gt3_rs') ||
+      !!assetBindings[veh.modelHash]?.parametricSpec ||
+      assetBindings[veh.modelHash]?.assetPath === 'parametric_generator' ||
+      assetBindings[veh.modelHash]?.assetPath?.includes('.json')
+    );
+  };
+
   // Distinct manufacturers
   const manufacturers = useMemo(() => {
     const set = new Set<string>();
-    allModels.forEach(m => set.add(m.manufacturer));
+    const source = fleetTab === 'schema2' ? allFiles.filter(isSchema2Vehicle) : allFiles;
+    source.forEach(m => set.add(m.manufacturer));
     return ['All', ...Array.from(set).sort()];
-  }, [allModels]);
+  }, [allFiles, fleetTab, assetBindings]);
 
   const toggleFavorite = (fileName: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -65,6 +79,8 @@ export const VehicleLibraryView: React.FC = () => {
   // Filtered and sorted files
   const filteredFiles = useMemo(() => {
     const list = allFiles.filter(veh => {
+      const matchFleet = fleetTab === 'all' || isSchema2Vehicle(veh);
+
       const matchSearch =
         searchTerm === '' ||
         veh.fileName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -87,7 +103,7 @@ export const VehicleLibraryView: React.FC = () => {
         (fidelityFilter === 'verified' && isBound) ||
         (fidelityFilter === 'procedural' && !isBound);
 
-      return matchSearch && matchCat && matchMan && matchFidelity;
+      return matchFleet && matchSearch && matchCat && matchMan && matchFidelity;
     });
 
     list.sort((a, b) => {
@@ -98,7 +114,7 @@ export const VehicleLibraryView: React.FC = () => {
     });
 
     return list;
-  }, [allFiles, searchTerm, selectedCategory, selectedManufacturer, fidelityFilter, sortBy, assetBindings]);
+  }, [allFiles, fleetTab, searchTerm, selectedCategory, selectedManufacturer, fidelityFilter, sortBy, assetBindings]);
 
   const handleLaunchVehicle = (fileName: string) => {
     loadVehicleByFile(fileName);
@@ -122,7 +138,32 @@ export const VehicleLibraryView: React.FC = () => {
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            {/* Fleet Tier Toggle */}
+            <div className="flex items-center bg-autoverse-elevated rounded-lg border border-autoverse-border p-0.5 text-xs">
+              <button
+                onClick={() => setFleetTab('schema2')}
+                className={`px-3 py-1.5 rounded-md font-medium transition-all flex items-center gap-1.5 ${
+                  fleetTab === 'schema2'
+                    ? 'bg-cyan-950/90 text-[#00F0FF] border border-cyan-800 shadow-sm'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <Car className="w-3.5 h-3.5 text-[#00F0FF]" />
+                <span>AutoVerse 50 Fleet (Schema 2.0)</span>
+              </button>
+              <button
+                onClick={() => setFleetTab('all')}
+                className={`px-3 py-1.5 rounded-md font-medium transition-all ${
+                  fleetTab === 'all'
+                    ? 'bg-cyan-950/90 text-[#00F0FF] border border-cyan-800 shadow-sm'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <span>All Catalog Files ({allFiles.length})</span>
+              </button>
+            </div>
+
             {/* View Mode Toggle */}
             <div className="flex items-center bg-autoverse-elevated rounded border border-autoverse-border p-0.5 text-xs">
               <button

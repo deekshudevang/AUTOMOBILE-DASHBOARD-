@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useVehicleStore } from '../../hooks/useVehicleStore';
 import { ProjectManager } from '../../projects/projectManager';
+import { VehicleSelectionModal } from '../gallery/VehicleSelectionModal';
 
 export const TopContextBar: React.FC = () => {
   const {
@@ -30,6 +31,7 @@ export const TopContextBar: React.FC = () => {
   const [backendOnline, setBackendOnline] = useState<boolean>(true);
   const [activeProjectName, setActiveProjectName] = useState<string>('Porsche GT3 RS Reference Spec');
   const [activeRevisionHash, setActiveRevisionHash] = useState<string>('c9fa4b2e');
+  const [isVehicleModalOpen, setIsVehicleModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     // Check if projects exist in ProjectManager
@@ -82,13 +84,20 @@ export const TopContextBar: React.FC = () => {
 
       {/* Middle: Active Vehicle & Project Revision Telemetry */}
       <div className="hidden lg:flex items-center gap-4">
-        {/* Active Vehicle Badge */}
-        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-autoverse-elevated border border-autoverse-border">
-          <Car className="w-3.5 h-3.5 text-autoverse-cyan" />
-          <span className="text-slate-300 font-medium">
+        {/* Active Vehicle Badge with 1-Click Switcher */}
+        <button
+          onClick={() => setIsVehicleModalOpen(true)}
+          className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-autoverse-elevated border border-autoverse-border hover:border-autoverse-cyan text-slate-300 hover:text-white transition-all cursor-pointer group"
+          title="Click to switch vehicle (50 models available)"
+        >
+          <Car className="w-3.5 h-3.5 text-autoverse-cyan group-hover:scale-110 transition-transform" />
+          <span className="font-medium">
             {activeModel ? `${activeModel.manufacturer} ${activeModel.displayName}` : activeFile ? activeFile.replace('.json', '') : 'No Vehicle Loaded'}
           </span>
-        </div>
+          <span className="text-[10px] text-autoverse-cyan px-1 rounded bg-cyan-950/60 border border-cyan-800/80 ml-1">
+            Switch
+          </span>
+        </button>
 
         {/* Active Project & Revision */}
         <div className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-autoverse-elevated border border-autoverse-border font-mono text-[11px]">
@@ -151,6 +160,12 @@ export const TopContextBar: React.FC = () => {
           </span>
         </div>
       </div>
+
+      {/* 50-Vehicle Selection Modal */}
+      <VehicleSelectionModal
+        isOpen={isVehicleModalOpen}
+        onClose={() => setIsVehicleModalOpen(false)}
+      />
     </header>
   );
 };

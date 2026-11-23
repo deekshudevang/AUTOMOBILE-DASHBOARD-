@@ -20,7 +20,9 @@ import {
   Ruler,
   Info,
   X,
-  Cpu
+  Cpu,
+  DoorOpen,
+  Car
 } from 'lucide-react';
 import { SceneCanvas } from '../3d/SceneCanvas';
 import { useVehicleStore } from '../../hooks/useVehicleStore';
@@ -32,17 +34,20 @@ import {
   VehicleAssetDatabase,
   VehicleModelStatus
 } from '@autoverse/authentic-geometry-engine';
+import { VehicleSelectionModal } from '../gallery/VehicleSelectionModal';
+import { VehicleAccessPanel } from '../customizer/VehicleAccessPanel';
 
 const CAMERA_PRESETS: { id: CameraPreset; label: string }[] = [
   { id: 'isometric', label: '3/4 Iso' },
+  { id: 'full_inspection', label: 'Full Inspection' },
   { id: 'front', label: 'Front' },
   { id: 'rear', label: 'Rear' },
   { id: 'left', label: 'Left Side' },
   { id: 'right', label: 'Right Side' },
   { id: 'top', label: 'Top View' },
   { id: 'interior', label: 'Interior' },
-  { id: 'wheel', label: 'Wheel Stance' },
-  { id: 'wing', label: 'Rear Wing' }
+  { id: 'engine_bay', label: 'Engine Bay' },
+  { id: 'cockpit', label: 'Cockpit' }
 ];
 
 const ENV_PRESETS: { id: EnvironmentPreset; label: string }[] = [
@@ -78,6 +83,8 @@ export const StudioView: React.FC = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [screenshotSuccess, setScreenshotSuccess] = useState(false);
   const [showCertificateModal, setShowCertificateModal] = useState(false);
+  const [isVehicleModalOpen, setIsVehicleModalOpen] = useState(false);
+  const [isAccessPanelOpen, setIsAccessPanelOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const binding = activeModel ? assetBindings[activeModel.hash] : undefined;
@@ -232,6 +239,28 @@ export const StudioView: React.FC = () => {
 
         {/* Right: Quick Action Buttons */}
         <div className="flex items-center gap-2 pointer-events-auto">
+          <button
+            onClick={() => setIsVehicleModalOpen(true)}
+            className="px-3 py-2 rounded-lg bg-autoverse-surface/90 hover:bg-autoverse-elevated backdrop-blur-md border border-autoverse-border text-xs font-semibold text-slate-200 transition-all flex items-center gap-2 shadow-lg hover:border-autoverse-cyan/50 cursor-pointer"
+            title="Choose from 50 Schema 2.0 Vehicle Fleet Models"
+          >
+            <Car className="w-3.5 h-3.5 text-autoverse-cyan" />
+            <span>Select Vehicle</span>
+          </button>
+
+          <button
+            onClick={() => setIsAccessPanelOpen(!isAccessPanelOpen)}
+            className={`px-3 py-2 rounded-lg backdrop-blur-md border text-xs font-semibold transition-all flex items-center gap-2 shadow-lg cursor-pointer ${
+              isAccessPanelOpen
+                ? 'bg-cyan-950/80 border-[#00F0FF] text-[#00F0FF]'
+                : 'bg-autoverse-surface/90 hover:bg-autoverse-elevated border-autoverse-border text-slate-200 hover:border-autoverse-cyan/50'
+            }`}
+            title="Toggle Vehicle Kinematic Access & Open Everything Panel"
+          >
+            <DoorOpen className="w-3.5 h-3.5 text-autoverse-cyan" />
+            <span>Vehicle Access</span>
+          </button>
+
           <button
             onClick={() => setShowCertificateModal(true)}
             className="px-3 py-2 rounded-lg bg-autoverse-surface/90 hover:bg-autoverse-elevated backdrop-blur-md border border-autoverse-border text-xs font-semibold text-slate-200 transition-all flex items-center gap-2 shadow-lg hover:border-autoverse-cyan/50"
@@ -475,6 +504,34 @@ export const StudioView: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Floating Vehicle Access & Kinematics Drawer */}
+      {isAccessPanelOpen && (
+        <aside className="absolute top-20 right-4 bottom-20 z-30 w-88 max-w-[90vw] bg-[#0A0D14]/95 backdrop-blur-md border border-[#232936] rounded-xl shadow-2xl p-4 overflow-y-auto flex flex-col space-y-3 animate-in slide-in-from-right-4 duration-200 pointer-events-auto">
+          <div className="flex items-center justify-between border-b border-[#232936] pb-2">
+            <span className="text-xs font-bold text-zinc-100 flex items-center gap-1.5">
+              <DoorOpen className="w-4 h-4 text-[#00F0FF]" />
+              <span>Direct Vehicle Access</span>
+            </span>
+            <button
+              onClick={() => setIsAccessPanelOpen(false)}
+              className="p-1 rounded text-zinc-400 hover:text-zinc-100 hover:bg-[#1E2533] cursor-pointer"
+              title="Close panel"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+          <div className="flex-1 overflow-y-auto pr-1">
+            <VehicleAccessPanel />
+          </div>
+        </aside>
+      )}
+
+      {/* 50 Vehicle Fleet Selection Modal */}
+      <VehicleSelectionModal
+        isOpen={isVehicleModalOpen}
+        onClose={() => setIsVehicleModalOpen(false)}
+      />
     </div>
   );
 };

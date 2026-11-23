@@ -184,7 +184,6 @@ export const VehicleRenderer: React.FC<VehicleRendererProps> = ({
 
   // Schema 2.0 Editable Component Assembly (AutoVerse 50 Vehicle Library)
   const schema2Body = useMemo(() => {
-    if (useGeometryEngineV2) return null;
     const rawSpec = (config.parametricSpec || config) as any;
     if (rawSpec?.schemaVersion === '2.0') {
       return EditableVehicleAssembler.build(rawSpec as VehicleSchema2, {
@@ -195,7 +194,7 @@ export const VehicleRenderer: React.FC<VehicleRendererProps> = ({
       });
     }
     return null;
-  }, [useGeometryEngineV2, config.parametricSpec, config, componentOverrides, selectedComponentId, isWireframe]);
+  }, [config.parametricSpec, config, componentOverrides, selectedComponentId, isWireframe]);
 
   // Apply real-time kinematic opening updates directly to existing scene graph at 60 FPS
   useEffect(() => {
@@ -272,17 +271,7 @@ export const VehicleRenderer: React.FC<VehicleRendererProps> = ({
     );
   }
 
-  // Priority 1: V2 Automotive Authentic Geometry Engine (Coachwork V2)
-  if (useGeometryEngineV2 && v2Result?.group) {
-    return (
-      <group position={[0, -suspensionDrop, 0]}>
-        <primitive object={v2Result.group} onPointerDown={handlePointerDown} />
-        <NeonUnderglow neonKits={config.neonKits} />
-      </group>
-    );
-  }
-
-  // Schema 2.0 High-Detail Interactive Assembly
+  // Priority 1: Schema 2.0 High-Detail Interactive Component Assembly (Openings, Interiors, Engine Bays)
   if (schema2Body) {
     const rawSpec = (config.parametricSpec || config) as any;
     const dims = rawSpec.dimensions || { length: 4.6, width: 2.0, height: 1.25 };
@@ -305,6 +294,16 @@ export const VehicleRenderer: React.FC<VehicleRendererProps> = ({
           position={[0, plateY + 0.03, rearPlateZ]}
           rotation={[0, Math.PI, 0]}
         />
+      </group>
+    );
+  }
+
+  // Priority 2: V2 Automotive Authentic Geometry Engine (Coachwork V2)
+  if (useGeometryEngineV2 && v2Result?.group) {
+    return (
+      <group position={[0, -suspensionDrop, 0]}>
+        <primitive object={v2Result.group} onPointerDown={handlePointerDown} />
+        <NeonUnderglow neonKits={config.neonKits} />
       </group>
     );
   }
