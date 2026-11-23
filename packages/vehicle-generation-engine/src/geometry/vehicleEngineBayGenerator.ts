@@ -346,6 +346,27 @@ export class VehicleEngineBayGenerator {
     const strutBrace = this.buildStrutBracing(engineSpec.isMidRear, dims, chromeMat, carbonMat);
     group.add(strutBrace);
 
+    // 6. Dual-Compartment Geometry: Front Frunk Tub (Mid/Rear) vs Rear Cargo Trunk (Front Engine)
+    if (engineSpec.isMidRear) {
+      const isTrackCar =
+        spec.vehicle.id.includes('gt3_rs') ||
+        spec.vehicle.id.includes('gt4_rs') ||
+        spec.vehicle.id.includes('sto') ||
+        spec.vehicle.id.includes('pista');
+      const frunk = this.buildFrontFrunkTub(dims, carbonMat, chromeMat, isTrackCar);
+      group.add(frunk);
+    } else {
+      const rearTrunk = this.buildRearCargoTrunk(dims, carbonMat);
+      group.add(rearTrunk);
+    }
+
+    // 7. Telescopic Pneumatic Gas Support Struts (Hood & Boot)
+    const hoodStruts = this.buildGasStruts(true, dims, chromeMat);
+    group.add(hoodStruts);
+
+    const bootStruts = this.buildGasStruts(false, dims, chromeMat);
+    group.add(bootStruts);
+
     group.userData = {
       isEngineBay: true,
       archetype: engineSpec.archetype,
@@ -929,6 +950,185 @@ export class VehicleEngineBayGenerator {
       const mesh = new THREE.Mesh(geo, chromeMat);
       group.add(mesh);
     }
+
+    return group;
+  }
+
+  /**
+   * Constructs front luggage compartment (frunk) for mid/rear engine supercars
+   * Includes deep storage tub, weather-seal gasket, central radiator air extraction duct (for track cars),
+   * windshield washer filler cap, brake fluid reservoir, and tire inflation kit.
+   */
+  public static buildFrontFrunkTub(
+    dims: { length: number; width: number; height: number },
+    carbonMat: THREE.Material,
+    metalMat: THREE.Material,
+    isTrackCar: boolean = false
+  ): THREE.Group {
+    const group = new THREE.Group();
+    group.name = 'front_frunk_cargo_tub';
+
+    const tubW = dims.width * 0.48;
+    const tubL = dims.length * 0.16;
+    const tubH = dims.height * 0.32;
+
+    const carpetMat = new THREE.MeshStandardMaterial({
+      color: new THREE.Color('#1c1917'),
+      roughness: 0.95,
+      metalness: 0.05
+    });
+    const sealMat = new THREE.MeshStandardMaterial({
+      color: new THREE.Color('#0a0a0a'),
+      roughness: 0.9,
+      metalness: 0.0
+    });
+
+    // 1. Deep Recessed Frunk Tub
+    const tubGeo = new THREE.BoxGeometry(tubW, tubH, tubL);
+    const tub = new THREE.Mesh(tubGeo, carpetMat);
+    tub.position.set(0, dims.height * 0.22, dims.length * 0.26);
+    group.add(tub);
+
+    // 2. Weatherstrip Perimeter Rubber Seal
+    const sealLip = new THREE.Mesh(
+      new THREE.BoxGeometry(tubW * 1.05, 0.02, tubL * 1.05),
+      sealMat
+    );
+    sealLip.position.set(0, dims.height * 0.38, dims.length * 0.26);
+    group.add(sealLip);
+
+    // 3. Central Radiator Air Extraction Chimney / S-Duct (for GT3 RS, Huracan STO, 488 Pista)
+    if (isTrackCar) {
+      const ductGroup = new THREE.Group();
+      ductGroup.name = 'frunk_radiator_extraction_duct';
+
+      const ductGeo = new THREE.BoxGeometry(tubW * 0.65, tubH * 0.75, tubL * 0.45);
+      const duct = new THREE.Mesh(ductGeo, carbonMat);
+      duct.position.set(0, dims.height * 0.26, dims.length * 0.28);
+      duct.rotation.x = -0.25;
+      ductGroup.add(duct);
+
+      // Carbon flow vanes
+      [-0.15, 0, 0.15].forEach(x => {
+        const vane = new THREE.Mesh(new THREE.BoxGeometry(0.015, tubH * 0.6, tubL * 0.35), carbonMat);
+        vane.position.set(x, dims.height * 0.26, dims.length * 0.28);
+        ductGroup.add(vane);
+      });
+      group.add(ductGroup);
+    }
+
+    // 4. Fluid Service Caps (Blue windshield washer, Yellow brake fluid)
+    const blueCap = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.025, 0.025, 0.015, 16),
+      new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.4 })
+    );
+    blueCap.position.set(-tubW * 0.40, dims.height * 0.39, dims.length * 0.32);
+    group.add(blueCap);
+
+    const yellowCap = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.022, 0.022, 0.015, 16),
+      new THREE.MeshStandardMaterial({ color: 0xeab308, roughness: 0.4 })
+    );
+    yellowCap.position.set(tubW * 0.40, dims.height * 0.39, dims.length * 0.32);
+    group.add(yellowCap);
+
+    // 5. Tire Inflator & Emergency Tool Kit Box
+    const toolBox = new THREE.Mesh(
+      new THREE.BoxGeometry(0.24, 0.08, 0.18),
+      new THREE.MeshStandardMaterial({ color: 0x27272a, roughness: 0.7 })
+    );
+    toolBox.position.set(0, dims.height * 0.12, dims.length * 0.22);
+    group.add(toolBox);
+
+    return group;
+  }
+
+  /**
+   * Constructs rear cargo trunk for front-engine vehicles
+   * Includes carpeted luggage bay, spare tire floor lid, battery relocation tray, and interior wheelhouse linings.
+   */
+  public static buildRearCargoTrunk(
+    dims: { length: number; width: number; height: number },
+    carbonMat: THREE.Material
+  ): THREE.Group {
+    const group = new THREE.Group();
+    group.name = 'rear_cargo_trunk';
+
+    const trunkW = dims.width * 0.52;
+    const trunkL = dims.length * 0.20;
+    const trunkH = dims.height * 0.30;
+
+    const carpetMat = new THREE.MeshStandardMaterial({
+      color: new THREE.Color('#1c1917'),
+      roughness: 0.95,
+      metalness: 0.05
+    });
+
+    // 1. Carpeted Trunk Floor and Recessed Well
+    const floor = new THREE.Mesh(new THREE.BoxGeometry(trunkW, 0.03, trunkL), carpetMat);
+    floor.position.set(0, dims.height * 0.22, -dims.length * 0.28);
+    group.add(floor);
+
+    // 2. Trunk Side Carpet Trim Walls
+    [-trunkW * 0.5, trunkW * 0.5].forEach(x => {
+      const wall = new THREE.Mesh(new THREE.BoxGeometry(0.04, trunkH, trunkL), carpetMat);
+      wall.position.set(x, dims.height * 0.34, -dims.length * 0.28);
+      group.add(wall);
+    });
+
+    // 3. Forward Bulkhead Divider (behind rear seats)
+    const bulkhead = new THREE.Mesh(new THREE.BoxGeometry(trunkW, trunkH, 0.04), carpetMat);
+    bulkhead.position.set(0, dims.height * 0.34, -dims.length * 0.18);
+    group.add(bulkhead);
+
+    // 4. Spare Wheel / Battery Relocation Cover with pull loop
+    const spareCover = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.02, 24), carpetMat);
+    spareCover.position.set(0, dims.height * 0.235, -dims.length * 0.28);
+    group.add(spareCover);
+
+    const pullLoop = new THREE.Mesh(
+      new THREE.BoxGeometry(0.04, 0.015, 0.01),
+      new THREE.MeshStandardMaterial({ color: 0xdc2626 })
+    );
+    pullLoop.position.set(0, dims.height * 0.245, -dims.length * 0.24);
+    group.add(pullLoop);
+
+    return group;
+  }
+
+  /**
+   * Constructs pneumatic gas support struts for bonnets and boot lids
+   */
+  public static buildGasStruts(
+    isFront: boolean,
+    dims: { length: number; width: number; height: number },
+    chromeMat: THREE.Material
+  ): THREE.Group {
+    const group = new THREE.Group();
+    group.name = isFront ? 'engine_bay_hood_struts' : 'engine_bay_boot_struts';
+
+    const blackBodyMat = new THREE.MeshStandardMaterial({ color: 0x18181b, roughness: 0.5, metalness: 0.6 });
+    const zPos = isFront ? dims.length * 0.22 : -dims.length * 0.22;
+    const strutWidth = dims.width * 0.38;
+
+    [-strutWidth, strutWidth].forEach(x => {
+      const singleStrut = new THREE.Group();
+
+      // Lower Cylinder Body (black)
+      const cylinder = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.28, 12), blackBodyMat);
+      cylinder.rotation.x = isFront ? 0.35 : -0.35;
+      cylinder.position.set(0, dims.height * 0.28, 0);
+      singleStrut.add(cylinder);
+
+      // Upper Polished Chrome Piston Rod
+      const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.006, 0.006, 0.24, 12), chromeMat);
+      rod.rotation.x = isFront ? 0.35 : -0.35;
+      rod.position.set(0, dims.height * 0.42, isFront ? -0.05 : 0.05);
+      singleStrut.add(rod);
+
+      singleStrut.position.set(x, 0, zPos);
+      group.add(singleStrut);
+    });
 
     return group;
   }

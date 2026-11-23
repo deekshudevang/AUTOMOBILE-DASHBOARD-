@@ -331,4 +331,94 @@ describe('AutoVerse 3D — Vehicle Interior, Engine Bay & Kinematic Openings Sui
       }).not.toThrow();
     });
   });
+
+  describe('5. Phase 19 Visual Authenticity & Geometry Defect Fixes', () => {
+    it('verifies model-specific cabin features across specialized track weapons', () => {
+      // 911 GT3 RS: titanium half roll cage
+      const gt3Interior = VehicleInteriorGenerator.generateInterior({
+        vehicleId: 'porsche_911_gt3_rs',
+        manufacturer: 'Porsche',
+        model: '911 GT3 RS'
+      });
+      expect(gt3Interior.getObjectByName('interior_half_roll_cage')).toBeDefined();
+
+      // M4 CSL: helmet tray and red CSL dash badge
+      const cslInterior = VehicleInteriorGenerator.generateInterior({
+        vehicleId: 'bmw_m4_csl',
+        manufacturer: 'BMW',
+        model: 'M4 CSL'
+      });
+      expect(cslInterior.getObjectByName('interior_half_roll_cage')).toBeDefined();
+      expect(cslInterior.getObjectByName('interior_helmet_tray')).toBeDefined();
+      expect(cslInterior.getObjectByName('interior_csl_badge')).toBeDefined();
+
+      // Cayman GT4 RS: quarter-window airbox induction tubes
+      const gt4Interior = VehicleInteriorGenerator.generateInterior({
+        vehicleId: 'porsche_718_cayman_gt4_rs',
+        manufacturer: 'Porsche',
+        model: '718 Cayman GT4 RS'
+      });
+      expect(gt4Interior.getObjectByName('interior_airbox_ducts')).toBeDefined();
+
+      // Skyline R34: Xanavi MFD top dash telemetry pod & screen
+      const r34Interior = VehicleInteriorGenerator.generateInterior({
+        vehicleId: 'nissan_skyline_gt_r_r34',
+        manufacturer: 'Nissan',
+        model: 'Skyline GT-R'
+      });
+      expect(r34Interior.getObjectByName('interior_mfd_display')).toBeDefined();
+      expect(r34Interior.getObjectByName('interior_mfd_pod')).toBeDefined();
+
+      // Chiron: iconic interior C-spine arch
+      const chironInterior = VehicleInteriorGenerator.generateInterior({
+        vehicleId: 'bugatti_chiron',
+        manufacturer: 'Bugatti',
+        model: 'Chiron'
+      });
+      expect(chironInterior.getObjectByName('interior_chiron_spine')).toBeDefined();
+    });
+
+    it('verifies window glass, mirrors, and door cards are rigidly mounted to door hinge pivots', () => {
+      const gt3Spec = loadSpec('sports_cars', 'porsche_911_gt3_rs.json');
+      const assembly = EditableVehicleAssembler.build(gt3Spec);
+
+      const pivotDoorFL = assembly.getObjectByName('hinge_pivot_door_front_l');
+      expect(pivotDoorFL).toBeDefined();
+
+      // Verify side window glass is mounted directly under the hinge pivot (NOT root)
+      const windowMesh = pivotDoorFL!.getObjectByName('side_windows_left');
+      expect(windowMesh).toBeDefined();
+
+      // Verify authentic inner door card is mounted directly under the hinge pivot
+      const doorCardMesh = pivotDoorFL!.getObjectByName('interior_door_card_left');
+      expect(doorCardMesh).toBeDefined();
+
+      // Verify front right door also has window and door card
+      const pivotDoorFR = assembly.getObjectByName('hinge_pivot_door_front_r');
+      expect(pivotDoorFR!.getObjectByName('side_windows_right')).toBeDefined();
+      expect(pivotDoorFR!.getObjectByName('interior_door_card_right')).toBeDefined();
+    });
+
+    it('verifies front frunk tub on mid/rear vehicles and rear cargo trunk on front-engine vehicles', () => {
+      // 1. Mid-engine Lamborghini Aventador SVJ has front frunk tub
+      const svjSpec = loadSpec('supercars', 'lamborghini_aventador_svj.json');
+      const svjBay = VehicleEngineBayGenerator.generateEngineBay(svjSpec);
+      expect(svjBay.getObjectByName('front_frunk_cargo_tub')).toBeDefined();
+      expect(svjBay.getObjectByName('engine_bay_hood_struts')).toBeDefined();
+      expect(svjBay.getObjectByName('engine_bay_boot_struts')).toBeDefined();
+
+      // 2. Track-focused Porsche 911 GT3 RS has front frunk with radiator extraction duct
+      const gt3Spec = loadSpec('sports_cars', 'porsche_911_gt3_rs.json');
+      const gt3Bay = VehicleEngineBayGenerator.generateEngineBay(gt3Spec);
+      expect(gt3Bay.getObjectByName('front_frunk_cargo_tub')).toBeDefined();
+      expect(gt3Bay.getObjectByName('frunk_radiator_extraction_duct')).toBeDefined();
+
+      // 3. Front-engine BMW M4 CSL has rear cargo trunk
+      const m4Spec = loadSpec('sports_cars', 'bmw_m4_csl.json');
+      const m4Bay = VehicleEngineBayGenerator.generateEngineBay(m4Spec);
+      expect(m4Bay.getObjectByName('rear_cargo_trunk')).toBeDefined();
+      expect(m4Bay.getObjectByName('engine_bay_hood_struts')).toBeDefined();
+      expect(m4Bay.getObjectByName('engine_bay_boot_struts')).toBeDefined();
+    });
+  });
 });

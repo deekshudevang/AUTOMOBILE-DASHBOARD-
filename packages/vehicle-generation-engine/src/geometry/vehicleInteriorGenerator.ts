@@ -116,7 +116,7 @@ export class VehicleInteriorGenerator {
     root.add(consoleGroup);
 
     // 4. Dashboard Assembly & Instrument Cluster
-    const dashGroup = this.buildDashboard(language, W, H, darkCharcoal, carbonMat, aluminumMat, screenMat, gaugeGlassMat);
+    const dashGroup = this.buildDashboard(language, W, H, darkCharcoal, carbonMat, aluminumMat, screenMat, gaugeGlassMat, spec);
     dashGroup.position.set(0, 0.32, 0.62);
     dashGroup.name = 'interior_dashboard';
     root.add(dashGroup);
@@ -134,7 +134,8 @@ export class VehicleInteriorGenerator {
     root.add(seatsGroup);
 
     // 7. Door Cards (Left & Right interior door panels)
-    const doorCards = this.buildDoorCards(language, W, L, darkCharcoal, seatMat, aluminumMat);
+    const isTrackCar = spec.vehicleId.includes('gt3_rs') || spec.vehicleId.includes('gt4_rs') || spec.vehicleId.includes('sto') || spec.vehicleId.includes('pista');
+    const doorCards = this.buildDoorCards(language, W, L, darkCharcoal, seatMat, aluminumMat, isTrackCar);
     root.add(doorCards);
 
     // 8. Frameless Rearview Mirror
@@ -143,6 +144,10 @@ export class VehicleInteriorGenerator {
     mirror.position.set(0, H * 0.78, 0.45);
     mirror.name = 'interior_rearview_mirror';
     root.add(mirror);
+
+    // 9. Model-Specific Accessories (Roll cages, harness bars, helmet trays, airboxes)
+    const accessories = this.buildModelSpecificAccessories(spec, W, L, H, carbonMat, aluminumMat);
+    root.add(accessories);
 
     root.userData = {
       isVehicleInterior: true,
@@ -325,13 +330,15 @@ export class VehicleInteriorGenerator {
     carbonMat: THREE.Material,
     trimMat: THREE.Material,
     screenMat: THREE.Material,
-    gaugeGlassMat: THREE.Material
+    gaugeGlassMat: THREE.Material,
+    spec?: VehicleInteriorSpec
   ): THREE.Group {
     const group = new THREE.Group();
     group.name = 'interior_dashboard_assembly';
 
     const dashWidth = W * 0.94;
     const dashDepth = 0.42;
+    const vehicleId = (spec?.vehicleId || '').toLowerCase();
 
     // Main sculpted dashboard cowl
     const cowlGeo = new THREE.BoxGeometry(dashWidth, 0.18, dashDepth);
@@ -485,6 +492,36 @@ export class VehicleInteriorGenerator {
         group.add(centerScreen);
         break;
       }
+    }
+
+    // Model-Specific Dashboard Enhancements
+    if (vehicleId.includes('r34') || vehicleId.includes('skyline')) {
+      // Nissan Skyline GT-R R34 Xanavi Multi-Function Display (MFD)
+      const mfdPod = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.11, 0.10), carbonMat);
+      mfdPod.position.set(0, 0.12, -0.06);
+      mfdPod.name = 'interior_mfd_pod';
+      group.add(mfdPod);
+
+      const mfdScreen = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.08, 0.01), screenMat);
+      mfdScreen.position.set(0, 0.12, -0.11);
+      mfdScreen.name = 'interior_mfd_display';
+      group.add(mfdScreen);
+    }
+
+    if (vehicleId.includes('svj')) {
+      // Lamborghini Aventador SVJ ALA 2.0 active aerodynamics indicator unit
+      const alaPod = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.05, 0.06), carbonMat);
+      alaPod.position.set(0, 0.10, -0.06);
+      alaPod.name = 'interior_ala_telemetry_pod';
+      group.add(alaPod);
+    }
+
+    if (vehicleId.includes('csl')) {
+      // BMW M4 CSL illuminated red dash badge
+      const cslBadge = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.02, 0.005), new THREE.MeshStandardMaterial({ color: 0xdc2626 }));
+      cslBadge.position.set(W * 0.22, 0.02, -dashDepth * 0.49);
+      cslBadge.name = 'interior_csl_badge';
+      group.add(cslBadge);
     }
 
     return group;
@@ -741,6 +778,60 @@ export class VehicleInteriorGenerator {
   }
 
   /**
+   * Constructs an individual left or right door card for kinematic mounting to door hinges
+   */
+  public static buildSingleDoorCard(
+    side: 'left' | 'right',
+    language: InteriorDesignLanguage,
+    W: number,
+    L: number,
+    baseMat: THREE.Material,
+    leatherMat: THREE.Material,
+    aluminumMat: THREE.Material,
+    isTrackCar: boolean = false
+  ): THREE.Group {
+    const isRight = side === 'right';
+    const card = new THREE.Group();
+    card.name = `interior_door_card_${side}`;
+
+    const doorCardWidth = 0.05;
+    const doorCardHeight = 0.52;
+    const doorCardLength = L * 0.65;
+
+    // Main inner panel
+    const panel = new THREE.Mesh(new THREE.BoxGeometry(doorCardWidth, doorCardHeight, doorCardLength), baseMat);
+    panel.position.set(0, 0.22, 0);
+    card.add(panel);
+
+    // Armrest ledge
+    const armrest = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.06, 0.36), leatherMat);
+    armrest.position.set(isRight ? -0.025 : 0.025, 0.24, -0.02);
+    card.add(armrest);
+
+    // Door release handle / pull strap
+    if (language === 'PORSCHE' || language === 'MCLAREN' || isTrackCar) {
+      // Red/Yellow RS nylon pull strap
+      const strapColor = language === 'PORSCHE' ? 0xdc2626 : 0xfacc15;
+      const strapMat = new THREE.MeshStandardMaterial({ color: strapColor, roughness: 0.8 });
+      const strap = new THREE.Mesh(new THREE.BoxGeometry(0.01, 0.08, 0.025), strapMat);
+      strap.position.set(isRight ? -0.03 : 0.03, 0.32, 0.08);
+      card.add(strap);
+    } else {
+      // Chrome/aluminum door handle
+      const handle = new THREE.Mesh(new THREE.BoxGeometry(0.015, 0.03, 0.08), aluminumMat);
+      handle.position.set(isRight ? -0.03 : 0.03, 0.34, 0.10);
+      card.add(handle);
+    }
+
+    // Power window switch cluster
+    const switchCluster = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.015, 0.06), new THREE.MeshStandardMaterial({ color: 0x111113 }));
+    switchCluster.position.set(isRight ? -0.035 : 0.035, 0.28, 0.06);
+    card.add(switchCluster);
+
+    return card;
+  }
+
+  /**
    * Constructs door cards (inner door panels with handles and switches)
    */
   public static buildDoorCards(
@@ -749,47 +840,141 @@ export class VehicleInteriorGenerator {
     L: number,
     baseMat: THREE.Material,
     leatherMat: THREE.Material,
-    aluminumMat: THREE.Material
+    aluminumMat: THREE.Material,
+    isTrackCar: boolean = false
   ): THREE.Group {
     const group = new THREE.Group();
     group.name = 'interior_door_cards';
 
-    const doorCardWidth = 0.05;
-    const doorCardHeight = 0.52;
-    const doorCardLength = L * 0.65;
+    const leftCard = this.buildSingleDoorCard('left', language, W, L, baseMat, leatherMat, aluminumMat, isTrackCar);
+    leftCard.position.set(-W * 0.48, 0, 0);
+    group.add(leftCard);
 
-    // Left & Right Door Cards
-    [-W * 0.48, W * 0.48].forEach((x, idx) => {
-      const card = new THREE.Group();
-      card.name = `interior_door_card_${idx === 0 ? 'left' : 'right'}`;
+    const rightCard = this.buildSingleDoorCard('right', language, W, L, baseMat, leatherMat, aluminumMat, isTrackCar);
+    rightCard.position.set(W * 0.48, 0, 0);
+    group.add(rightCard);
 
-      // Main inner panel
-      const panel = new THREE.Mesh(new THREE.BoxGeometry(doorCardWidth, doorCardHeight, doorCardLength), baseMat);
-      panel.position.set(0, 0.22, 0);
-      card.add(panel);
+    return group;
+  }
 
-      // Armrest ledge
-      const armrest = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.06, 0.36), leatherMat);
-      armrest.position.set(idx === 0 ? 0.025 : -0.025, 0.24, -0.02);
-      card.add(armrest);
+  /**
+   * Constructs authentic model-specific cabin accessories
+   * (e.g. titanium roll cages, CSL helmet recess trays, GT4 RS airbox intake tubes, Chiron spine)
+   */
+  public static buildModelSpecificAccessories(
+    spec: VehicleInteriorSpec,
+    W: number,
+    L: number,
+    H: number,
+    carbonMat: THREE.Material,
+    aluminumMat: THREE.Material
+  ): THREE.Group {
+    const group = new THREE.Group();
+    group.name = 'interior_model_accessories';
+    const id = (spec.vehicleId || '').toLowerCase();
 
-      // Door release handle / pull strap
-      if (language === 'PORSCHE' || language === 'MCLAREN') {
-        // Red RS pull strap
-        const redMat = new THREE.MeshStandardMaterial({ color: 0xdc2626 });
-        const strap = new THREE.Mesh(new THREE.BoxGeometry(0.01, 0.08, 0.025), redMat);
-        strap.position.set(idx === 0 ? 0.03 : -0.03, 0.32, 0.08);
-        card.add(strap);
-      } else {
-        // Chrome/aluminum door handle
-        const handle = new THREE.Mesh(new THREE.BoxGeometry(0.015, 0.03, 0.08), aluminumMat);
-        handle.position.set(idx === 0 ? 0.03 : -0.03, 0.34, 0.10);
-        card.add(handle);
-      }
+    // 1. Titanium Half Roll Cage for Track Weapons (GT3 RS, GT4 RS, Huracan STO, M4 CSL, Senna, Pista)
+    if (
+      id.includes('gt3_rs') ||
+      id.includes('gt4_rs') ||
+      id.includes('sto') ||
+      id.includes('csl') ||
+      id.includes('senna') ||
+      id.includes('pista')
+    ) {
+      const cageGroup = new THREE.Group();
+      cageGroup.name = 'interior_half_roll_cage';
+      const cageMat = new THREE.MeshStandardMaterial({
+        color: id.includes('gt3_rs') ? 0xfacc15 : id.includes('csl') ? 0xdc2626 : 0x71717a,
+        metalness: 0.85,
+        roughness: 0.2
+      });
+      const pipeRadius = 0.022;
 
-      card.position.set(x, 0, 0);
-      group.add(card);
-    });
+      // Main roll hoop behind front seats
+      const hoopTop = new THREE.Mesh(new THREE.CylinderGeometry(pipeRadius, pipeRadius, W * 0.78, 16), cageMat);
+      hoopTop.rotation.z = Math.PI / 2;
+      hoopTop.position.set(0, H * 0.72, -0.42);
+      cageGroup.add(hoopTop);
+
+      [-W * 0.38, W * 0.38].forEach(x => {
+        const upright = new THREE.Mesh(new THREE.CylinderGeometry(pipeRadius, pipeRadius, H * 0.74, 16), cageMat);
+        upright.position.set(x, H * 0.35, -0.42);
+        cageGroup.add(upright);
+
+        // Diagonal backstays to rear shock towers
+        const backstay = new THREE.Mesh(new THREE.CylinderGeometry(pipeRadius, pipeRadius, 0.75, 16), cageMat);
+        backstay.rotation.x = -0.65;
+        backstay.position.set(x * 0.9, H * 0.40, -0.72);
+        cageGroup.add(backstay);
+      });
+
+      // Diagonal cross-brace (X-brace)
+      const diag1 = new THREE.Mesh(new THREE.CylinderGeometry(pipeRadius * 0.8, pipeRadius * 0.8, 0.95, 16), cageMat);
+      diag1.rotation.z = 0.65;
+      diag1.position.set(0, H * 0.38, -0.42);
+      cageGroup.add(diag1);
+
+      const diag2 = new THREE.Mesh(new THREE.CylinderGeometry(pipeRadius * 0.8, pipeRadius * 0.8, 0.95, 16), cageMat);
+      diag2.rotation.z = -0.65;
+      diag2.position.set(0, H * 0.38, -0.42);
+      cageGroup.add(diag2);
+
+      // Harness guide bar
+      const harnessBar = new THREE.Mesh(new THREE.CylinderGeometry(pipeRadius * 0.8, pipeRadius * 0.8, W * 0.76, 16), cageMat);
+      harnessBar.rotation.z = Math.PI / 2;
+      harnessBar.position.set(0, H * 0.36, -0.42);
+      cageGroup.add(harnessBar);
+
+      group.add(cageGroup);
+    }
+
+    // 2. M4 CSL Helmet Recess Tray & Rear Seat Delete
+    if (id.includes('csl')) {
+      const trayGroup = new THREE.Group();
+      trayGroup.name = 'interior_helmet_tray';
+      const trayBase = new THREE.Mesh(new THREE.BoxGeometry(W * 0.82, 0.04, 0.55), carbonMat);
+      trayBase.position.set(0, 0.12, -0.65);
+      trayGroup.add(trayBase);
+
+      // Twin helmet compartments
+      [-0.24, 0.24].forEach(x => {
+        const recess = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.16, 0.08, 24), carbonMat);
+        recess.position.set(x, 0.14, -0.65);
+        trayGroup.add(recess);
+
+        // Red CSL helmet tie-down straps
+        const strap = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.005, 0.03), new THREE.MeshStandardMaterial({ color: 0xdc2626 }));
+        strap.position.set(x, 0.18, -0.65);
+        trayGroup.add(strap);
+      });
+      group.add(trayGroup);
+    }
+
+    // 3. Cayman GT4 RS Quarter-Window Airbox Induction Tubes
+    if (id.includes('gt4_rs') || id.includes('gt4')) {
+      const airboxGroup = new THREE.Group();
+      airboxGroup.name = 'interior_airbox_ducts';
+      [-W * 0.42, W * 0.42].forEach((x, i) => {
+        const duct = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.07, 0.40, 16), carbonMat);
+        duct.rotation.x = 0.5;
+        duct.rotation.z = i === 0 ? -0.2 : 0.2;
+        duct.position.set(x, H * 0.45, -0.50);
+        airboxGroup.add(duct);
+      });
+      group.add(airboxGroup);
+    }
+
+    // 4. Chiron Iconic C-Line Cockpit Spine Divider
+    if (id.includes('chiron') || id.includes('bugatti')) {
+      const spineGroup = new THREE.Group();
+      spineGroup.name = 'interior_chiron_spine';
+      const cArch = new THREE.Mesh(new THREE.TorusGeometry(0.55, 0.025, 16, 48, Math.PI * 0.85), aluminumMat);
+      cArch.rotation.y = Math.PI / 2;
+      cArch.position.set(0, H * 0.42, -0.15);
+      spineGroup.add(cArch);
+      group.add(spineGroup);
+    }
 
     return group;
   }

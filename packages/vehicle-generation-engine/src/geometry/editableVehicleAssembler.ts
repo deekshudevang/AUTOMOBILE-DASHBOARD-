@@ -117,22 +117,55 @@ export class EditableVehicleAssembler {
 
       if (compMesh) {
         // Mount movable aperture components inside their kinematic hinge groups
-        if (compDef.id === 'front_left_door' || compDef.id.includes('door_front_l')) {
+        if (compDef.id === 'front_left_door' || compDef.id.includes('door_front_l') || compDef.id === 'door_fl') {
           compMesh.position.sub(hingePivotFL.position);
           hingePivotFL.add(compMesh);
-        } else if (compDef.id === 'front_right_door' || compDef.id.includes('door_front_r')) {
+        } else if (compDef.id === 'front_right_door' || compDef.id.includes('door_front_r') || compDef.id === 'door_fr') {
           compMesh.position.sub(hingePivotFR.position);
           hingePivotFR.add(compMesh);
-        } else if (compDef.id === 'rear_left_door' || compDef.id.includes('door_rear_l')) {
+        } else if (compDef.id === 'side_windows_left' || compDef.id.includes('window_front_l') || compDef.id === 'window_fl') {
+          // Mount driver side window to front-left door hinge pivot so it moves rigidly with the door
+          compMesh.position.sub(hingePivotFL.position);
+          hingePivotFL.add(compMesh);
+        } else if (compDef.id === 'side_windows_right' || compDef.id.includes('window_front_r') || compDef.id === 'window_fr') {
+          // Mount passenger side window to front-right door hinge pivot so it moves rigidly with the door
+          compMesh.position.sub(hingePivotFR.position);
+          hingePivotFR.add(compMesh);
+        } else if (compDef.id === 'mirror_left' || compDef.id === 'mirror_l' || compDef.id === 'side_mirror_l') {
+          compMesh.position.sub(hingePivotFL.position);
+          hingePivotFL.add(compMesh);
+        } else if (compDef.id === 'mirror_right' || compDef.id === 'mirror_r' || compDef.id === 'side_mirror_r') {
+          compMesh.position.sub(hingePivotFR.position);
+          hingePivotFR.add(compMesh);
+        } else if (compDef.id === 'rear_left_door' || compDef.id.includes('door_rear_l') || compDef.id === 'door_rl') {
           compMesh.position.sub(hingePivotRL.position);
           hingePivotRL.add(compMesh);
-        } else if (compDef.id === 'rear_right_door' || compDef.id.includes('door_rear_r')) {
+        } else if (compDef.id === 'rear_right_door' || compDef.id.includes('door_rear_r') || compDef.id === 'door_rr') {
           compMesh.position.sub(hingePivotRR.position);
           hingePivotRR.add(compMesh);
-        } else if (compDef.id === 'hood' || compDef.id.includes('bonnet')) {
+        } else if (compDef.id === 'side_windows_rear_left' || compDef.id.includes('window_rear_l')) {
+          compMesh.position.sub(hingePivotRL.position);
+          hingePivotRL.add(compMesh);
+        } else if (compDef.id === 'side_windows_rear_right' || compDef.id.includes('window_rear_r')) {
+          compMesh.position.sub(hingePivotRR.position);
+          hingePivotRR.add(compMesh);
+        } else if (compDef.id === 'hood' || compDef.id.includes('bonnet') || compDef.id === 'cofango') {
           compMesh.position.sub(hingePivotHood.position);
           hingePivotHood.add(compMesh);
-        } else if (compDef.id === 'boot' || compDef.id === 'trunk' || compDef.id.includes('clamshell_rear')) {
+        } else if (compDef.id === 'boot' || compDef.id === 'trunk' || compDef.id.includes('clamshell_rear') || compDef.id === 'tailgate') {
+          compMesh.position.sub(hingePivotBoot.position);
+          hingePivotBoot.add(compMesh);
+        } else if (
+          (compDef.id === 'rear_glass' || compDef.id === 'rear_window') &&
+          (openingConfig.bootMechanism === 'liftback_hatch' || openingConfig.bootMechanism === 'rear_clamshell')
+        ) {
+          // Mount rear window to hatch/clamshell hinge pivot for liftback kinematics
+          compMesh.position.sub(hingePivotBoot.position);
+          hingePivotBoot.add(compMesh);
+        } else if (
+          (compDef.id === 'rear_wing' || compDef.id === 'spoiler') &&
+          openingConfig.bootMechanism === 'liftback_hatch'
+        ) {
           compMesh.position.sub(hingePivotBoot.position);
           hingePivotBoot.add(compMesh);
         } else {
@@ -150,6 +183,31 @@ export class EditableVehicleAssembler {
     }
     root.add(hingePivotHood);
     root.add(hingePivotBoot);
+
+    // 4b. Mount Authentic Interior Door Cards directly onto Door Hinge Pivots
+    const interiorLang = VehicleInteriorGenerator.resolveDesignLanguage({
+      vehicleId: spec.vehicle.id,
+      manufacturer: spec.vehicle.manufacturer,
+      model: spec.vehicle.model
+    });
+    const cabinW = spec.dimensions?.width ? spec.dimensions.width * 0.74 : 1.48;
+    const cabinL = spec.dimensions?.length ? spec.dimensions.length * 0.36 : 1.65;
+    const darkCharcoalMat = new THREE.MeshStandardMaterial({ color: 0x18181b, roughness: 0.7, metalness: 0.1 });
+    const cardLeatherMat = new THREE.MeshStandardMaterial({ color: 0x27272a, roughness: 0.8, metalness: 0.05 });
+    const cardAlumMat = new THREE.MeshStandardMaterial({ color: 0xd4d4d8, metalness: 0.85, roughness: 0.2 });
+    const isTrackWeapon =
+      spec.vehicle.id.includes('gt3_rs') ||
+      spec.vehicle.id.includes('gt4_rs') ||
+      spec.vehicle.id.includes('sto') ||
+      spec.vehicle.id.includes('pista');
+
+    const cardFL = VehicleInteriorGenerator.buildSingleDoorCard('left', interiorLang, cabinW, cabinL, darkCharcoalMat, cardLeatherMat, cardAlumMat, isTrackWeapon);
+    cardFL.position.set(-cabinW * 0.48 - hingePivotFL.position.x, 0.02 - hingePivotFL.position.y, 0 - hingePivotFL.position.z);
+    hingePivotFL.add(cardFL);
+
+    const cardFR = VehicleInteriorGenerator.buildSingleDoorCard('right', interiorLang, cabinW, cabinL, darkCharcoalMat, cardLeatherMat, cardAlumMat, isTrackWeapon);
+    cardFR.position.set(cabinW * 0.48 - hingePivotFR.position.x, 0.02 - hingePivotFR.position.y, 0 - hingePivotFR.position.z);
+    hingePivotFR.add(cardFR);
 
     // 5. Build Authentic Vehicle-Specific Powertrain & Engine Bay
     const engineBay = VehicleEngineBayGenerator.generateEngineBay(spec);

@@ -198,3 +198,19 @@
     Evidence: `src/types/vehicle.ts`, `src/components/3d/CameraRig.tsx`, `src/components/customizer/VehicleAccessPanel.tsx`.
 - [x] **18.6 Automated Testing & Verification**: Suite verifying interior generation, engine dispatch, opening animations, and matrix report.
     Evidence: `npm test tests/interiors-engines-openings.test.ts` (12/12 passed) · `npm test` (38/38 files, 227/227 passed) · `npm run build` (Exit 0) · files: `VEHICLE_OPENING_SYSTEM_FINAL_REPORT.md`.
+
+### Phase 19 — Visual Authenticity, Vehicle-by-Vehicle Verification & Geometry Quality Correction
+- [x] **19.1 Git Branch Ancestry & Integrity Verification**: Verified direct ancestry of previous branches `feat/car-studio-overhaul` (c726efb) and `feat/interiors-engines-openings` (58383f3) into `feat/phase19-visual-authenticity`.
+    Evidence: `git merge-base --is-ancestor c726efb HEAD` (Exit 0) · `git status` clean working tree.
+- [x] **19.2 Rigid Aperture Assembly (Zero Detached Glass / Cards)**: Parented window glass, door cards, and side mirrors directly to `hingePivotFL`/`hingePivotFR` (and rear door pivots); parented rear glass and decklid spoilers to `hingePivotBoot` for liftbacks.
+    Evidence: `tests/interiors-engines-openings.test.ts` (15/15 passing) · files: `packages/vehicle-generation-engine/src/geometry/editableVehicleAssembler.ts`.
+- [x] **19.3 Dual-Compartment Architecture (Front Frunks & Rear Trunks)**: Constructed deep carpeted frunk tub with radiator extraction S-ducts, fluid caps, and toolkit for mid/rear cars (`buildFrontFrunkTub`); constructed carpeted cargo trunk with spare wheel well for front-engine cars (`buildRearCargoTrunk`).
+    Evidence: `tests/interiors-engines-openings.test.ts` · files: `packages/vehicle-generation-engine/src/geometry/vehicleEngineBayGenerator.ts`.
+- [x] **19.4 Pneumatic Telescopic Gas Struts**: Added dual-stage chrome piston rod and black cylinder gas dampers to hood and boot hinge linkages (`engine_bay_hood_struts`, `engine_bay_boot_struts`).
+    Evidence: `tests/interiors-engines-openings.test.ts` · files: `packages/vehicle-generation-engine/src/geometry/vehicleEngineBayGenerator.ts`.
+- [x] **19.5 Model-Specific Cabin Specialization**: Implemented titanium half roll-cages (911 GT3 RS, Huracan STO, M4 CSL), CSL helmet recess trays, Cayman GT4 RS airbox intake ducts, Bugatti Chiron C-spine arch, and Nissan Skyline R34 Xanavi MFD monitor.
+    Evidence: `tests/interiors-engines-openings.test.ts` · files: `packages/vehicle-generation-engine/src/geometry/vehicleInteriorGenerator.ts`.
+- [x] **19.6 Headless Chrome Rendered Screenshot Capture**: Automated visual proof capturing 60 rendered frames across 10 vehicle architectures and 6 camera views.
+    Evidence: `scripts/capture-phase19-screenshots.mjs` (Exit 0) · `docs/phase19/screenshots/` (60 PNG files) · `PHASE_19_SCREENSHOT_EVIDENCE.md`.
+- [x] **19.7 Comprehensive Verification Reporting Suite**: Authored 5 mandatory Phase 19 engineering audit documents.
+    Evidence: `PHASE_19_VISUAL_AUTHENTICITY_AUDIT.md`, `PHASE_19_GEOMETRY_DEFECTS.md`, `PHASE_19_VEHICLE_BY_VEHICLE_REPORT.md`, `PHASE_19_SCREENSHOT_EVIDENCE.md`, `PHASE_19_FINAL_REPORT.md`.
