@@ -145,6 +145,26 @@ export interface MaterialDef {
   emissiveIntensity?: number;
 }
 
+export type FitmentClassification = 'DIRECT_FIT' | 'ADAPTABLE' | 'INCOMPATIBLE';
+
+export interface FitmentEvaluation {
+  status: FitmentClassification;
+  passed: boolean;
+  score: number; // 0 - 100
+  reasons: string[];
+  warnings: string[];
+  scaleAdjustment: [number, number, number];
+  mountingOffsetDelta: [number, number, number];
+  requiresAdapterKit: boolean;
+  adapterKitDescription?: string;
+  kinematics?: {
+    hubMatched: boolean;
+    trackWidthDeltaMm: number;
+    clearanceOk: boolean;
+    aeroBalanceDeltaPercent: number;
+  };
+}
+
 export interface ComponentOverride {
   componentId: string;
   position?: [number, number, number];
@@ -157,6 +177,20 @@ export interface ComponentOverride {
   visible?: boolean;
   locked?: boolean;
   contextSettings?: Record<string, any>;
+  // Cross-Car Part Swapping & Modular Customization
+  donorVehicleId?: string;
+  donorVehicleName?: string;
+  donorComponentId?: string;
+  donorComponentName?: string;
+  fitmentType?: FitmentClassification;
+  fitmentNotes?: string;
+  adapterScale?: [number, number, number];
+  adapterOffset?: [number, number, number];
+  replacementMeshId?: string;
+  wheelStyle?: string;
+  wheelDiameterInches?: number;
+  wheelCamberDeg?: number;
+  wheelSpacerMm?: number;
 }
 
 export interface VehicleSchema2 {

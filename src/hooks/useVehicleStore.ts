@@ -10,6 +10,22 @@ import { parametricFiles, parametricModels, parametricBindings } from '../data/p
 export type PresentationMode = 'studio' | 'engineering' | 'showroom' | 'comparison';
 export type EngineeringMode = 'student' | 'advanced';
 
+export interface CustomBuild {
+  id: string;
+  name: string;
+  baseVehicleFile: string;
+  baseModelHash: number;
+  createdAt: number;
+  updatedAt: number;
+  componentOverrides: Record<string, ComponentOverride>;
+  primaryColor?: number;
+  secondaryColor?: number;
+  customPrimaryColor?: RGBColor;
+  customSecondaryColor?: RGBColor;
+  isPrimaryColorCustom?: boolean;
+  wheelColor?: number;
+}
+
 export type ActiveView =
   | 'dashboard'
   | 'library'
@@ -97,6 +113,16 @@ interface VehicleStoreState {
   resetAllComponentOverrides: () => void;
   toggleComponentVisibility: (componentId: string) => void;
   toggleComponentLock: (componentId: string) => void;
+
+  // Custom Build Slots Persistence
+  savedBuilds: CustomBuild[];
+  saveCurrentBuild: (name?: string) => string;
+  loadBuild: (buildId: string) => Promise<boolean>;
+  deleteBuild: (buildId: string) => void;
+  duplicateBuild: (buildId: string) => string;
+  renameBuild: (buildId: string, newName: string) => void;
+  exportBuildJson: (buildId?: string) => string;
+  importBuildJson: (jsonString: string) => { success: boolean; buildId?: string; error?: string };
 
   // Asset Manager Bindings
   assetBindings: Record<number, VehicleAssetBinding>;
@@ -402,6 +428,181 @@ export const useVehicleStore = create<VehicleStoreState>((set, get) => ({
         }
       };
     });
+  },
+
+  savedBuilds: (() => {
+    try {
+      if (typeof window !== 'undefined') {
+        const stored = localStorage.getItem('autoverse_custom_builds');
+        return stored ? JSON.parse(stored) : [];
+      }
+    } catch (e) {
+      console.warn('Failed to parse autoverse_custom_builds from localStorage', e);
+    }
+    return [];
+  })(),
+
+  saveCurrentBuild: (name?: string) => {
+    const state = get();
+    const buildId = `build_${Date.now()}`;
+    const buildName = name || state.configName || `${state.activeModel?.displayName || 'Vehicle'} Custom Build`;
+    const newBuild: CustomBuild = {
+      id: buildId,
+      name: buildName,
+      baseVehicleFile: state.activeFile,
+      baseModelHash: state.activeConfig.model,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      componentOverrides: { ...state.componentOverrides },
+      primaryColor: state.activeConfig.primaryColor,
+      secondaryColor: state.activeConfig.secondaryColor,
+      customPrimaryColor: state.activeConfig.customPrimaryColor,
+      customSecondaryColor: state.activeConfig.customSecondaryColor,
+      isPrimaryColorCustom: state.activeConfig.isPrimaryColorCustom,
+      wheelColor: state.activeConfig.wheelColor
+    };
+
+    const nextBuilds = [newBuild, ...state.savedBuilds.filter(b => b.id !== buildId)];
+    try {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('autoverse_custom_builds', JSON.stringify(nextBuilds));
+      }
+    } catch (e) {
+      console.error('Failed to save build to localStorage', e);
+    }
+
+    set({ savedBuilds: nextBuilds, configName: buildName });
+    return buildId;
+  },
+
+  loadBuild: async (buildId: string) => {
+    const state = get();
+    const build = state.savedBuilds.find(b => b.id === buildId);
+    if (!build) return false;
+
+    if (state.activeFile !== build.baseVehicleFile) {
+      await state.loadVehicleByFile(build.baseVehicleFile);
+    }
+
+    set({
+      configName: build.name,
+      componentOverrides: { ...build.componentOverrides },
+      overrideHistory: [{ ...build.componentOverrides }],
+      overrideHistoryIndex: 0,
+      activeConfig: {
+        ...get().activeConfig,
+        primaryColor: build.primaryColor ?? get().activeConfig.primaryColor,
+        secondaryColor: build.secondaryColor ?? get().activeConfig.secondaryColor,
+        customPrimaryColor: build.customPrimaryColor || get().activeConfig.customPrimaryColor,
+        customSecondaryColor: build.customSecondaryColor || get().activeConfig.customSecondaryColor,
+        isPrimaryColorCustom: build.isPrimaryColorCustom ?? get().activeConfig.isPrimaryColorCustom,
+        wheelColor: build.wheelColor ?? get().activeConfig.wheelColor
+      },
+      cameraTrigger: Date.now()
+    });
+
+    return true;
+  },
+
+  deleteBuild: (buildId: string) => {
+    const next = get().savedBuilds.filter(b => b.id !== buildId);
+    try {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('autoverse_custom_builds', JSON.stringify(next));
+      }
+    } catch (e) {
+      console.error('Failed to update localStorage', e);
+    }
+    set({ savedBuilds: next });
+  },
+
+  duplicateBuild: (buildId: string) => {
+    const orig = get().savedBuilds.find(b => b.id === buildId);
+    if (!orig) return '';
+    const newId = `build_${Date.now()}`;
+    const copy: CustomBuild = {
+      ...orig,
+      id: newId,
+      name: `${orig.name} (Copy)`,
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    };
+    const next = [copy, ...get().savedBuilds];
+    try {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('autoverse_custom_builds', JSON.stringify(next));
+      }
+    } catch (e) {
+      console.error('Failed to update localStorage', e);
+    }
+    set({ savedBuilds: next });
+    return newId;
+  },
+
+  renameBuild: (buildId: string, newName: string) => {
+    const next = get().savedBuilds.map(b => b.id === buildId ? { ...b, name: newName, updatedAt: Date.now() } : b);
+    try {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('autoverse_custom_builds', JSON.stringify(next));
+      }
+    } catch (e) {
+      console.error('Failed to update localStorage', e);
+    }
+    set({ savedBuilds: next });
+  },
+
+  exportBuildJson: (buildId?: string) => {
+    const state = get();
+    let buildToExport: CustomBuild | undefined;
+    if (buildId) {
+      buildToExport = state.savedBuilds.find(b => b.id === buildId);
+    }
+    if (!buildToExport) {
+      buildToExport = {
+        id: `build_${Date.now()}`,
+        name: state.configName || 'Custom Build',
+        baseVehicleFile: state.activeFile,
+        baseModelHash: state.activeConfig.model,
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+        componentOverrides: state.componentOverrides,
+        primaryColor: state.activeConfig.primaryColor,
+        secondaryColor: state.activeConfig.secondaryColor,
+        customPrimaryColor: state.activeConfig.customPrimaryColor,
+        customSecondaryColor: state.activeConfig.customSecondaryColor,
+        isPrimaryColorCustom: state.activeConfig.isPrimaryColorCustom,
+        wheelColor: state.activeConfig.wheelColor
+      };
+    }
+    return JSON.stringify(buildToExport, null, 2);
+  },
+
+  importBuildJson: (jsonString: string) => {
+    try {
+      const parsed = JSON.parse(jsonString) as CustomBuild;
+      if (!parsed.componentOverrides || typeof parsed.componentOverrides !== 'object') {
+        return { success: false, error: 'Invalid build file: missing componentOverrides dictionary' };
+      }
+      const buildId = parsed.id || `build_${Date.now()}`;
+      const build: CustomBuild = {
+        ...parsed,
+        id: buildId,
+        name: parsed.name || 'Imported Custom Build',
+        updatedAt: Date.now()
+      };
+      const next = [build, ...get().savedBuilds.filter(b => b.id !== buildId)];
+      try {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('autoverse_custom_builds', JSON.stringify(next));
+        }
+      } catch (e) {
+        console.error('Failed to save imported build to localStorage', e);
+      }
+      set({ savedBuilds: next });
+      return { success: true, buildId };
+    } catch (e: any) {
+      return { success: false, error: e?.message || 'Invalid JSON format' };
+    }
   },
 
   assetBindings: initialBindings,

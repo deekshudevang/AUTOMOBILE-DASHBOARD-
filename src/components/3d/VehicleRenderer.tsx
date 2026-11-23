@@ -7,8 +7,9 @@ import { getGTAColor } from '../../data/gtaColorPalette';
 import { NeonUnderglow } from './NeonUnderglow';
 import { LicensePlate3D } from './LicensePlate3D';
 import { ModelUnavailableDisplay } from './ModelUnavailableDisplay';
-import { ProceduralChassisGenerator, ParametricGeometryBuilder, EditableVehicleAssembler } from '@autoverse/vehicle-generation-engine';
+import { ProceduralChassisGenerator, ParametricGeometryBuilder, EditableVehicleAssembler, CrossCarPartSwapper } from '@autoverse/vehicle-generation-engine';
 import { VehicleGeometryEngine, SchemaV2Migrator } from '../../geometry';
+import { toCanonicalV2Id } from '../../geometry/components/canonicalComponentMap';
 import { useVehicleStore } from '../../hooks/useVehicleStore';
 
 interface VehicleRendererProps {
@@ -112,11 +113,59 @@ export const VehicleRenderer: React.FC<VehicleRendererProps> = ({
     // Apply component overrides if any
     if (componentOverrides) {
       Object.entries(componentOverrides).forEach(([id, override]) => {
+        const v2Id = toCanonicalV2Id(id);
+
+        // 1. Component Visibility (Part Removal / Stripped Mode)
         if (override.visible === false) {
+          engine.setVisible(v2Id, false);
           engine.setVisible(id, false);
+        } else if (override.visible === true) {
+          engine.setVisible(v2Id, true);
+          engine.setVisible(id, true);
         }
-        if ((override as any).color) {
-          engine.applyMaterial(id, { color: (override as any).color });
+
+        // 2. Custom Color & Material Finish
+        if (override.customColorHex || (override as any).color) {
+          const colorHex = override.customColorHex || (override as any).color;
+          engine.applyMaterial(v2Id, { color: colorHex });
+          engine.applyMaterial(id, { color: colorHex });
+        }
+        if (override.materialFinish === 'carbon_fiber') {
+          engine.applyMaterial(v2Id, { color: '#18181b', roughness: 0.35, metalness: 0.4 });
+        } else if (override.materialFinish === 'chrome') {
+          engine.applyMaterial(v2Id, { color: '#f8fafc', roughness: 0.05, metalness: 0.98 });
+        }
+
+        // 3. Cross-Car Swapped Donor Part Mesh Replacement
+        if (override.donorComponentId) {
+          const donorPart = CrossCarPartSwapper.getDonorPartById(override.donorComponentId);
+          if (donorPart) {
+            const scaleAdj: [number, number, number] = override.adapterScale || [1.0, 1.0, 1.0];
+            const offsetAdj: [number, number, number] = override.adapterOffset || [0, 0, 0];
+            const adaptedMesh = donorPart.generateMesh(scaleAdj, offsetAdj, override.materialRef, override.customColorHex);
+            engine.replaceComponent(v2Id, adaptedMesh);
+            engine.replaceComponent(id, adaptedMesh.clone());
+          }
+        }
+
+        // 4. Transform Adjustments: Position X/Y/Z, Rotation Pitch/Yaw/Roll, Scale
+        const targetObj = group.getObjectByName(v2Id) || group.getObjectByName(id);
+        if (targetObj) {
+          if (override.position) {
+            targetObj.position.x += override.position[0];
+            targetObj.position.y += override.position[1];
+            targetObj.position.z += override.position[2];
+          }
+          if (override.rotation) {
+            targetObj.rotation.x += override.rotation[0];
+            targetObj.rotation.y += override.rotation[1];
+            targetObj.rotation.z += override.rotation[2];
+          }
+          if (override.scale) {
+            targetObj.scale.x *= override.scale[0];
+            targetObj.scale.y *= override.scale[1];
+            targetObj.scale.z *= override.scale[2];
+          }
         }
       });
     }

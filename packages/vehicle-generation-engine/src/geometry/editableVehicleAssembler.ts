@@ -7,6 +7,7 @@ import {
   MaterialDef
 } from '@autoverse/shared-types';
 import { WheelGenerator } from './wheelGenerator';
+import { CrossCarPartSwapper } from './crossCarPartSwapper';
 
 export interface AssemblyOptions {
   componentOverrides?: Record<string, ComponentOverride>;
@@ -251,8 +252,19 @@ export class EditableVehicleAssembler {
 
     let obj: THREE.Object3D;
 
-    // Component Geometry Dispatch
-    switch (def.group) {
+    // 0. Check for Cross-Car Swapped Donor Part Mesh
+    if (override?.donorComponentId) {
+      const donorPart = CrossCarPartSwapper.getDonorPartById(override.donorComponentId);
+      if (donorPart) {
+        const scaleAdj: [number, number, number] = override.adapterScale || [1.0, 1.0, 1.0];
+        const offsetAdj: [number, number, number] = override.adapterOffset || [0, 0, 0];
+        obj = donorPart.generateMesh(scaleAdj, offsetAdj, override.materialRef, override.customColorHex);
+      } else {
+        obj = this.buildBoxMesh(width, height, length, mat);
+      }
+    } else {
+      // Component Geometry Dispatch
+      switch (def.group) {
       case 'wheels': {
         const wheelSpec = this.resolveWheelSpec(def.id, spec.wheels);
         obj = this.buildWheelComponent(wheelSpec, mat, override);
@@ -292,6 +304,7 @@ export class EditableVehicleAssembler {
         break;
       }
     }
+  }
 
     // Apply active transform
     obj.position.set(posX, posY, posZ);
@@ -700,9 +713,17 @@ export class EditableVehicleAssembler {
     override?: ComponentOverride
   ): THREE.Group {
     const isRight = wheelSpec.side === 'right';
-    const radius = wheelSpec.tire.calculated_radius_m || 0.35;
+    let radius = wheelSpec.tire.calculated_radius_m || 0.35;
     const width = wheelSpec.rim.width_m || 0.28;
-    const camber = override?.contextSettings?.camberDeg ?? wheelSpec.alignment.camberDeg;
+
+    // Apply custom diameter override if specified
+    if (override?.wheelDiameterInches) {
+      const rimRadiusM = (override.wheelDiameterInches * 0.0254) / 2;
+      const sidewallM = (wheelSpec.tire.nominal_section_width_mm * wheelSpec.tire.aspect_ratio * 0.01) / 1000;
+      radius = rimRadiusM + sidewallM;
+    }
+
+    const camber = override?.wheelCamberDeg ?? override?.contextSettings?.camberDeg ?? wheelSpec.alignment.camberDeg;
 
     const assembly = WheelGenerator.generateWheel({
       wheelRadius: radius,
@@ -712,6 +733,12 @@ export class EditableVehicleAssembler {
       isRightSide: isRight,
       rimColorHex: (material as any).color ? `#${(material as any).color.getHexString()}` : '#27272a'
     });
+
+    // Apply wheel spacer (offset poke)
+    if (override?.wheelSpacerMm) {
+      const spacerM = override.wheelSpacerMm / 1000;
+      assembly.group.position.x += spacerM * (isRight ? 1 : -1);
+    }
 
     return assembly.group;
   }

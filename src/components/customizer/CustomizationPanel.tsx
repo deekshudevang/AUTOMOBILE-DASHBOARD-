@@ -33,7 +33,9 @@ import {
   HelpCircle,
   Cpu,
   GitCompare,
-  RotateCw
+  RotateCw,
+  FolderOpen,
+  ArrowRight
 } from 'lucide-react';
 import { useVehicleStore } from '../../hooks/useVehicleStore';
 import { SceneCanvas } from '../3d/SceneCanvas';
@@ -41,7 +43,8 @@ import { CameraPreset, EnvironmentPreset } from '../../types/vehicle';
 import { VehicleComponentDef, MaterialFinishType, VehicleSchema2 } from '@autoverse/shared-types';
 import { EditableVehicleAssembler, WheelRuleValidator } from '@autoverse/vehicle-generation-engine';
 import { VehicleExporter } from '@autoverse/vehicle-exporter';
-import { ComponentGalleryModal } from '../gallery/ComponentGalleryModal';
+import { GlobalPartsLibraryModal } from '../gallery/GlobalPartsLibraryModal';
+import { SavedBuildsModal } from './SavedBuildsModal';
 import { EngineeringOverlay } from '../modes/EngineeringOverlay';
 import { ShowroomOverlay } from '../modes/ShowroomOverlay';
 import { ComparisonDiffPanel } from '../modes/ComparisonDiffPanel';
@@ -146,7 +149,8 @@ export const CustomizationPanel: React.FC = () => {
     overrideHistoryIndex,
     overrideHistory,
     presentationMode,
-    setPresentationMode
+    setPresentationMode,
+    savedBuilds
   } = useVehicleStore();
 
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -159,6 +163,8 @@ export const CustomizationPanel: React.FC = () => {
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [isResetConfirmOpen, setIsResetConfirmOpen] = useState(false);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  const [targetSlotForGallery, setTargetSlotForGallery] = useState<string | null>(null);
+  const [isBuildsModalOpen, setIsBuildsModalOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
 
@@ -505,13 +511,27 @@ export const CustomizationPanel: React.FC = () => {
             <span>{saveSuccess ? 'Saved' : 'Save'}</span>
           </button>
 
-          {/* Design System Gallery Modal */}
+          {/* Global Swappable Parts Library */}
           <button
-            onClick={() => setIsGalleryOpen(true)}
-            className="p-1.5 rounded bg-[#161C28] hover:bg-[#1E2533] text-slate-300 border border-[#1E2533] transition-colors"
-            title="Open Automotive Design System Gallery"
+            onClick={() => {
+              setTargetSlotForGallery(null);
+              setIsGalleryOpen(true);
+            }}
+            className="px-2.5 py-1.5 rounded bg-[#161C28] hover:bg-[#1E2533] hover:text-[#00F0FF] text-slate-200 border border-[#1E2533] flex items-center gap-1.5 font-medium transition-colors text-xs"
+            title="Open Global Swappable Parts Library"
           >
-            <Settings className="w-3.5 h-3.5" />
+            <Layers className="w-3.5 h-3.5 text-[#00F0FF]" />
+            <span className="hidden md:inline">Parts Library</span>
+          </button>
+
+          {/* Saved Builds Manager */}
+          <button
+            onClick={() => setIsBuildsModalOpen(true)}
+            className="px-2.5 py-1.5 rounded bg-[#161C28] hover:bg-[#1E2533] hover:text-amber-300 text-slate-200 border border-[#1E2533] flex items-center gap-1.5 font-medium transition-colors text-xs"
+            title="Manage Saved Custom Builds & Presets"
+          >
+            <FolderOpen className="w-3.5 h-3.5 text-amber-400" />
+            <span className="hidden md:inline">Builds ({savedBuilds.length})</span>
           </button>
 
           {/* Fullscreen Toggle */}
@@ -807,29 +827,94 @@ export const CustomizationPanel: React.FC = () => {
             ) : selectedComponent ? (
               /* Component Selected Inspector */
               <div className="space-y-4">
-                <div className="p-2.5 rounded bg-[#11141C] border border-[#1E2533] space-y-1">
+                <div className="p-3 rounded-lg bg-[#11141C] border border-[#1E2533] space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-slate-100">{selectedComponent.name}</span>
-                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#161C28] text-[#00F0FF] border border-[#1E2533]">
+                    <span className="font-bold text-slate-100 text-xs">{selectedComponent.name}</span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#161C28] text-[#00F0FF] border border-[#1E2533]">
                       {selectedComponent.group}
                     </span>
                   </div>
-                  <div className="text-[10px] font-mono text-slate-400 truncate">
-                    ID: {selectedComponent.id} · Type: {selectedComponent.geometryType}
+                  <div className="text-[10px] font-mono text-slate-400 truncate flex items-center justify-between">
+                    <span>ID: {selectedComponent.id}</span>
+                    <span>Type: {selectedComponent.geometryType}</span>
+                  </div>
+
+                  {/* Active Donor Swapped Banner if applicable */}
+                  {activeOverride?.donorComponentId && (
+                    <div className="mt-2 p-2.5 rounded-lg bg-cyan-950/40 border border-cyan-800/60 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-mono font-bold text-[#00F0FF] flex items-center gap-1">
+                          <Sparkles className="w-3 h-3 text-[#00F0FF]" />
+                          SWAPPED DONOR PART
+                        </span>
+                        <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">
+                          {activeOverride.fitmentType || 'DIRECT FIT'}
+                        </span>
+                      </div>
+                      <div className="text-xs font-semibold text-slate-200">
+                        {activeOverride.donorComponentName}
+                      </div>
+                      <div className="text-[10px] text-slate-400">
+                        Donor: {activeOverride.donorVehicleName}
+                      </div>
+                      <button
+                        onClick={() => resetComponentOverride(selectedComponent.id)}
+                        className="w-full mt-1 py-1 rounded bg-[#161C28] hover:bg-rose-950/60 text-rose-300 border border-[#1E2533] hover:border-rose-900 text-[10px] font-medium flex items-center justify-center gap-1 transition-colors"
+                      >
+                        <RotateCcw className="w-3 h-3" />
+                        <span>Restore Factory OEM Part</span>
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Quick Action Buttons */}
+                  <div className="grid grid-cols-2 gap-2 pt-1">
+                    <button
+                      onClick={() => {
+                        setTargetSlotForGallery(selectedComponent.id);
+                        setIsGalleryOpen(true);
+                      }}
+                      className="px-2.5 py-1.5 rounded-lg bg-[#00F0FF]/15 hover:bg-[#00F0FF]/25 border border-[#00F0FF]/40 text-[#00F0FF] text-[11px] font-semibold flex items-center justify-center gap-1.5 transition-colors"
+                      title="Install a part from another car onto this slot"
+                    >
+                      <Layers className="w-3.5 h-3.5" />
+                      <span>Swap from Car...</span>
+                    </button>
+                    <button
+                      onClick={() => toggleComponentVisibility(selectedComponent.id)}
+                      className={`px-2.5 py-1.5 rounded-lg border text-[11px] font-medium flex items-center justify-center gap-1.5 transition-colors ${
+                        activeOverride?.visible === false
+                          ? 'bg-amber-950/40 border-amber-800/80 text-amber-300'
+                          : 'bg-[#161C28] hover:bg-[#1E2533] border-[#1E2533] text-slate-300'
+                      }`}
+                      title={activeOverride?.visible === false ? 'Restore part visibility' : 'Hide / strip part from car'}
+                    >
+                      {activeOverride?.visible === false ? (
+                        <>
+                          <Eye className="w-3.5 h-3.5" />
+                          <span>Part Hidden</span>
+                        </>
+                      ) : (
+                        <>
+                          <EyeOff className="w-3.5 h-3.5" />
+                          <span>Strip Part</span>
+                        </>
+                      )}
+                    </button>
                   </div>
                 </div>
 
                 {/* Transforms */}
-                <div className="space-y-2 p-3 rounded bg-[#11141C]/60 border border-[#1E2533]">
+                <div className="space-y-2 p-3 rounded-lg bg-[#11141C]/60 border border-[#1E2533]">
                   <div className="text-[11px] font-bold text-slate-200 uppercase tracking-wider flex items-center justify-between">
-                    <span>Position (meters)</span>
+                    <span>Position Offset (meters)</span>
                     <span className="text-[10px] font-mono text-slate-400">X / Y / Z</span>
                   </div>
 
                   {/* X Translation */}
                   <div className="space-y-1">
                     <div className="flex justify-between text-[11px]">
-                      <span className="text-slate-400">X (Lateral):</span>
+                      <span className="text-slate-400">X (Lateral Offset):</span>
                       <span className="font-mono text-slate-200">
                         {((activeOverride?.position?.[0] ?? selectedComponent.transform.position[0])).toFixed(3)}m
                       </span>
@@ -845,14 +930,14 @@ export const CustomizationPanel: React.FC = () => {
                         const cur = activeOverride?.position ?? selectedComponent.transform.position;
                         updateComponentOverride(selectedComponent.id, {
                           position: [val, cur[1], cur[2]]
-                        }, false); // Coalesced live drag
+                        }, false);
                       }}
                       onMouseUp={e => {
                         const val = parseFloat((e.target as HTMLInputElement).value);
                         const cur = activeOverride?.position ?? selectedComponent.transform.position;
                         updateComponentOverride(selectedComponent.id, {
                           position: [val, cur[1], cur[2]]
-                        }, true); // Commit history on release
+                        }, true);
                       }}
                       className="w-full accent-[#00F0FF] cursor-pointer"
                     />
@@ -861,7 +946,7 @@ export const CustomizationPanel: React.FC = () => {
                   {/* Y Translation */}
                   <div className="space-y-1">
                     <div className="flex justify-between text-[11px]">
-                      <span className="text-slate-400">Y (Height):</span>
+                      <span className="text-slate-400">Y (Height Offset):</span>
                       <span className="font-mono text-slate-200">
                         {((activeOverride?.position?.[1] ?? selectedComponent.transform.position[1])).toFixed(3)}m
                       </span>
@@ -889,6 +974,172 @@ export const CustomizationPanel: React.FC = () => {
                       className="w-full accent-[#00F0FF] cursor-pointer"
                     />
                   </div>
+
+                  {/* Z Translation */}
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[11px]">
+                      <span className="text-slate-400">Z (Longitudinal Offset):</span>
+                      <span className="font-mono text-slate-200">
+                        {((activeOverride?.position?.[2] ?? selectedComponent.transform.position[2])).toFixed(3)}m
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min={-2.5}
+                      max={2.5}
+                      step={0.01}
+                      value={activeOverride?.position?.[2] ?? selectedComponent.transform.position[2]}
+                      onChange={e => {
+                        const val = parseFloat(e.target.value);
+                        const cur = activeOverride?.position ?? selectedComponent.transform.position;
+                        updateComponentOverride(selectedComponent.id, {
+                          position: [cur[0], cur[1], val]
+                        }, false);
+                      }}
+                      onMouseUp={e => {
+                        const val = parseFloat((e.target as HTMLInputElement).value);
+                        const cur = activeOverride?.position ?? selectedComponent.transform.position;
+                        updateComponentOverride(selectedComponent.id, {
+                          position: [cur[0], cur[1], val]
+                        }, true);
+                      }}
+                      className="w-full accent-[#00F0FF] cursor-pointer"
+                    />
+                  </div>
+                </div>
+
+                {/* 3-Axis Rotation (Pitch, Yaw, Roll) */}
+                <div className="space-y-2 p-3 rounded-lg bg-[#11141C]/60 border border-[#1E2533]">
+                  <div className="text-[11px] font-bold text-slate-200 uppercase tracking-wider flex items-center justify-between">
+                    <span>Rotation Angles</span>
+                    <span className="text-[10px] font-mono text-slate-400">Pitch / Yaw / Roll</span>
+                  </div>
+
+                  {/* Pitch */}
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[11px]">
+                      <span className="text-slate-400">Pitch (Angle of Attack):</span>
+                      <span className="font-mono text-slate-200">
+                        {(((activeOverride?.rotation?.[0] ?? selectedComponent.transform.rotation[0]) * 180) / Math.PI).toFixed(1)}°
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min={-45}
+                      max={45}
+                      step={1}
+                      value={((activeOverride?.rotation?.[0] ?? selectedComponent.transform.rotation[0]) * 180) / Math.PI}
+                      onChange={e => {
+                        const rad = (parseFloat(e.target.value) * Math.PI) / 180;
+                        const cur = activeOverride?.rotation ?? selectedComponent.transform.rotation;
+                        updateComponentOverride(selectedComponent.id, {
+                          rotation: [rad, cur[1], cur[2]]
+                        }, false);
+                      }}
+                      onMouseUp={e => {
+                        const rad = (parseFloat((e.target as HTMLInputElement).value) * Math.PI) / 180;
+                        const cur = activeOverride?.rotation ?? selectedComponent.transform.rotation;
+                        updateComponentOverride(selectedComponent.id, {
+                          rotation: [rad, cur[1], cur[2]]
+                        }, true);
+                      }}
+                      className="w-full accent-[#00F0FF] cursor-pointer"
+                    />
+                  </div>
+
+                  {/* Yaw */}
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[11px]">
+                      <span className="text-slate-400">Yaw:</span>
+                      <span className="font-mono text-slate-200">
+                        {(((activeOverride?.rotation?.[1] ?? selectedComponent.transform.rotation[1]) * 180) / Math.PI).toFixed(1)}°
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min={-45}
+                      max={45}
+                      step={1}
+                      value={((activeOverride?.rotation?.[1] ?? selectedComponent.transform.rotation[1]) * 180) / Math.PI}
+                      onChange={e => {
+                        const rad = (parseFloat(e.target.value) * Math.PI) / 180;
+                        const cur = activeOverride?.rotation ?? selectedComponent.transform.rotation;
+                        updateComponentOverride(selectedComponent.id, {
+                          rotation: [cur[0], rad, cur[2]]
+                        }, false);
+                      }}
+                      onMouseUp={e => {
+                        const rad = (parseFloat((e.target as HTMLInputElement).value) * Math.PI) / 180;
+                        const cur = activeOverride?.rotation ?? selectedComponent.transform.rotation;
+                        updateComponentOverride(selectedComponent.id, {
+                          rotation: [cur[0], rad, cur[2]]
+                        }, true);
+                      }}
+                      className="w-full accent-[#00F0FF] cursor-pointer"
+                    />
+                  </div>
+
+                  {/* Roll */}
+                  <div className="space-y-1">
+                    <div className="flex justify-between text-[11px]">
+                      <span className="text-slate-400">Roll:</span>
+                      <span className="font-mono text-slate-200">
+                        {(((activeOverride?.rotation?.[2] ?? selectedComponent.transform.rotation[2]) * 180) / Math.PI).toFixed(1)}°
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min={-45}
+                      max={45}
+                      step={1}
+                      value={((activeOverride?.rotation?.[2] ?? selectedComponent.transform.rotation[2]) * 180) / Math.PI}
+                      onChange={e => {
+                        const rad = (parseFloat(e.target.value) * Math.PI) / 180;
+                        const cur = activeOverride?.rotation ?? selectedComponent.transform.rotation;
+                        updateComponentOverride(selectedComponent.id, {
+                          rotation: [cur[0], cur[1], rad]
+                        }, false);
+                      }}
+                      onMouseUp={e => {
+                        const rad = (parseFloat((e.target as HTMLInputElement).value) * Math.PI) / 180;
+                        const cur = activeOverride?.rotation ?? selectedComponent.transform.rotation;
+                        updateComponentOverride(selectedComponent.id, {
+                          rotation: [cur[0], cur[1], rad]
+                        }, true);
+                      }}
+                      className="w-full accent-[#00F0FF] cursor-pointer"
+                    />
+                  </div>
+                </div>
+
+                {/* Component Scale Factor */}
+                <div className="space-y-2 p-3 rounded-lg bg-[#11141C]/60 border border-[#1E2533]">
+                  <div className="text-[11px] font-bold text-slate-200 uppercase tracking-wider flex items-center justify-between">
+                    <span>Component Scale</span>
+                    <span className="font-mono text-[#00F0FF]">
+                      {(activeOverride?.scale?.[0] ?? selectedComponent.transform.scale[0]).toFixed(2)}x
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={0.5}
+                    max={2.0}
+                    step={0.05}
+                    value={activeOverride?.scale?.[0] ?? selectedComponent.transform.scale[0]}
+                    onChange={e => {
+                      const val = parseFloat(e.target.value);
+                      updateComponentOverride(selectedComponent.id, {
+                        scale: [val, val, val]
+                      }, false);
+                    }}
+                    onMouseUp={e => {
+                      const val = parseFloat((e.target as HTMLInputElement).value);
+                      updateComponentOverride(selectedComponent.id, {
+                        scale: [val, val, val]
+                      }, true);
+                    }}
+                    className="w-full accent-[#00F0FF] cursor-pointer"
+                  />
                 </div>
 
                 {/* Materials & Finishes */}
@@ -1040,16 +1291,113 @@ export const CustomizationPanel: React.FC = () => {
                       </div>
                     )}
 
-                    {/* Wheel Stance Sliders */}
-                    <div className="p-3 rounded bg-[#11141C]/60 border border-[#1E2533] space-y-3">
-                      <div className="text-[11px] font-bold text-slate-200 uppercase tracking-wider">
-                        Wheel Stance & Camber
+                    {/* Wheel Rim Model Switcher */}
+                    <div className="p-3 rounded-lg bg-[#11141C]/60 border border-[#1E2533] space-y-2">
+                      <div className="text-[11px] font-bold text-slate-200 uppercase tracking-wider flex items-center justify-between">
+                        <span>Wheel Rim Model</span>
+                        <button
+                          onClick={() => {
+                            setTargetSlotForGallery('wheel_front_left');
+                            setIsGalleryOpen(true);
+                          }}
+                          className="text-[10px] text-[#00F0FF] hover:underline flex items-center gap-1"
+                        >
+                          <span>Browse Catalog</span>
+                          <ArrowRight className="w-3 h-3" />
+                        </button>
                       </div>
+                      <div className="grid grid-cols-2 gap-1.5">
+                        {[
+                          { id: 'donor_svj_leirion_wheels', name: 'SVJ Leirion Y-Spoke' },
+                          { id: 'donor_gt3rs_centerlock_wheels', name: 'GT3 RS Center-Lock' },
+                          { id: 'donor_pista_carbon_wheels', name: '488 Pista Carbon' },
+                          { id: 'donor_bbs_fi_r_wheels', name: 'BBS FI-R Ultralight' }
+                        ].map(style => (
+                          <button
+                            key={style.id}
+                            onClick={() => {
+                              const corners = ['wheel_front_left', 'wheel_front_right', 'wheel_rear_left', 'wheel_rear_right', 'wheel_fl', 'wheel_fr', 'wheel_rl', 'wheel_rr'];
+                              corners.forEach(c => {
+                                updateComponentOverride(c, { donorComponentId: style.id, visible: true }, false);
+                              });
+                              updateComponentOverride('wheel_fl', { donorComponentId: style.id, visible: true }, true);
+                            }}
+                            className="px-2 py-1.5 rounded text-[10px] font-medium bg-[#161C28] hover:bg-[#1E2533] hover:text-[#00F0FF] text-slate-300 border border-[#1E2533] text-left truncate transition-colors"
+                          >
+                            {style.name}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Wheel Stance, Spacers & Alignment */}
+                    <div className="p-3 rounded-lg bg-[#11141C]/60 border border-[#1E2533] space-y-3">
+                      <div className="text-[11px] font-bold text-slate-200 uppercase tracking-wider">
+                        Wheel Stance & Alignment
+                      </div>
+
+                      {/* Rim Diameter */}
+                      <div className="flex items-center justify-between text-[11px]">
+                        <span className="text-slate-400">Rim Diameter:</span>
+                        <select
+                          value={componentOverrides['wheel_fl']?.wheelDiameterInches ?? 20}
+                          onChange={e => {
+                            const val = parseInt(e.target.value, 10);
+                            const corners = ['wheel_front_left', 'wheel_front_right', 'wheel_rear_left', 'wheel_rear_right', 'wheel_fl', 'wheel_fr', 'wheel_rl', 'wheel_rr'];
+                            corners.forEach(c => {
+                              updateComponentOverride(c, { wheelDiameterInches: val }, false);
+                            });
+                            updateComponentOverride('wheel_fl', { wheelDiameterInches: val }, true);
+                          }}
+                          className="bg-[#161C28] border border-[#1E2533] text-slate-200 text-xs rounded px-2.5 py-1 focus:outline-none focus:border-[#00F0FF]"
+                        >
+                          <option value={18}>18 Inches</option>
+                          <option value={19}>19 Inches</option>
+                          <option value={20}>20 Inches</option>
+                          <option value={21}>21 Inches</option>
+                          <option value={22}>22 Inches</option>
+                        </select>
+                      </div>
+
+                      {/* Wheel Spacers / Poke */}
+                      <div className="space-y-1">
+                        <div className="flex justify-between text-[11px]">
+                          <span className="text-slate-400">Wheel Spacers (Track Poke):</span>
+                          <span className="font-mono text-[#00F0FF]">
+                            +{componentOverrides['wheel_fl']?.wheelSpacerMm ?? 0}mm
+                          </span>
+                        </div>
+                        <input
+                          type="range"
+                          min={0}
+                          max={50}
+                          step={2}
+                          value={componentOverrides['wheel_fl']?.wheelSpacerMm ?? 0}
+                          onChange={e => {
+                            const val = parseInt(e.target.value, 10);
+                            const corners = ['wheel_front_left', 'wheel_front_right', 'wheel_rear_left', 'wheel_rear_right', 'wheel_fl', 'wheel_fr', 'wheel_rl', 'wheel_rr'];
+                            corners.forEach(c => {
+                              updateComponentOverride(c, { wheelSpacerMm: val }, false);
+                            });
+                          }}
+                          onMouseUp={e => {
+                            const val = parseInt((e.target as HTMLInputElement).value, 10);
+                            const corners = ['wheel_front_left', 'wheel_front_right', 'wheel_rear_left', 'wheel_rear_right', 'wheel_fl', 'wheel_fr', 'wheel_rl', 'wheel_rr'];
+                            corners.forEach(c => {
+                              updateComponentOverride(c, { wheelSpacerMm: val }, false);
+                            });
+                            updateComponentOverride('wheel_fl', { wheelSpacerMm: val }, true);
+                          }}
+                          className="w-full accent-[#00F0FF] cursor-pointer"
+                        />
+                      </div>
+
+                      {/* Front Camber */}
                       <div className="space-y-1">
                         <div className="flex justify-between text-[11px]">
                           <span className="text-slate-400">Front Camber Angle:</span>
                           <span className="font-mono text-[#00F0FF]">
-                            {componentOverrides['wheel_fl']?.contextSettings?.camberDeg ?? -3.5}°
+                            {componentOverrides['wheel_fl']?.wheelCamberDeg ?? componentOverrides['wheel_fl']?.contextSettings?.camberDeg ?? -3.5}°
                           </span>
                         </div>
                         <input
@@ -1057,16 +1405,44 @@ export const CustomizationPanel: React.FC = () => {
                           min={-7.0}
                           max={1.0}
                           step={0.1}
-                          value={componentOverrides['wheel_fl']?.contextSettings?.camberDeg ?? -3.5}
+                          value={componentOverrides['wheel_fl']?.wheelCamberDeg ?? componentOverrides['wheel_fl']?.contextSettings?.camberDeg ?? -3.5}
                           onChange={e => {
                             const val = parseFloat(e.target.value);
-                            updateComponentOverride('wheel_fl', { contextSettings: { camberDeg: val } }, false);
-                            updateComponentOverride('wheel_fr', { contextSettings: { camberDeg: val } }, false);
+                            updateComponentOverride('wheel_fl', { wheelCamberDeg: val }, false);
+                            updateComponentOverride('wheel_fr', { wheelCamberDeg: val }, false);
                           }}
                           onMouseUp={e => {
                             const val = parseFloat((e.target as HTMLInputElement).value);
-                            updateComponentOverride('wheel_fl', { contextSettings: { camberDeg: val } }, true);
-                            updateComponentOverride('wheel_fr', { contextSettings: { camberDeg: val } }, true);
+                            updateComponentOverride('wheel_fl', { wheelCamberDeg: val }, false);
+                            updateComponentOverride('wheel_fr', { wheelCamberDeg: val }, true);
+                          }}
+                          className="w-full accent-[#00F0FF] cursor-pointer"
+                        />
+                      </div>
+
+                      {/* Rear Camber */}
+                      <div className="space-y-1">
+                        <div className="flex justify-between text-[11px]">
+                          <span className="text-slate-400">Rear Camber Angle:</span>
+                          <span className="font-mono text-[#00F0FF]">
+                            {componentOverrides['wheel_rl']?.wheelCamberDeg ?? -2.5}°
+                          </span>
+                        </div>
+                        <input
+                          type="range"
+                          min={-7.0}
+                          max={1.0}
+                          step={0.1}
+                          value={componentOverrides['wheel_rl']?.wheelCamberDeg ?? -2.5}
+                          onChange={e => {
+                            const val = parseFloat(e.target.value);
+                            updateComponentOverride('wheel_rl', { wheelCamberDeg: val }, false);
+                            updateComponentOverride('wheel_rr', { wheelCamberDeg: val }, false);
+                          }}
+                          onMouseUp={e => {
+                            const val = parseFloat((e.target as HTMLInputElement).value);
+                            updateComponentOverride('wheel_rl', { wheelCamberDeg: val }, false);
+                            updateComponentOverride('wheel_rr', { wheelCamberDeg: val }, true);
                           }}
                           className="w-full accent-[#00F0FF] cursor-pointer"
                         />
@@ -1252,10 +1628,20 @@ export const CustomizationPanel: React.FC = () => {
         </div>
       )}
 
-      {/* Component Gallery Modal */}
-      <ComponentGalleryModal
+      {/* Global Swappable Parts Library Modal */}
+      <GlobalPartsLibraryModal
         isOpen={isGalleryOpen}
-        onClose={() => setIsGalleryOpen(false)}
+        onClose={() => {
+          setIsGalleryOpen(false);
+          setTargetSlotForGallery(null);
+        }}
+        targetSlotId={targetSlotForGallery}
+      />
+
+      {/* Saved Custom Builds Manager Modal */}
+      <SavedBuildsModal
+        isOpen={isBuildsModalOpen}
+        onClose={() => setIsBuildsModalOpen(false)}
       />
     </div>
   );
