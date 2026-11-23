@@ -25,6 +25,7 @@ import { useVehicleStore } from '../../hooks/useVehicleStore';
 import { ProjectManager, VehicleProject } from '../../projects/projectManager';
 import { toHex32 } from '../../utils/joaat';
 import { resolveVehicleColor } from '../../utils/colorUtils';
+import { VehicleSelectionModal } from '../gallery/VehicleSelectionModal';
 
 export const DashboardView: React.FC = () => {
   const {
@@ -40,6 +41,7 @@ export const DashboardView: React.FC = () => {
   } = useVehicleStore();
 
   const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'legacy-import'>('overview');
+  const [isVehicleModalOpen, setIsVehicleModalOpen] = useState(false);
 
   // Real store metrics
   const totalVehiclesCount = allFiles.length;
@@ -122,6 +124,14 @@ export const DashboardView: React.FC = () => {
         {/* Primary Command Actions */}
         <div className="flex items-center gap-2.5">
           <button
+            onClick={() => setIsVehicleModalOpen(true)}
+            className="px-3.5 py-2 rounded bg-autoverse-surface hover:bg-autoverse-elevated border border-autoverse-border text-xs font-medium text-slate-200 transition-colors flex items-center gap-2"
+            title="Browse all 50 Schema 2.0 Vehicle Fleet Models"
+          >
+            <Car className="w-3.5 h-3.5 text-autoverse-cyan" />
+            <span>Select Vehicle</span>
+          </button>
+          <button
             onClick={() => setActiveView('projects')}
             className="px-3.5 py-2 rounded bg-autoverse-surface hover:bg-autoverse-elevated border border-autoverse-border text-xs font-medium text-slate-200 transition-colors flex items-center gap-2"
           >
@@ -168,7 +178,14 @@ export const DashboardView: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 font-mono text-xs">
+          <div className="flex items-center gap-3 font-mono text-xs">
+            <button
+              onClick={() => setIsVehicleModalOpen(true)}
+              className="px-2.5 py-1 rounded bg-[#161C28] hover:bg-[#1E2533] border border-[#232936] hover:border-cyan-500 text-cyan-300 text-[11px] font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+            >
+              <Car className="w-3.5 h-3.5 text-[#00F0FF]" />
+              <span>Change Vehicle</span>
+            </button>
             <span className="text-slate-400">Assembly Status:</span>
             <span className="px-2 py-0.5 rounded bg-emerald-950/60 border border-emerald-800 text-emerald-300 font-semibold flex items-center gap-1">
               <ShieldCheck className="w-3.5 h-3.5" />
@@ -512,6 +529,12 @@ export const DashboardView: React.FC = () => {
           })}
         </div>
       </div>
+
+      {/* 50 Vehicle Fleet Selection Modal */}
+      <VehicleSelectionModal
+        isOpen={isVehicleModalOpen}
+        onClose={() => setIsVehicleModalOpen(false)}
+      />
     </div>
   );
 };

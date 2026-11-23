@@ -714,8 +714,10 @@ export const useVehicleStore = create<VehicleStoreState>((set, get) => ({
       // In Node.js / testing environments, read directly from public/vehicles/ on disk
       if (!loadedConfig && typeof window === 'undefined') {
         try {
-          const fs = await import('fs');
-          const path = await import('path');
+          const fsMod = 'fs';
+          const pathMod = 'path';
+          const fs = await import(/* @vite-ignore */ fsMod);
+          const path = await import(/* @vite-ignore */ pathMod);
           const localPath = path.resolve(process.cwd(), 'public', 'vehicles', fileInfo.fileName);
           if (fs.existsSync(localPath)) {
             const raw = JSON.parse(fs.readFileSync(localPath, 'utf-8'));
