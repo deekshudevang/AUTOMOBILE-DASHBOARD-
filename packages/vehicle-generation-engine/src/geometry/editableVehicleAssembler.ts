@@ -8,11 +8,20 @@ import {
 } from '@autoverse/shared-types';
 import { WheelGenerator } from './wheelGenerator';
 import { CrossCarPartSwapper } from './crossCarPartSwapper';
+import { VehicleInteriorGenerator } from './vehicleInteriorGenerator';
+import { VehicleEngineBayGenerator } from './vehicleEngineBayGenerator';
+import {
+  VehicleOpeningController,
+  VehicleOpeningConfig,
+  VehicleOpeningState,
+  DEFAULT_OPENING_STATE
+} from './vehicleOpeningController';
 
 export interface AssemblyOptions {
   componentOverrides?: Record<string, ComponentOverride>;
   selectedComponentId?: string | null;
   wireframe?: boolean;
+  openingState?: VehicleOpeningState;
   onComponentClick?: (componentId: string) => void;
 }
 
@@ -50,7 +59,46 @@ export class EditableVehicleAssembler {
       root.add(bodyShellMesh);
     }
 
-    // 3. Build Discrete Components
+    // 3. Resolve Kinematic Opening Configuration & Hinge Pivot Groups
+    const openingConfig = VehicleOpeningController.resolveOpeningConfig(spec);
+
+    const hingePivotFL = new THREE.Group();
+    hingePivotFL.name = 'hinge_pivot_door_front_l';
+    hingePivotFL.position.set(...openingConfig.doorHingeOffsetFrontM);
+
+    const hingePivotFR = new THREE.Group();
+    hingePivotFR.name = 'hinge_pivot_door_front_r';
+    hingePivotFR.position.set(
+      -openingConfig.doorHingeOffsetFrontM[0],
+      openingConfig.doorHingeOffsetFrontM[1],
+      openingConfig.doorHingeOffsetFrontM[2]
+    );
+
+    const hingePivotRL = new THREE.Group();
+    hingePivotRL.name = 'hinge_pivot_door_rear_l';
+    if (openingConfig.doorHingeOffsetRearM) {
+      hingePivotRL.position.set(...openingConfig.doorHingeOffsetRearM);
+    }
+
+    const hingePivotRR = new THREE.Group();
+    hingePivotRR.name = 'hinge_pivot_door_rear_r';
+    if (openingConfig.doorHingeOffsetRearM) {
+      hingePivotRR.position.set(
+        -openingConfig.doorHingeOffsetRearM[0],
+        openingConfig.doorHingeOffsetRearM[1],
+        openingConfig.doorHingeOffsetRearM[2]
+      );
+    }
+
+    const hingePivotHood = new THREE.Group();
+    hingePivotHood.name = 'hinge_pivot_hood';
+    hingePivotHood.position.set(...openingConfig.hoodHingeOffsetM);
+
+    const hingePivotBoot = new THREE.Group();
+    hingePivotBoot.name = 'hinge_pivot_boot';
+    hingePivotBoot.position.set(...openingConfig.bootHingeOffsetM);
+
+    // 4. Build Discrete Components
     for (const compDef of spec.components) {
       const override = overrides[compDef.id];
 
@@ -68,9 +116,83 @@ export class EditableVehicleAssembler {
       );
 
       if (compMesh) {
-        root.add(compMesh);
+        // Mount movable aperture components inside their kinematic hinge groups
+        if (compDef.id === 'front_left_door' || compDef.id.includes('door_front_l')) {
+          compMesh.position.sub(hingePivotFL.position);
+          hingePivotFL.add(compMesh);
+        } else if (compDef.id === 'front_right_door' || compDef.id.includes('door_front_r')) {
+          compMesh.position.sub(hingePivotFR.position);
+          hingePivotFR.add(compMesh);
+        } else if (compDef.id === 'rear_left_door' || compDef.id.includes('door_rear_l')) {
+          compMesh.position.sub(hingePivotRL.position);
+          hingePivotRL.add(compMesh);
+        } else if (compDef.id === 'rear_right_door' || compDef.id.includes('door_rear_r')) {
+          compMesh.position.sub(hingePivotRR.position);
+          hingePivotRR.add(compMesh);
+        } else if (compDef.id === 'hood' || compDef.id.includes('bonnet')) {
+          compMesh.position.sub(hingePivotHood.position);
+          hingePivotHood.add(compMesh);
+        } else if (compDef.id === 'boot' || compDef.id === 'trunk' || compDef.id.includes('clamshell_rear')) {
+          compMesh.position.sub(hingePivotBoot.position);
+          hingePivotBoot.add(compMesh);
+        } else {
+          root.add(compMesh);
+        }
       }
     }
+
+    // Add Hinge Pivot Groups to Root Assembly
+    root.add(hingePivotFL);
+    root.add(hingePivotFR);
+    if (openingConfig.doorCount === 4) {
+      root.add(hingePivotRL);
+      root.add(hingePivotRR);
+    }
+    root.add(hingePivotHood);
+    root.add(hingePivotBoot);
+
+    // 5. Build Authentic Vehicle-Specific Powertrain & Engine Bay
+    const engineBay = VehicleEngineBayGenerator.generateEngineBay(spec);
+    engineBay.name = 'component_engine_bay';
+    root.add(engineBay);
+
+    // 6. Build Structural Cockpit Tub & Center Console (if not already in spec.components)
+    const hasInteriorTub = spec.components.some(c => c.id === 'interior_floor_tub');
+    if (!hasInteriorTub) {
+      const W = spec.dimensions?.width ? spec.dimensions.width * 0.74 : 1.48;
+      const L = spec.dimensions?.length ? spec.dimensions.length * 0.36 : 1.65;
+      const language = VehicleInteriorGenerator.resolveDesignLanguage({
+        vehicleId: spec.vehicle.id,
+        manufacturer: spec.vehicle.manufacturer,
+        model: spec.vehicle.model
+      });
+      const darkCharcoal = new THREE.MeshStandardMaterial({ color: 0x18181b, roughness: 0.7, metalness: 0.1 });
+      const carbonMat = new THREE.MeshStandardMaterial({ color: 0x111113, roughness: 0.35, metalness: 0.4 });
+      const aluminumMat = new THREE.MeshStandardMaterial({ color: 0xd4d4d8, metalness: 0.85, roughness: 0.2 });
+      const alcantara = new THREE.MeshStandardMaterial({ color: 0x27272a, roughness: 0.95, metalness: 0.05 });
+
+      const tubGroup = new THREE.Group();
+      tubGroup.name = 'component_interior_cabin';
+
+      const floor = new THREE.Mesh(new THREE.BoxGeometry(W * 0.96, 0.04, L), darkCharcoal);
+      floor.position.set(0, -0.05, 0.05);
+      floor.name = 'interior_floor_tub';
+      tubGroup.add(floor);
+
+      const pedals = VehicleInteriorGenerator.buildPedals(aluminumMat, false);
+      pedals.position.set(-W * 0.24, -0.02, 0.68);
+      tubGroup.add(pedals);
+
+      const console = VehicleInteriorGenerator.buildCenterConsole(language, W, L, carbonMat, aluminumMat, alcantara);
+      console.position.set(0, 0.08, 0.08);
+      tubGroup.add(console);
+
+      root.add(tubGroup);
+    }
+
+    // 7. Apply Kinematic Opening States
+    const activeOpeningState = options?.openingState || DEFAULT_OPENING_STATE;
+    VehicleOpeningController.applyOpenings(root, openingConfig, activeOpeningState);
 
     // 4. Attach Metadata
     root.userData = {
@@ -295,7 +417,7 @@ export class EditableVehicleAssembler {
         break;
       }
       case 'interior': {
-        obj = this.buildInteriorComponent(def.id, width, height, length, mat);
+        obj = this.buildInteriorComponent(def.id, width, height, length, mat, spec);
         break;
       }
       default: {
@@ -770,8 +892,49 @@ export class EditableVehicleAssembler {
     width: number,
     height: number,
     length: number,
-    material: THREE.Material
+    material: THREE.Material,
+    spec?: VehicleSchema2
   ): THREE.Object3D {
+    if (spec) {
+      const language = VehicleInteriorGenerator.resolveDesignLanguage({
+        vehicleId: spec.vehicle.id,
+        manufacturer: spec.vehicle.manufacturer,
+        model: spec.vehicle.model
+      });
+      const W = spec.dimensions?.width ? spec.dimensions.width * 0.74 : 1.48;
+      const H = spec.dimensions?.height ? spec.dimensions.height * 0.68 : 0.85;
+      const L = spec.dimensions?.length ? spec.dimensions.length * 0.36 : 1.65;
+
+      if (id.includes('steering_wheel')) {
+        const alcantara = new THREE.MeshStandardMaterial({ color: 0x27272a, roughness: 0.95, metalness: 0.05 });
+        const carbon = new THREE.MeshStandardMaterial({ color: 0x111113, roughness: 0.35, metalness: 0.4 });
+        const alu = new THREE.MeshStandardMaterial({ color: 0xd4d4d8, metalness: 0.85, roughness: 0.2 });
+        const wheel = VehicleInteriorGenerator.buildSteeringWheel(language, W, alcantara, carbon, alu);
+        wheel.name = id;
+        return wheel;
+      }
+
+      if (id.includes('seats')) {
+        const isFourDoor = spec.vehicle.id.includes('evo') || spec.vehicle.id.includes('wrx');
+        const carbon = new THREE.MeshStandardMaterial({ color: 0x111113, roughness: 0.35, metalness: 0.4 });
+        const alcantara = new THREE.MeshStandardMaterial({ color: 0x27272a, roughness: 0.95, metalness: 0.05 });
+        const seats = VehicleInteriorGenerator.buildSeats(language, W, L, material, carbon, alcantara, isFourDoor);
+        seats.name = id;
+        return seats;
+      }
+
+      if (id.includes('dashboard') || id.includes('dash')) {
+        const darkCharcoal = new THREE.MeshStandardMaterial({ color: 0x18181b, roughness: 0.7, metalness: 0.1 });
+        const carbon = new THREE.MeshStandardMaterial({ color: 0x111113, roughness: 0.35, metalness: 0.4 });
+        const alu = new THREE.MeshStandardMaterial({ color: 0xd4d4d8, metalness: 0.85, roughness: 0.2 });
+        const screenMat = new THREE.MeshStandardMaterial({ color: 0x09090b, roughness: 0.1, metalness: 0.8, emissive: new THREE.Color(0x0e7490), emissiveIntensity: 0.4 });
+        const gaugeGlass = new THREE.MeshPhysicalMaterial({ color: 0xffffff, transparent: true, opacity: 0.6, roughness: 0.05, metalness: 0.1 });
+        const dash = VehicleInteriorGenerator.buildDashboard(language, W, H, darkCharcoal, carbon, alu, screenMat, gaugeGlass);
+        dash.name = id;
+        return dash;
+      }
+    }
+
     if (id.includes('steering_wheel')) {
       const torusGeo = new THREE.TorusGeometry(width * 0.45, 0.022, 12, 24);
       torusGeo.computeVertexNormals();
@@ -881,6 +1044,18 @@ export class EditableVehicleAssembler {
     if (componentId.includes('front_right')) return wheels.frontRight;
     if (componentId.includes('rear_left')) return wheels.rearLeft;
     return wheels.rearRight;
+  }
+
+  /**
+   * Applies kinematic opening positions to an already-built vehicle scene graph in real-time
+   */
+  public static applyOpenings(
+    root: THREE.Group,
+    spec: VehicleSchema2,
+    state: VehicleOpeningState
+  ): void {
+    const config = VehicleOpeningController.resolveOpeningConfig(spec);
+    VehicleOpeningController.applyOpenings(root, config, state);
   }
 
   /**

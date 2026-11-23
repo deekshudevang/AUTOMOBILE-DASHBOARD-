@@ -129,7 +129,22 @@ export interface VehicleDatabase {
   files: VehicleFileSummary[];
 }
 
-export type CameraPreset = 'front' | 'rear' | 'left' | 'right' | 'top' | 'isometric' | 'interior' | 'wheel' | 'wing';
+export type CameraPreset =
+  | 'front'
+  | 'rear'
+  | 'left'
+  | 'right'
+  | 'top'
+  | 'isometric'
+  | 'interior'
+  | 'cockpit'
+  | 'dashboard'
+  | 'driver_seat'
+  | 'passenger_seat'
+  | 'engine_bay'
+  | 'boot'
+  | 'wheel'
+  | 'wing';
 
 export type EnvironmentPreset = 'studio-dark' | 'cyber-neon' | 'showroom' | 'desert-dawn' | 'sunset-boulevard';
 

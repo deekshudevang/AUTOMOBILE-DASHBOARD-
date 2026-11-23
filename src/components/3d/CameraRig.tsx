@@ -55,6 +55,12 @@ export const CameraRig: React.FC<CameraRigProps> = ({
       top: [0.0, distTop, 0.001],
       wheel: [-W * 0.46 - 1.45, H * 0.28 + 0.35, L * 0.26 + 0.65],
       interior: [0.26, H * 0.78, 0.05],
+      cockpit: [-0.02, H * 0.75, 0.05],
+      dashboard: [-0.04, H * 0.72, 0.42],
+      driver_seat: [-W * 0.22, H * 0.76, -0.05],
+      passenger_seat: [W * 0.22, H * 0.76, -0.05],
+      engine_bay: [0.0, H * 1.15, L * 0.28],
+      boot: [0.0, H * 1.1, -L * 0.42],
       wing: [0.0, H * 1.45, -L * 0.44 - 1.85]
     };
 
@@ -67,6 +73,12 @@ export const CameraRig: React.FC<CameraRigProps> = ({
       top: [0, 0, 0],
       wheel: [-W * 0.46, H * 0.28, L * 0.26],
       interior: [-0.08, H * 0.65, 0.25],
+      cockpit: [0.0, H * 0.65, 0.35],
+      dashboard: [0.0, H * 0.62, 0.65],
+      driver_seat: [-W * 0.22, H * 0.60, 0.45],
+      passenger_seat: [W * 0.22, H * 0.60, 0.45],
+      engine_bay: [0.0, H * 0.35, L * 0.26],
+      boot: [0.0, H * 0.4, -L * 0.4],
       wing: [0.0, H * 0.92, -L * 0.44]
     };
 

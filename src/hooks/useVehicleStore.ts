@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { CheraxVehicleConfig, VehicleModelMetadata, VehicleFileSummary, CameraPreset, EnvironmentPreset, RGBColor, VehicleAssetBinding } from '../types/vehicle';
 import { ComponentOverride } from '@autoverse/shared-types';
+import { VehicleOpeningState, DEFAULT_OPENING_STATE } from '@autoverse/vehicle-generation-engine';
 import vehicleDatabaseRaw from '../data/vehicleDatabase.json';
 import manifestRaw from '../../public/vehicle-assets/manifest.json';
 import porscheGt3RsRaw from '../../public/vehicles/porsche_911_gt3_rs_992_2022.json';
@@ -113,6 +114,12 @@ interface VehicleStoreState {
   resetAllComponentOverrides: () => void;
   toggleComponentVisibility: (componentId: string) => void;
   toggleComponentLock: (componentId: string) => void;
+
+  // Vehicle Kinematic Opening State
+  openingState: VehicleOpeningState;
+  setOpeningState: (updater: Partial<VehicleOpeningState> | ((prev: VehicleOpeningState) => VehicleOpeningState)) => void;
+  openAllApertures: () => void;
+  closeAllApertures: () => void;
 
   // Custom Build Slots Persistence
   savedBuilds: CustomBuild[];
@@ -427,6 +434,32 @@ export const useVehicleStore = create<VehicleStoreState>((set, get) => ({
           }
         }
       };
+    });
+  },
+
+  // Vehicle Kinematic Opening State
+  openingState: DEFAULT_OPENING_STATE,
+  setOpeningState: (updater) => {
+    set(state => {
+      const next = typeof updater === 'function' ? updater(state.openingState) : { ...state.openingState, ...updater };
+      return { openingState: next };
+    });
+  },
+  openAllApertures: () => {
+    set({
+      openingState: {
+        doorFrontLeft: 1.0,
+        doorFrontRight: 1.0,
+        doorRearLeft: 1.0,
+        doorRearRight: 1.0,
+        hood: 1.0,
+        boot: 1.0
+      }
+    });
+  },
+  closeAllApertures: () => {
+    set({
+      openingState: DEFAULT_OPENING_STATE
     });
   },
 

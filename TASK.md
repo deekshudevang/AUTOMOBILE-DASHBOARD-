@@ -172,3 +172,29 @@
     Evidence: `npm test` → Exit 0 (33/33 test files, 200/200 tests passing) · `npm run build` → Exit 0 (Vite bundle built in 7.63s).
 - [x] **16.2 Final Engineering Documentation Suite**: All required v2 reports authored and verified against live code.
     Evidence: `docs/AUTOVERSE_ENGINEERING_ARCHITECTURE.md`, `docs/CAD_GEOMETRY_VALIDATION.md`, `docs/AERODYNAMIC_ENGINE_REPORT.md`, `docs/CFD_VALIDATION_REPORT.md`, `docs/DRIVAER_VALIDATION_REPORT.md`, `docs/VEHICLE_DEVELOPMENT_WORKFLOW.md`, `docs/FEASIBILITY.md`, `docs/DECISIONS.md`, `docs/KNOWN_LIMITATIONS.md`, `docs/OWNER_ACTIONS.md`.
+
+### Phase 17 — Car Studio Overhaul & Cross-Car Customization
+- [x] **17.1 Cross-Car Part Swapper & Fitment Engine**: Dimensional scaling and PCD hub interface checks.
+    Evidence: `tests/cross-car-part-swapping.test.ts` (10 tests passing) · files: `packages/vehicle-generation-engine/src/geometry/crossCarPartSwapper.ts`.
+- [x] **17.2 3D Viewport Live Override Bridge**: 3-axis position, rotation, scale, and donor part mesh replacements in both V2 and Schema 2.0 pipelines.
+    Evidence: `src/components/3d/VehicleRenderer.tsx`.
+- [x] **17.3 Global Swappable Parts Library Modal**: Genuine parts browser with category filters, donor selectors, fitment badges, and 1-click install.
+    Evidence: `src/components/gallery/GlobalPartsLibraryModal.tsx`.
+- [x] **17.4 Custom Build Slots & JSON Import/Export**: Multi-slot LocalStorage build manager with full state persistence.
+    Evidence: `src/components/customizer/SavedBuildsModal.tsx`, `src/hooks/useVehicleStore.ts`.
+
+### Phase 18 — Complete Vehicle Interior, Engine Bay & Interactive Opening System
+- [x] **18.0 Independent Asset & System Audit**: Audit all 50 vehicles across interiors, engines, and door/bonnet/boot opening mechanisms.
+    Evidence: `VEHICLE_INTERIOR_INVENTORY.md`, `VEHICLE_ENGINE_INVENTORY.md`, `VEHICLE_OPENING_SYSTEM_AUDIT.md`.
+- [x] **18.1 Brand-Specific Vehicle Interior Generator**: Model vehicle-specific dashboards, instrument clusters, steering wheels, center consoles, front/rear seats, door cards, and footwell pedals.
+    Evidence: `tests/interiors-engines-openings.test.ts` · files: `packages/vehicle-generation-engine/src/geometry/vehicleInteriorGenerator.ts`.
+- [x] **18.2 Vehicle-Specific Powertrain & Engine Bay Generator**: Construct authentic engine blocks, cylinder heads, manifolds, turbochargers/superchargers, battery packs, e-motors, inverters, radiators, and fluid tanks across 11 engine archetypes.
+    Evidence: `tests/interiors-engines-openings.test.ts` · files: `packages/vehicle-generation-engine/src/geometry/vehicleEngineBayGenerator.ts`.
+- [x] **18.3 Kinematic Opening Pivot & Animation Controller**: Implement real geometric hinge-based rotation for Doors (conventional, scissor, butterfly, dihedral synchro-helix, gullwing, coach), Bonnet/Hood, and Boot/Trunk.
+    Evidence: `tests/interiors-engines-openings.test.ts` · files: `packages/vehicle-generation-engine/src/geometry/vehicleOpeningController.ts`, `packages/vehicle-generation-engine/src/geometry/editableVehicleAssembler.ts`.
+- [x] **18.4 Vehicle Access Control Panel**: Dedicated interactive UI panel inside Car Studio with controls for Front/Rear Doors, Hood, Boot, Open All, and Close All.
+    Evidence: `src/components/customizer/VehicleAccessPanel.tsx`, `src/components/customizer/CustomizationPanel.tsx`.
+- [x] **18.5 Interior & Component Camera System**: Smooth camera transitions into Cockpit, Dashboard, Driver Seat, Engine Bay, and Boot views.
+    Evidence: `src/types/vehicle.ts`, `src/components/3d/CameraRig.tsx`, `src/components/customizer/VehicleAccessPanel.tsx`.
+- [x] **18.6 Automated Testing & Verification**: Suite verifying interior generation, engine dispatch, opening animations, and matrix report.
+    Evidence: `npm test tests/interiors-engines-openings.test.ts` (12/12 passed) · `npm test` (38/38 files, 227/227 passed) · `npm run build` (Exit 0) · files: `VEHICLE_OPENING_SYSTEM_FINAL_REPORT.md`.

@@ -48,9 +48,11 @@ import { SavedBuildsModal } from './SavedBuildsModal';
 import { EngineeringOverlay } from '../modes/EngineeringOverlay';
 import { ShowroomOverlay } from '../modes/ShowroomOverlay';
 import { ComparisonDiffPanel } from '../modes/ComparisonDiffPanel';
+import { VehicleAccessPanel } from './VehicleAccessPanel';
 import libraryIndex from '../../../public/vehicles/index.json';
 
 type ConfigCategory =
+  | 'access'
   | 'exterior'
   | 'paint'
   | 'wheels'
@@ -62,6 +64,7 @@ type ConfigCategory =
   | 'advanced';
 
 const CATEGORY_TABS: { id: ConfigCategory; label: string }[] = [
+  { id: 'access', label: 'Access & Engine' },
   { id: 'exterior', label: 'Exterior' },
   { id: 'paint', label: 'Paint' },
   { id: 'wheels', label: 'Wheels' },
@@ -82,7 +85,8 @@ const CAMERA_PRESETS: { id: CameraPreset; label: string }[] = [
   { id: 'top', label: 'Top' },
   { id: 'wheel', label: 'Wheel Stance' },
   { id: 'wing', label: 'Rear Wing' },
-  { id: 'interior', label: 'Cockpit' }
+  { id: 'cockpit', label: 'Cockpit' },
+  { id: 'engine_bay', label: 'Engine Bay' }
 ];
 
 const ENV_PRESETS: { id: EnvironmentPreset; label: string }[] = [
@@ -193,13 +197,14 @@ export const CustomizationPanel: React.FC = () => {
     const isSchema2 = schema2Spec !== null;
     const comps = schema2Spec?.components || [];
     return {
+      access: true,
       exterior: isSchema2 && comps.some(c => c.group === 'body_panels'),
       paint: true, // Universally supported across all vehicles
       wheels: isSchema2 && !!schema2Spec?.wheels,
       tyres: isSchema2 && !!schema2Spec?.wheels?.frontLeft?.tire,
       brakes: isSchema2 && !!schema2Spec?.wheels?.frontLeft?.brakes,
       aero: isSchema2 && comps.some(c => c.group === 'aerodynamics'),
-      interior: isSchema2 && comps.some(c => c.group === 'interior'),
+      interior: true, // Universally supported via VehicleInteriorGenerator
       lighting: isSchema2 && comps.some(c => c.group === 'lighting'),
       advanced: isSchema2 && !!schema2Spec?.dimensions,
     };
@@ -1194,6 +1199,10 @@ export const CustomizationPanel: React.FC = () => {
             ) : (
               /* Category Dedicated Studio Panes when no single component is selected */
               <div className="space-y-4">
+                {activeCategory === 'access' && (
+                  <VehicleAccessPanel />
+                )}
+
                 {activeCategory === 'paint' && (
                   <div className="space-y-3">
                     <div className="p-3 rounded-lg bg-[#11141C] border border-[#1E2533] space-y-2">

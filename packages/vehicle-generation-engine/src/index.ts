@@ -12,3 +12,6 @@ export * from './assembly/assemblyGraph';
 export * from './validation/geometryDiagnostics';
 export * from './rules/wheelRuleValidator';
 export * from './geometry/crossCarPartSwapper';
+export * from './geometry/vehicleInteriorGenerator';
+export * from './geometry/vehicleEngineBayGenerator';
+export * from './geometry/vehicleOpeningController';

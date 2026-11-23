@@ -32,7 +32,8 @@ export const VehicleRenderer: React.FC<VehicleRendererProps> = ({
     isMeasuring,
     setMeasurementPoint,
     showNormals,
-    useGeometryEngineV2
+    useGeometryEngineV2,
+    openingState
   } = useVehicleStore();
 
   // Primary Paint material resolution
@@ -189,11 +190,22 @@ export const VehicleRenderer: React.FC<VehicleRendererProps> = ({
       return EditableVehicleAssembler.build(rawSpec as VehicleSchema2, {
         componentOverrides,
         selectedComponentId,
-        wireframe: isWireframe
+        wireframe: isWireframe,
+        openingState
       });
     }
     return null;
   }, [useGeometryEngineV2, config.parametricSpec, config, componentOverrides, selectedComponentId, isWireframe]);
+
+  // Apply real-time kinematic opening updates directly to existing scene graph at 60 FPS
+  useEffect(() => {
+    if (schema2Body) {
+      const rawSpec = (config.parametricSpec || config) as any;
+      if (rawSpec?.schemaVersion === '2.0') {
+        EditableVehicleAssembler.applyOpenings(schema2Body, rawSpec as VehicleSchema2, openingState);
+      }
+    }
+  }, [schema2Body, openingState, config.parametricSpec, config]);
 
   // Clean up GPU geometries and materials when assembly changes or unmounts
   useEffect(() => {
