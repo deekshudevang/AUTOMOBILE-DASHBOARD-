@@ -214,3 +214,23 @@
     Evidence: `scripts/capture-phase19-screenshots.mjs` (Exit 0) · `docs/phase19/screenshots/` (60 PNG files) · `PHASE_19_SCREENSHOT_EVIDENCE.md`.
 - [x] **19.7 Comprehensive Verification Reporting Suite**: Authored 5 mandatory Phase 19 engineering audit documents.
     Evidence: `PHASE_19_VISUAL_AUTHENTICITY_AUDIT.md`, `PHASE_19_GEOMETRY_DEFECTS.md`, `PHASE_19_VEHICLE_BY_VEHICLE_REPORT.md`, `PHASE_19_SCREENSHOT_EVIDENCE.md`, `PHASE_19_FINAL_REPORT.md`.
+
+### Phase 20 — Critical Car Visibility & Master Aperture Kinematics Fix
+- [x] **20.1 Root Cause Elimination & 3D Priority Restoration**: Resolved `VehicleRenderer.tsx` priority inversion where `useGeometryEngineV2: true` bypassed `schema2Body` assembly; elevated Schema 2.0 to Priority 1 so componentized 3D models with kinematics and interiors render directly in Three.js viewport.
+    Evidence: `src/components/3d/VehicleRenderer.tsx`.
+- [x] **20.2 Universal 50-Vehicle Selection Modal**: Built `VehicleSelectionModal.tsx` with live search, authentic category tabs (Supercar, Hypercar, Sports Car, Luxury Car, JDM Performance, Muscle, Track Car), manufacturer filter, kinematic badges, and active indicators. Mounted in TopContextBar, StudioView top HUD, and CustomizationPanel.
+    Evidence: `src/components/gallery/VehicleSelectionModal.tsx`, `src/components/shell/TopContextBar.tsx`, `src/components/studio/StudioView.tsx`, `src/components/customizer/CustomizationPanel.tsx`.
+- [x] **20.3 Direct Floating Studio Access Drawer**: Integrated a floating backdrop-blur dock toggle in `StudioView.tsx`, providing instantaneous access to aperture kinematics and inspection cameras directly within the primary 3D viewport.
+    Evidence: `src/components/studio/StudioView.tsx`.
+- [x] **20.4 Master Open Everything & Close Everything Kinematics**: Implemented coordinated master triggers with 60 FPS cubic ease-out animations over 750ms arc; differentiated 2-door vs 4-door vehicle kinematics (rear doors remain closed for 2-door cars; all 4 doors open on sedans like Evo IX / WRX STI).
+    Evidence: `src/components/customizer/VehicleAccessPanel.tsx`, `src/hooks/useVehicleStore.ts`.
+- [x] **20.5 Auto-Focus Camera Rig (`full_inspection`)**: Added `'full_inspection'` camera preset to automatically frame wide-open vehicles (scissor doors, clamshells, frunks) without clipping.
+    Evidence: `src/types/vehicle.ts`, `src/components/3d/CameraRig.tsx`.
+- [x] **20.6 State Cleanup on Vehicle Switch**: Ensured `loadVehicleByFile` resets aperture states, active component selections, and component overrides, preventing deformed cross-car state leakage.
+    Evidence: `src/hooks/useVehicleStore.ts`.
+- [x] **20.7 Automated Integration Test Pass**: Created `tests/critical-car-visibility-open-everything.test.ts` (13/13 passing tests); validated entire suite of 39 test files (243/243 tests passing) and production build.
+    Evidence: `npx vitest run tests/critical-car-visibility-open-everything.test.ts` (13 passed) · `npx vitest run` (39 files, 243 passed) · `npm run build` (Exit 0).
+- [x] **20.8 Visual Verification Screenshot Proof**: Captured 11 high-res headless browser screenshots in `docs/phase20_verification/` documenting live Studio UI, fleet modal, and wide-open 3D views for Aventador SVJ, Evo IX, Spectre, Huracan STO, Jesko, 488 Pista, and 911 GT3 RS.
+    Evidence: `scripts/capture-open-everything-screenshots.mjs` (Exit 0) · `docs/phase20_verification/` (11 PNG files).
+- [x] **20.9 Mandatory Engineering Reports**: Authored `CAR_VISIBILITY_DEFECT_REPORT.md`, `VEHICLE_ACCESS_FIX_REPORT.md`, `OPEN_EVERYTHING_IMPLEMENTATION.md`, and `ALL_VEHICLE_VERIFICATION.md`.
+    Evidence: `CAR_VISIBILITY_DEFECT_REPORT.md`, `VEHICLE_ACCESS_FIX_REPORT.md`, `OPEN_EVERYTHING_IMPLEMENTATION.md`, `ALL_VEHICLE_VERIFICATION.md`.
