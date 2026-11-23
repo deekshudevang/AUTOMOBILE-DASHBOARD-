@@ -15,6 +15,20 @@ class HealthResponse(BaseModel):
     version: str
     timestamp: datetime
     active_mode: str = "student"
+    database_connected: bool = True
+    details: Optional[Dict[str, Any]] = None
+
+
+class SystemInfoResponse(BaseModel):
+    service: str
+    version: str
+    database: str
+    database_connected: bool
+    vehicle_count: int
+    project_count: int
+    build_count: int
+    uptime_seconds: float
+    timestamp: datetime
 
 
 # Vehicle Schemas
@@ -93,9 +107,11 @@ class ProjectCreate(BaseModel):
 class RevisionCreate(BaseModel):
     commit_message: str = Field(..., min_length=3, max_length=300)
     author_name: str = "Student Engineer"
-    geometry_digest: str
+    geometry_digest: str = "default_digest"
     is_manifold: bool = True
     parent_revision_hash: Optional[str] = None
+    serialized_bundle: Optional[str] = None
+    configuration_json: Optional[str] = None
 
 
 class RevisionResponse(BaseModel):
@@ -109,7 +125,74 @@ class RevisionResponse(BaseModel):
     author_name: str
     geometry_digest: str
     is_manifold: bool
+    serialized_bundle: Optional[str] = None
+    configuration_json: Optional[str] = None
     created_at: datetime
+
+
+class ProjectUpdate(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    active_branch: Optional[str] = None
+    is_archived: Optional[bool] = None
+
+
+# Saved Build Schemas
+class SavedBuildCreate(BaseModel):
+    name: str = Field(..., min_length=1, max_length=200)
+    vehicle_id: str
+    base_vehicle_file: str
+    project_id: Optional[str] = None
+    base_model_hash: Optional[int] = 0
+    configuration_json: Optional[str] = "{}"
+    primary_color: Optional[int] = None
+    secondary_color: Optional[int] = None
+    custom_primary_color: Optional[str] = None
+    custom_secondary_color: Optional[str] = None
+    is_primary_color_custom: Optional[bool] = False
+    wheel_color: Optional[int] = None
+    version: Optional[str] = "2.0.0"
+    config_version: Optional[int] = 1
+    revision_id: Optional[str] = None
+
+
+class SavedBuildUpdate(BaseModel):
+    name: Optional[str] = None
+    project_id: Optional[str] = None
+    configuration_json: Optional[str] = None
+    primary_color: Optional[int] = None
+    secondary_color: Optional[int] = None
+    custom_primary_color: Optional[str] = None
+    custom_secondary_color: Optional[str] = None
+    is_primary_color_custom: Optional[bool] = None
+    wheel_color: Optional[int] = None
+    config_version: Optional[int] = None
+    revision_id: Optional[str] = None
+    expected_version: Optional[int] = None  # Optimistic concurrency check
+
+
+class SavedBuildResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: str
+    project_id: Optional[str] = None
+    user_id: str
+    vehicle_id: str
+    name: str
+    base_vehicle_file: str
+    base_model_hash: int
+    configuration_json: str
+    primary_color: Optional[int] = None
+    secondary_color: Optional[int] = None
+    custom_primary_color: Optional[str] = None
+    custom_secondary_color: Optional[str] = None
+    is_primary_color_custom: bool
+    wheel_color: Optional[int] = None
+    version: str
+    config_version: int = 1
+    revision_id: Optional[str] = None
+    created_at: datetime
+    updated_at: datetime
 
 
 class ProjectResponse(BaseModel):

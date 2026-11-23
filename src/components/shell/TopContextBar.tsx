@@ -12,11 +12,14 @@ import {
   Cpu,
   Layers,
   CheckCircle2,
-  Bell
+  Bell,
+  Database
 } from 'lucide-react';
 import { useVehicleStore } from '../../hooks/useVehicleStore';
 import { ProjectManager } from '../../projects/projectManager';
 import { VehicleSelectionModal } from '../gallery/VehicleSelectionModal';
+import { LegacyMigrationModal } from '../modals/LegacyMigrationModal';
+import { LegacyStorageMigrator } from '../../services/legacyMigration';
 
 export const TopContextBar: React.FC = () => {
   const {
@@ -25,13 +28,35 @@ export const TopContextBar: React.FC = () => {
     activeFile,
     isDirty,
     engineeringMode,
-    toggleEngineeringMode
+    toggleEngineeringMode,
+    backendStatus,
+    backendDetails,
+    refreshBackendHealth,
+    syncBuildsWithBackend
   } = useVehicleStore();
 
-  const [backendOnline, setBackendOnline] = useState<boolean>(true);
   const [activeProjectName, setActiveProjectName] = useState<string>('Porsche GT3 RS Reference Spec');
   const [activeRevisionHash, setActiveRevisionHash] = useState<string>('c9fa4b2e');
   const [isVehicleModalOpen, setIsVehicleModalOpen] = useState<boolean>(false);
+  const [isMigrationModalOpen, setIsMigrationModalOpen] = useState<boolean>(false);
+  const [hasLocalBuilds, setHasLocalBuilds] = useState<boolean>(false);
+
+  useEffect(() => {
+    // Initial backend health check & build synchronization
+    refreshBackendHealth();
+    syncBuildsWithBackend();
+
+    // Check for legacy builds in localStorage
+    const local = LegacyStorageMigrator.discoverLocalBuilds();
+    setHasLocalBuilds(local.length > 0);
+
+    // Poll backend health every 10 seconds
+    const interval = setInterval(() => {
+      refreshBackendHealth();
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     // Check if projects exist in ProjectManager
@@ -66,10 +91,44 @@ export const TopContextBar: React.FC = () => {
     reports: { title: 'Engineering Reports Generator', category: 'Knowledge & System' },
     learning: { title: 'Learning Centre & Curriculum', category: 'Knowledge & System' },
     assetManager: { title: '3D Asset Pipeline Manager', category: 'Knowledge & System' },
-    settings: { title: 'System & Solver Settings', category: 'Knowledge & System' }
+    settings: { title: 'System & Solver Settings', category: 'Knowledge & System' },
+    customizer: { title: 'Vehicle Studio Customizer', category: 'Studio' }
   };
 
   const currentViewInfo = viewTitles[activeView] || { title: activeView, category: 'Workspace' };
+
+  // Status helper
+  const getStatusDisplay = () => {
+    switch (backendStatus) {
+      case 'ONLINE':
+        return {
+          dotClass: 'bg-emerald-400',
+          text: 'ENGINE READY',
+          tooltip: `FastAPI Backend Active (${backendDetails?.database_engine || 'SQLite'} Connected, ${backendDetails?.database_latency_ms || 1.2}ms)`
+        };
+      case 'DEGRADED':
+        return {
+          dotClass: 'bg-amber-400 animate-pulse',
+          text: 'DEGRADED',
+          tooltip: 'Backend API Process Active, but Database Connection Degraded'
+        };
+      case 'CONNECTING':
+        return {
+          dotClass: 'bg-cyan-400 animate-pulse',
+          text: 'CONNECTING...',
+          tooltip: 'Verifying Backend & Database Connectivity'
+        };
+      case 'OFFLINE':
+      default:
+        return {
+          dotClass: 'bg-rose-500',
+          text: 'OFFLINE (LOCAL)',
+          tooltip: 'Authoritative Backend Offline — Running in Local Storage Mode'
+        };
+    }
+  };
+
+  const statusInfo = getStatusDisplay();
 
   return (
     <header className="h-12 w-full bg-autoverse-surface border-b border-autoverse-border px-4 flex items-center justify-between shrink-0 select-none z-20 text-xs">
@@ -126,6 +185,18 @@ export const TopContextBar: React.FC = () => {
 
       {/* Right: Engineering Mode Toggle & Backend State */}
       <div className="flex items-center gap-3">
+        {/* Legacy Local Storage Migration Pill (if local builds found) */}
+        {hasLocalBuilds && (
+          <button
+            onClick={() => setIsMigrationModalOpen(true)}
+            title="Legacy builds found in browser localStorage. Click to migrate to persistent database."
+            className="flex items-center gap-1.5 px-2 py-1 rounded bg-blue-950/70 border border-blue-800/80 text-blue-300 hover:text-white hover:bg-blue-900 transition-all cursor-pointer font-mono text-[10px]"
+          >
+            <Database className="w-3 h-3 text-blue-400" />
+            <span className="hidden sm:inline">Migrate Local DB</span>
+          </button>
+        )}
+
         {/* Engineering Mode Switch */}
         <button
           onClick={toggleEngineeringMode}
@@ -149,14 +220,15 @@ export const TopContextBar: React.FC = () => {
           )}
         </button>
 
-        {/* Backend & Solver Diagnostics Status Pill */}
+        {/* Real Backend & Solver Diagnostics Status Pill */}
         <div
-          title={backendOnline ? "FastAPI Backend & Simulation Workers Active" : "Backend Offline — Using Analytical Fallbacks"}
-          className="flex items-center gap-1.5 px-2 py-1 rounded bg-autoverse-elevated border border-autoverse-border font-mono text-[10px]"
+          title={statusInfo.tooltip}
+          onClick={() => refreshBackendHealth()}
+          className="flex items-center gap-1.5 px-2 py-1 rounded bg-autoverse-elevated border border-autoverse-border font-mono text-[10px] cursor-pointer hover:border-slate-600 transition-all"
         >
-          <span className={`w-2 h-2 rounded-full ${backendOnline ? 'bg-emerald-400' : 'bg-rose-500'}`} />
+          <span className={`w-2 h-2 rounded-full ${statusInfo.dotClass}`} />
           <span className="text-slate-300 hidden sm:inline">
-            {backendOnline ? 'ENGINE READY' : 'OFFLINE'}
+            {statusInfo.text}
           </span>
         </div>
       </div>
@@ -165,6 +237,15 @@ export const TopContextBar: React.FC = () => {
       <VehicleSelectionModal
         isOpen={isVehicleModalOpen}
         onClose={() => setIsVehicleModalOpen(false)}
+      />
+
+      {/* Legacy Migration Modal */}
+      <LegacyMigrationModal
+        isOpen={isMigrationModalOpen}
+        onClose={() => {
+          setIsMigrationModalOpen(false);
+          setHasLocalBuilds(LegacyStorageMigrator.discoverLocalBuilds().length > 0);
+        }}
       />
     </header>
   );

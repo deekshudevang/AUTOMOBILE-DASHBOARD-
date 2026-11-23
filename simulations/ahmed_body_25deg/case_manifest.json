@@ -8,5 +8,5 @@
   "solver": "simpleFoam (OpenFOAM Foundation / ESI-OpenCFD)",
   "turbulenceModel": "kOmegaSST",
   "provenance": "CFD_CASE_BUNDLE",
-  "createdAt": "2026-11-23T14:33:49.458Z"
+  "createdAt": "2026-11-23T17:14:55.190Z"
 }

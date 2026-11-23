@@ -1,11 +1,16 @@
-from typing import List
-from fastapi import APIRouter, Depends, HTTPException
+"""
+AutoVerse Platform — Vehicle Catalog & Engineering Specification API
+Supports search, manufacturer and category filtering, specifications, and component hierarchy inspection.
+"""
+
+from typing import List, Optional
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from ..database import get_db
-from ..models import Vehicle, VehicleSpecification, generate_uuid
-from ..schemas import VehicleResponse, VehicleSpecificationResponse
+from ..models import Vehicle, VehicleSpecification, VehicleComponent, ComponentMount
+from ..schemas import VehicleResponse, VehicleSpecificationResponse, ComponentResponse
 
-router = APIRouter(prefix="/api/vehicles", tags=["Vehicles"])
+router = APIRouter(tags=["Vehicles"])
 
 
 def ensure_seed_vehicles(db: Session):
@@ -102,16 +107,37 @@ def ensure_seed_vehicles(db: Session):
     db.commit()
 
 
-@router.get("", response_model=List[VehicleResponse])
-def list_vehicles(db: Session = Depends(get_db)):
+@router.get("/api/vehicles", response_model=List[VehicleResponse])
+@router.get("/api/v1/vehicles", response_model=List[VehicleResponse])
+def list_vehicles(
+    q: Optional[str] = Query(None, description="Search term for display name or model code"),
+    category: Optional[str] = Query(None, description="Filter by vehicle category"),
+    manufacturer: Optional[str] = Query(None, description="Filter by manufacturer brand"),
+    skip: int = Query(0, ge=0),
+    limit: int = Query(100, ge=1, le=500),
+    db: Session = Depends(get_db)
+):
     ensure_seed_vehicles(db)
-    return db.query(Vehicle).all()
+    query = db.query(Vehicle)
+
+    if q:
+        query = query.filter(
+            Vehicle.display_name.ilike(f"%{q}%") |
+            Vehicle.manufacturer.ilike(f"%{q}%") |
+            Vehicle.model_code.ilike(f"%{q}%")
+        )
+    if category:
+        query = query.filter(Vehicle.category.ilike(f"%{category}%"))
+    if manufacturer:
+        query = query.filter(Vehicle.manufacturer.ilike(f"%{manufacturer}%"))
+
+    return query.offset(skip).limit(limit).all()
 
 
-@router.get("/{vehicle_id}", response_model=VehicleResponse)
+@router.get("/api/vehicles/{vehicle_id}", response_model=VehicleResponse)
+@router.get("/api/v1/vehicles/{vehicle_id}", response_model=VehicleResponse)
 def get_vehicle(vehicle_id: str, db: Session = Depends(get_db)):
     ensure_seed_vehicles(db)
-    # Check by id, slug or hash
     query = db.query(Vehicle).filter(
         (Vehicle.id == vehicle_id) |
         (Vehicle.slug == vehicle_id)
@@ -121,13 +147,21 @@ def get_vehicle(vehicle_id: str, db: Session = Depends(get_db)):
 
     vehicle = query.first()
     if not vehicle:
-        raise HTTPException(status_code=404, detail="Vehicle not found")
+        raise HTTPException(status_code=404, detail=f"Vehicle '{vehicle_id}' not found")
     return vehicle
 
 
-@router.get("/{vehicle_id}/specification", response_model=VehicleSpecificationResponse)
+@router.get("/api/vehicles/{vehicle_id}/specification", response_model=VehicleSpecificationResponse)
+@router.get("/api/v1/vehicles/{vehicle_id}/specification", response_model=VehicleSpecificationResponse)
 def get_vehicle_specification(vehicle_id: str, db: Session = Depends(get_db)):
     vehicle = get_vehicle(vehicle_id, db)
     if not vehicle.specification:
-        raise HTTPException(status_code=404, detail="Vehicle specifications not found")
+        raise HTTPException(status_code=404, detail=f"Vehicle '{vehicle_id}' specifications not found")
     return vehicle.specification
+
+
+@router.get("/api/vehicles/{vehicle_id}/components", response_model=List[ComponentResponse])
+@router.get("/api/v1/vehicles/{vehicle_id}/components", response_model=List[ComponentResponse])
+def get_vehicle_components(vehicle_id: str, db: Session = Depends(get_db)):
+    vehicle = get_vehicle(vehicle_id, db)
+    return vehicle.components

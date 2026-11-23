@@ -7,6 +7,7 @@ import manifestRaw from '../../public/vehicle-assets/manifest.json';
 import porscheGt3RsRaw from '../../public/vehicles/porsche_911_gt3_rs_992_2022.json';
 import { parseVehicleJson } from '../utils/jsonParser';
 import { parametricFiles, parametricModels, parametricBindings } from '../data/parametricCatalog';
+import { apiClient, BackendSavedBuild } from '../services/apiClient';
 
 export type PresentationMode = 'studio' | 'engineering' | 'showroom' | 'comparison';
 export type EngineeringMode = 'student' | 'advanced';
@@ -18,6 +19,10 @@ export interface CustomBuild {
   baseModelHash: number;
   createdAt: number;
   updatedAt: number;
+  configVersion?: number;
+  revisionId?: string;
+  dirtyState?: boolean;
+  syncError?: string;
   componentOverrides: Record<string, ComponentOverride>;
   primaryColor?: number;
   secondaryColor?: number;
@@ -130,6 +135,13 @@ interface VehicleStoreState {
   renameBuild: (buildId: string, newName: string) => void;
   exportBuildJson: (buildId?: string) => string;
   importBuildJson: (jsonString: string) => { success: boolean; buildId?: string; error?: string };
+
+  // Backend & Persistence State (Phase 21)
+  backendStatus: 'ONLINE' | 'DEGRADED' | 'OFFLINE' | 'CONNECTING';
+  backendDetails: any;
+  saveStatus: 'idle' | 'saving' | 'saved' | 'failed';
+  refreshBackendHealth: () => Promise<void>;
+  syncBuildsWithBackend: () => Promise<void>;
 
   // Asset Manager Bindings
   assetBindings: Record<number, VehicleAssetBinding>;
@@ -494,6 +506,169 @@ export const useVehicleStore = create<VehicleStoreState>((set, get) => ({
     return [];
   })(),
 
+  // Backend & Persistence State (Phase 21)
+  backendStatus: 'CONNECTING',
+  backendDetails: null,
+  saveStatus: 'idle',
+
+  refreshBackendHealth: async () => {
+    try {
+      const health = await apiClient.checkHealth();
+      set({
+        backendStatus: health.status,
+        backendDetails: health.details
+      });
+    } catch {
+      set({
+        backendStatus: 'OFFLINE',
+        backendDetails: null
+      });
+    }
+  },
+
+  syncBuildsWithBackend: async () => {
+    try {
+      const serverBuilds = await apiClient.listBuilds();
+      if (!Array.isArray(serverBuilds)) return;
+
+      const localMap = new Map(get().savedBuilds.map(b => [b.id, b]));
+      const resolvedList: CustomBuild[] = [];
+
+      // 1. Process server builds with conflict detection
+      for (const sb of serverBuilds) {
+        let overrides = {};
+        try {
+          overrides = JSON.parse(sb.configuration_json || '{}');
+        } catch {
+          overrides = {};
+        }
+
+        let customPrimary: RGBColor | undefined;
+        let customSecondary: RGBColor | undefined;
+        try {
+          if (sb.custom_primary_color) customPrimary = JSON.parse(sb.custom_primary_color);
+          if (sb.custom_secondary_color) customSecondary = JSON.parse(sb.custom_secondary_color);
+        } catch {}
+
+        const serverBuildObj: CustomBuild = {
+          id: sb.id,
+          name: sb.name,
+          baseVehicleFile: sb.base_vehicle_file,
+          baseModelHash: sb.base_model_hash,
+          createdAt: new Date(sb.created_at).getTime(),
+          updatedAt: new Date(sb.updated_at).getTime(),
+          configVersion: sb.config_version || 1,
+          revisionId: sb.revision_id || undefined,
+          dirtyState: false,
+          componentOverrides: overrides,
+          primaryColor: sb.primary_color ?? undefined,
+          secondaryColor: sb.secondary_color ?? undefined,
+          customPrimaryColor: customPrimary,
+          customSecondaryColor: customSecondary,
+          isPrimaryColorCustom: sb.is_primary_color_custom,
+          wheelColor: sb.wheel_color ?? undefined
+        };
+
+        const localMatch = localMap.get(sb.id);
+        if (localMatch) {
+          // Both exist: check versions and dirty state
+          if (localMatch.dirtyState) {
+            // Local has pending changes
+            if ((sb.config_version || 1) > (localMatch.configVersion || 1)) {
+              // Server was modified concurrently! Detect conflict and preserve local changes as a safe fork
+              console.warn(`[Sync Conflict] Build ${sb.name} modified on server. Preserving local edits as fork.`);
+              const forkedBuild: CustomBuild = {
+                ...localMatch,
+                id: `build_fork_${Date.now()}`,
+                name: `${localMatch.name} (Local Fork)`,
+                dirtyState: true,
+                syncError: 'Conflict detected: Server had newer changes. Local edits preserved in this fork.'
+              };
+              resolvedList.push(serverBuildObj);
+              resolvedList.push(forkedBuild);
+            } else {
+              // Local is ahead or at same version: push local update to server
+              try {
+                const updated = await apiClient.updateBuild(localMatch.id, {
+                  name: localMatch.name,
+                  configuration_json: JSON.stringify(localMatch.componentOverrides),
+                  primary_color: localMatch.primaryColor,
+                  secondary_color: localMatch.secondaryColor,
+                  custom_primary_color: localMatch.customPrimaryColor ? JSON.stringify(localMatch.customPrimaryColor) : undefined,
+                  custom_secondary_color: localMatch.customSecondaryColor ? JSON.stringify(localMatch.customSecondaryColor) : undefined,
+                  is_primary_color_custom: localMatch.isPrimaryColorCustom,
+                  wheel_color: localMatch.wheelColor,
+                  expected_version: localMatch.configVersion
+                });
+                resolvedList.push({
+                  ...localMatch,
+                  configVersion: updated.config_version,
+                  updatedAt: new Date(updated.updated_at).getTime(),
+                  dirtyState: false,
+                  syncError: undefined
+                });
+              } catch (err: any) {
+                // If update rejected or network failed, keep local match with dirty flag
+                resolvedList.push(localMatch);
+              }
+            }
+          } else {
+            // Local is clean: adopt the authoritative server version
+            resolvedList.push(serverBuildObj);
+          }
+          localMap.delete(sb.id);
+        } else {
+          // New on server: add to local
+          resolvedList.push(serverBuildObj);
+        }
+      }
+
+      // 2. Add local-only builds (unsynced new builds)
+      for (const [id, localBuild] of localMap.entries()) {
+        // Attempt to upload unsynced builds to server
+        if (localBuild.dirtyState || id.startsWith('build_')) {
+          try {
+            const created = await apiClient.createBuild({
+              name: localBuild.name,
+              vehicle_id: localBuild.baseVehicleFile?.replace('.json', '') || 'vehicle',
+              base_vehicle_file: localBuild.baseVehicleFile,
+              base_model_hash: localBuild.baseModelHash,
+              configuration_json: JSON.stringify(localBuild.componentOverrides),
+              primary_color: localBuild.primaryColor,
+              secondary_color: localBuild.secondaryColor,
+              custom_primary_color: localBuild.customPrimaryColor ? JSON.stringify(localBuild.customPrimaryColor) : undefined,
+              custom_secondary_color: localBuild.customSecondaryColor ? JSON.stringify(localBuild.customSecondaryColor) : undefined,
+              is_primary_color_custom: localBuild.isPrimaryColorCustom,
+              wheel_color: localBuild.wheelColor,
+              config_version: localBuild.configVersion || 1,
+              version: '2.0.0'
+            });
+            resolvedList.push({
+              ...localBuild,
+              id: created.id,
+              configVersion: created.config_version,
+              dirtyState: false,
+              syncError: undefined
+            });
+            continue;
+          } catch (e) {
+            // Failed: retain locally with dirtyState
+          }
+        }
+        resolvedList.push(localBuild);
+      }
+
+      set({ savedBuilds: resolvedList });
+      try {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('autoverse_custom_builds', JSON.stringify(resolvedList));
+        }
+      } catch {}
+    } catch (e) {
+      console.warn('Could not sync builds with backend:', e);
+    }
+  },
+
   saveCurrentBuild: (name?: string) => {
     const state = get();
     const buildId = `build_${Date.now()}`;
@@ -505,6 +680,8 @@ export const useVehicleStore = create<VehicleStoreState>((set, get) => ({
       baseModelHash: state.activeConfig.model,
       createdAt: Date.now(),
       updatedAt: Date.now(),
+      configVersion: 1,
+      dirtyState: true,
       componentOverrides: { ...state.componentOverrides },
       primaryColor: state.activeConfig.primaryColor,
       secondaryColor: state.activeConfig.secondaryColor,
@@ -523,7 +700,40 @@ export const useVehicleStore = create<VehicleStoreState>((set, get) => ({
       console.error('Failed to save build to localStorage', e);
     }
 
-    set({ savedBuilds: nextBuilds, configName: buildName });
+    set({ savedBuilds: nextBuilds, configName: buildName, saveStatus: 'saving' });
+
+    // Asynchronously synchronize with authoritative backend database
+    apiClient.createBuild({
+      name: buildName,
+      vehicle_id: state.activeFile?.replace('.json', '') || 'vehicle',
+      base_vehicle_file: state.activeFile,
+      base_model_hash: state.activeConfig.model,
+      configuration_json: JSON.stringify(state.componentOverrides),
+      primary_color: state.activeConfig.primaryColor,
+      secondary_color: state.activeConfig.secondaryColor,
+      custom_primary_color: state.activeConfig.customPrimaryColor ? JSON.stringify(state.activeConfig.customPrimaryColor) : undefined,
+      custom_secondary_color: state.activeConfig.customSecondaryColor ? JSON.stringify(state.activeConfig.customSecondaryColor) : undefined,
+      is_primary_color_custom: state.activeConfig.isPrimaryColorCustom,
+      wheel_color: state.activeConfig.wheelColor,
+      config_version: 1,
+      version: '2.0.0'
+    }).then(serverBuild => {
+      set({ saveStatus: 'saved' });
+      if (serverBuild?.id && serverBuild.id !== buildId) {
+        const synced = get().savedBuilds.map(b => b.id === buildId ? {
+          ...b,
+          id: serverBuild.id,
+          configVersion: serverBuild.config_version,
+          dirtyState: false,
+          syncError: undefined
+        } : b);
+        set({ savedBuilds: synced });
+      }
+    }).catch(err => {
+      console.warn('Backend save failed; preserved in local storage with dirty flag:', err);
+      set({ saveStatus: 'failed' });
+    });
+
     return buildId;
   },
 
@@ -566,6 +776,11 @@ export const useVehicleStore = create<VehicleStoreState>((set, get) => ({
       console.error('Failed to update localStorage', e);
     }
     set({ savedBuilds: next });
+
+    // Asynchronously delete on backend
+    apiClient.deleteBuild(buildId).catch(err => {
+      console.warn('Could not delete build on backend:', err);
+    });
   },
 
   duplicateBuild: (buildId: string) => {
@@ -588,6 +803,17 @@ export const useVehicleStore = create<VehicleStoreState>((set, get) => ({
       console.error('Failed to update localStorage', e);
     }
     set({ savedBuilds: next });
+
+    // Asynchronously duplicate on backend
+    apiClient.duplicateBuild(buildId).then(serverDup => {
+      if (serverDup?.id) {
+        const synced = get().savedBuilds.map(b => b.id === newId ? { ...b, id: serverDup.id } : b);
+        set({ savedBuilds: synced });
+      }
+    }).catch(err => {
+      console.warn('Could not duplicate build on backend; kept locally:', err);
+    });
+
     return newId;
   },
 

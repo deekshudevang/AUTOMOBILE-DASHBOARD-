@@ -7,7 +7,7 @@ import os
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import inspect
-from services.api.database import Base, engine, SessionLocal
+from services.api.database import Base, engine, SessionLocal, init_db
 from services.api.main import app
 from services.api.models import Vehicle, VehicleProject, ProjectRevision, CFDJob, SimulationResult, Report
 
@@ -16,8 +16,8 @@ client = TestClient(app)
 
 @pytest.fixture(scope="session", autouse=True)
 def setup_test_database():
-    """Ensure clean test database with all 22 models created."""
-    Base.metadata.create_all(bind=engine)
+    """Ensure clean test database with all 22+ models created."""
+    init_db()
     yield
     # Keep database file or cleanup as needed
 

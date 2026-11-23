@@ -42,6 +42,7 @@ class User(Base):
     created_at = Column(DateTime, default=utc_now)
 
     projects = relationship("VehicleProject", back_populates="owner")
+    builds = relationship("SavedBuild", back_populates="user")
     audit_logs = relationship("AuditLog", back_populates="user")
 
 
@@ -226,6 +227,7 @@ class VehicleProject(Base):
     owner = relationship("User", back_populates="projects")
     base_vehicle = relationship("Vehicle", back_populates="projects")
     revisions = relationship("ProjectRevision", back_populates="project", cascade="all, delete-orphan")
+    builds = relationship("SavedBuild", back_populates="project", cascade="all, delete-orphan")
 
 
 # 13. ProjectRevision
@@ -240,6 +242,8 @@ class ProjectRevision(Base):
     author_name = Column(String(100), default="Student Engineer")
     geometry_digest = Column(String(64), nullable=False)
     is_manifold = Column(Boolean, default=True)
+    serialized_bundle = Column(Text, nullable=True)
+    configuration_json = Column(Text, nullable=True)
     created_at = Column(DateTime, default=utc_now)
 
     project = relationship("VehicleProject", back_populates="revisions")
@@ -393,3 +397,31 @@ class AuditLog(Base):
     timestamp = Column(DateTime, default=utc_now)
 
     user = relationship("User", back_populates="audit_logs")
+
+
+# 23. SavedBuild
+class SavedBuild(Base):
+    __tablename__ = "saved_builds"
+
+    id = Column(String(64), primary_key=True, default=generate_uuid)
+    project_id = Column(String(36), ForeignKey("vehicle_projects.id"), nullable=True)
+    user_id = Column(String(36), ForeignKey("users.id"), nullable=False)
+    vehicle_id = Column(String(64), nullable=False, index=True)
+    name = Column(String(200), nullable=False)
+    base_vehicle_file = Column(String(255), nullable=False)
+    base_model_hash = Column(Integer, nullable=False, default=0)
+    configuration_json = Column(Text, nullable=False, default="{}")
+    primary_color = Column(Integer, nullable=True)
+    secondary_color = Column(Integer, nullable=True)
+    custom_primary_color = Column(String(50), nullable=True)
+    custom_secondary_color = Column(String(50), nullable=True)
+    is_primary_color_custom = Column(Boolean, default=False)
+    wheel_color = Column(Integer, nullable=True)
+    version = Column(String(20), default="2.0.0")
+    config_version = Column(Integer, default=1, nullable=False)
+    revision_id = Column(String(64), nullable=True)
+    created_at = Column(DateTime, default=utc_now)
+    updated_at = Column(DateTime, default=utc_now, onupdate=utc_now)
+
+    project = relationship("VehicleProject", back_populates="builds")
+    user = relationship("User", back_populates="builds")

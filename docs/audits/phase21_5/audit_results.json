@@ -1,0 +1,421 @@
+{
+  "audit_timestamp": "2026-11-23T16:46:29.761969+00:00",
+  "test_db": "C:\\Users\\deeks\\Downloads\\cars\\temp_audit_phase21_5.db",
+  "api_requests": [
+    {
+      "method": "GET",
+      "endpoint": "/api/v1/health",
+      "status_code": 200,
+      "request_body": null,
+      "response_body": {
+        "status": "ONLINE",
+        "service": "autoverse-api",
+        "version": "2.0.0",
+        "timestamp": "2026-11-23T16:46:29.984745Z",
+        "active_mode": "student",
+        "database_connected": true,
+        "details": {
+          "api_version": "2.1.0",
+          "database_engine": "sqlite",
+          "database_latency_ms": 0.89,
+          "cfd_worker_integrated": false,
+          "cad_kernel_mode": "PARAMETRIC_MESH"
+        }
+      },
+      "handler": "services.api.routers.health.get_health",
+      "db_operation": "SELECT 1"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/v1/health/ready",
+      "status_code": 200,
+      "request_body": null,
+      "response_body": {
+        "status": "READY",
+        "timestamp": "2026-11-23T16:46:29.989714+00:00"
+      },
+      "handler": "services.api.routers.health.get_readiness",
+      "db_operation": "SELECT 1"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/v1/system/info",
+      "status_code": 200,
+      "request_body": null,
+      "response_body": {
+        "service": "autoverse-api",
+        "version": "2.1.0",
+        "database": "sqlite",
+        "database_connected": true,
+        "vehicle_count": 0,
+        "project_count": 0,
+        "build_count": 0,
+        "uptime_seconds": 0.4,
+        "timestamp": "2026-11-23T16:46:30.035723Z"
+      },
+      "handler": "services.api.routers.health.get_system_info",
+      "db_operation": "COUNT queries"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/v1/vehicles",
+      "status_code": 200,
+      "request_body": null,
+      "response_body": "List of 3 vehicles",
+      "handler": "services.api.routers.vehicles.list_vehicles",
+      "db_operation": "SELECT vehicles"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/v1/vehicles/veh_porsche_911_gt3rs",
+      "status_code": 200,
+      "request_body": null,
+      "response_body": "Porsche 911 GT3 RS (992, 2022)",
+      "handler": "services.api.routers.vehicles.get_vehicle",
+      "db_operation": "SELECT vehicle by id"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/v1/projects",
+      "status_code": 200,
+      "request_body": {
+        "name": "Audit Verification Chassis Project",
+        "description": "Full lifecycle persistence verification for Phase 21.5",
+        "base_vehicle_id": "veh_porsche_911_gt3rs",
+        "active_branch": "main"
+      },
+      "response_body": {
+        "id": "db0db68e-6891-43dd-8825-747f2b2458cd",
+        "name": "Audit Verification Chassis Project",
+        "description": "Full lifecycle persistence verification for Phase 21.5",
+        "base_vehicle_id": "veh_porsche_911_gt3rs",
+        "active_branch": "main",
+        "is_archived": false,
+        "created_at": "2026-11-23T16:46:30.104149",
+        "updated_at": "2026-11-23T16:46:30.104153",
+        "revisions": [
+          {
+            "id": "5be8fe0b-9c90-4601-bd54-d87aee8da2d5",
+            "project_id": "db0db68e-6891-43dd-8825-747f2b2458cd",
+            "revision_hash": "5486df8c",
+            "parent_revision_hash": null,
+            "commit_message": "Initial project baseline fork",
+            "author_name": "Student Engineer",
+            "geometry_digest": "ccf1b8a1f9f8ae636e49507c419c182f5c2992e0b5b0b2ab3075dee593e7383d",
+            "is_manifold": true,
+            "serialized_bundle": "{\"projectId\": \"db0db68e-6891-43dd-8825-747f2b2458cd\", \"baseline\": \"Porsche 911 GT3 RS (992, 2022)\"}",
+            "configuration_json": "{}",
+            "created_at": "2026-11-23T16:46:30.108941"
+          }
+        ]
+      },
+      "handler": "services.api.routers.projects.create_project",
+      "db_operation": "INSERT into vehicle_projects & project_revisions"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/v1/builds",
+      "status_code": 201,
+      "request_body": {
+        "name": "Audit GT3 RS Track Spec (Swapped Carbon Wing)",
+        "vehicle_id": "porsche_911_gt3_rs_992_2022",
+        "base_vehicle_file": "porsche_911_gt3_rs_992_2022.json",
+        "project_id": "db0db68e-6891-43dd-8825-747f2b2458cd",
+        "base_model_hash": 706080074,
+        "configuration_json": "{\"rideHeight\": -35, \"camber\": -3.2, \"trackWidth\": 15, \"swapped_components\": {\"rear_spoiler\": {\"sourceCar\": \"koenigsegg_jesko_2020\", \"componentId\": \"jesko_active_rear_wing\", \"scale\": 0.94, \"fitmentScore\": 92}, \"front_splitter\": {\"sourceCar\": \"lamborghini_huracan_sto_2021\", \"componentId\": \"sto_cofango_splitter\", \"scale\": 1.02, \"fitmentScore\": 88}}}",
+        "primary_color": 134,
+        "secondary_color": 0,
+        "custom_primary_color": "{\"r\": 30, \"g\": 144, \"b\": 255}",
+        "is_primary_color_custom": true,
+        "wheel_color": 156,
+        "version": "2.0.0"
+      },
+      "response_body": {
+        "id": "e6f35df3-94ed-43dc-bcaf-7a1db4d8d750",
+        "project_id": "db0db68e-6891-43dd-8825-747f2b2458cd",
+        "user_id": "usr_student_default",
+        "vehicle_id": "porsche_911_gt3_rs_992_2022",
+        "name": "Audit GT3 RS Track Spec (Swapped Carbon Wing)",
+        "base_vehicle_file": "porsche_911_gt3_rs_992_2022.json",
+        "base_model_hash": 706080074,
+        "configuration_json": "{\"rideHeight\": -35, \"camber\": -3.2, \"trackWidth\": 15, \"swapped_components\": {\"rear_spoiler\": {\"sourceCar\": \"koenigsegg_jesko_2020\", \"componentId\": \"jesko_active_rear_wing\", \"scale\": 0.94, \"fitmentScore\": 92}, \"front_splitter\": {\"sourceCar\": \"lamborghini_huracan_sto_2021\", \"componentId\": \"sto_cofango_splitter\", \"scale\": 1.02, \"fitmentScore\": 88}}}",
+        "primary_color": 134,
+        "secondary_color": 0,
+        "custom_primary_color": "{\"r\": 30, \"g\": 144, \"b\": 255}",
+        "custom_secondary_color": null,
+        "is_primary_color_custom": true,
+        "wheel_color": 156,
+        "version": "2.0.0",
+        "created_at": "2026-11-23T16:46:30.133435",
+        "updated_at": "2026-11-23T16:46:30.133438"
+      },
+      "handler": "services.api.routers.builds.create_build",
+      "db_operation": "INSERT into saved_builds"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/v1/projects/db0db68e-6891-43dd-8825-747f2b2458cd",
+      "status_code": 200,
+      "request_body": null,
+      "response_body": "Audit Verification Chassis Project",
+      "handler": "services.api.routers.projects.get_project",
+      "db_operation": "SELECT vehicle_projects"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/v1/builds/e6f35df3-94ed-43dc-bcaf-7a1db4d8d750",
+      "status_code": 200,
+      "request_body": null,
+      "response_body": "Audit GT3 RS Track Spec (Swapped Carbon Wing)",
+      "handler": "services.api.routers.builds.get_build",
+      "db_operation": "SELECT saved_builds"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/v1/projects/db0db68e-6891-43dd-8825-747f2b2458cd/revisions",
+      "status_code": 200,
+      "request_body": {
+        "commit_message": "Rev 1: Track camber and aero tune",
+        "author_name": "Test Engineer A",
+        "geometry_digest": "geo_digest_v1",
+        "configuration_json": "{\"camber\": -3.2, \"rideHeight\": -35}"
+      },
+      "response_body": {
+        "id": "5331fdd8-1053-4d9f-a14b-0d8cba68a5b4",
+        "project_id": "db0db68e-6891-43dd-8825-747f2b2458cd",
+        "revision_hash": "91aa1b8f",
+        "parent_revision_hash": null,
+        "commit_message": "Rev 1: Track camber and aero tune",
+        "author_name": "Test Engineer A",
+        "geometry_digest": "geo_digest_v1",
+        "is_manifold": true,
+        "serialized_bundle": null,
+        "configuration_json": "{\"camber\": -3.2, \"rideHeight\": -35}",
+        "created_at": "2026-11-23T16:46:30.667621"
+      },
+      "handler": "services.api.routers.projects.create_revision",
+      "db_operation": "INSERT into project_revisions"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/v1/projects/db0db68e-6891-43dd-8825-747f2b2458cd/revisions",
+      "status_code": 200,
+      "request_body": {
+        "commit_message": "Rev 2: Drag strip setup (raised, zero camber)",
+        "author_name": "Test Engineer A",
+        "geometry_digest": "geo_digest_v2",
+        "parent_revision_hash": "91aa1b8f",
+        "configuration_json": "{\"camber\": 0.0, \"rideHeight\": 10}"
+      },
+      "response_body": {
+        "id": "3005fd88-89b0-4ace-8b22-c12983b5085e",
+        "project_id": "db0db68e-6891-43dd-8825-747f2b2458cd",
+        "revision_hash": "51062665",
+        "parent_revision_hash": "91aa1b8f",
+        "commit_message": "Rev 2: Drag strip setup (raised, zero camber)",
+        "author_name": "Test Engineer A",
+        "geometry_digest": "geo_digest_v2",
+        "is_manifold": true,
+        "serialized_bundle": null,
+        "configuration_json": "{\"camber\": 0.0, \"rideHeight\": 10}",
+        "created_at": "2026-11-23T16:46:30.684647"
+      },
+      "handler": "services.api.routers.projects.create_revision",
+      "db_operation": "INSERT into project_revisions"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/v1/projects/db0db68e-6891-43dd-8825-747f2b2458cd/revisions",
+      "status_code": 200,
+      "request_body": null,
+      "response_body": "List of 3 revisions",
+      "handler": "services.api.routers.projects.list_revisions",
+      "db_operation": "SELECT project_revisions"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/v1/revisions/91aa1b8f/restore",
+      "status_code": 200,
+      "request_body": null,
+      "response_body": {
+        "id": "38f1b7fc-7bab-47b6-848c-719c8ca7a1a1",
+        "project_id": "db0db68e-6891-43dd-8825-747f2b2458cd",
+        "revision_hash": "a212599d",
+        "parent_revision_hash": "91aa1b8f",
+        "commit_message": "Restored project snapshot from #91aa1b8f: Rev 1: Track camber and aero tune",
+        "author_name": "Student Engineer (Restore)",
+        "geometry_digest": "geo_digest_v1",
+        "is_manifold": true,
+        "serialized_bundle": null,
+        "configuration_json": "{\"camber\": -3.2, \"rideHeight\": -35}",
+        "created_at": "2026-11-23T16:46:30.707978"
+      },
+      "handler": "services.api.routers.projects.restore_revision",
+      "db_operation": "INSERT restored project_revision"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/v1/projects/proj_non_existent_12345",
+      "status_code": 404,
+      "request_body": null,
+      "response_body": {
+        "detail": "Project 'proj_non_existent_12345' not found"
+      },
+      "handler": "get_project",
+      "db_operation": "SELECT not found"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/v1/vehicles/veh_fake_does_not_exist",
+      "status_code": 404,
+      "request_body": null,
+      "response_body": {
+        "detail": "Vehicle 'veh_fake_does_not_exist' not found"
+      },
+      "handler": "get_vehicle",
+      "db_operation": "SELECT not found"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/v1/builds",
+      "status_code": 422,
+      "request_body": {
+        "name": ""
+      },
+      "response_body": {
+        "detail": [
+          {
+            "type": "string_too_short",
+            "loc": [
+              "body",
+              "name"
+            ],
+            "msg": "String should have at least 1 character",
+            "input": "",
+            "ctx": {
+              "min_length": 1
+            }
+          },
+          {
+            "type": "missing",
+            "loc": [
+              "body",
+              "vehicle_id"
+            ],
+            "msg": "Field required",
+            "input": {
+              "name": ""
+            }
+          },
+          {
+            "type": "missing",
+            "loc": [
+              "body",
+              "base_vehicle_file"
+            ],
+            "msg": "Field required",
+            "input": {
+              "name": ""
+            }
+          }
+        ]
+      },
+      "handler": "create_build",
+      "db_operation": "Validation rejected"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/v1/builds",
+      "status_code": 404,
+      "request_body": "Invalid project_id payload",
+      "response_body": {
+        "detail": "Project 'proj_non_existent_9999' not found"
+      },
+      "handler": "create_build",
+      "db_operation": "Foreign key project check"
+    },
+    {
+      "method": "POST",
+      "endpoint": "/api/v1/builds/e6f35df3-94ed-43dc-bcaf-7a1db4d8d750/duplicate",
+      "status_code": 201,
+      "request_body": null,
+      "response_body": {
+        "id": "a7335216-caff-4690-8a78-821342bd4f44",
+        "project_id": "db0db68e-6891-43dd-8825-747f2b2458cd",
+        "user_id": "usr_student_default",
+        "vehicle_id": "porsche_911_gt3_rs_992_2022",
+        "name": "Audit GT3 RS Track Spec (Swapped Carbon Wing) (Copy)",
+        "base_vehicle_file": "porsche_911_gt3_rs_992_2022.json",
+        "base_model_hash": 706080074,
+        "configuration_json": "{\"rideHeight\": -35, \"camber\": -3.2, \"trackWidth\": 15, \"swapped_components\": {\"rear_spoiler\": {\"sourceCar\": \"koenigsegg_jesko_2020\", \"componentId\": \"jesko_active_rear_wing\", \"scale\": 0.94, \"fitmentScore\": 92}, \"front_splitter\": {\"sourceCar\": \"lamborghini_huracan_sto_2021\", \"componentId\": \"sto_cofango_splitter\", \"scale\": 1.02, \"fitmentScore\": 88}}}",
+        "primary_color": 134,
+        "secondary_color": 0,
+        "custom_primary_color": "{\"r\": 30, \"g\": 144, \"b\": 255}",
+        "custom_secondary_color": null,
+        "is_primary_color_custom": true,
+        "wheel_color": 156,
+        "version": "2.0.0",
+        "created_at": "2026-11-23T16:46:30.739313",
+        "updated_at": "2026-11-23T16:46:30.739315"
+      },
+      "handler": "duplicate_build",
+      "db_operation": "INSERT duplicate saved_build"
+    },
+    {
+      "method": "DELETE",
+      "endpoint": "/api/v1/builds/a7335216-caff-4690-8a78-821342bd4f44",
+      "status_code": 200,
+      "request_body": null,
+      "response_body": {
+        "success": true,
+        "deleted_id": "a7335216-caff-4690-8a78-821342bd4f44"
+      },
+      "handler": "delete_build",
+      "db_operation": "DELETE saved_build"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/v1/projects/' OR '1'='1",
+      "status_code": 404,
+      "request_body": null,
+      "response_body": {
+        "detail": "Project '' OR '1'='1' not found"
+      },
+      "handler": "get_project",
+      "db_operation": "Parameterized SQL query"
+    },
+    {
+      "method": "GET",
+      "endpoint": "/api/v1/vehicles?q=DROP_TABLE",
+      "status_code": 200,
+      "request_body": null,
+      "response_body": "Clean response",
+      "handler": "list_vehicles",
+      "db_operation": "Parameterized filter"
+    }
+  ],
+  "persistence_tests": {
+    "project_survived_restart": true,
+    "build_survived_restart": true,
+    "configuration_fidelity_match": true,
+    "swapped_components_intact": true
+  },
+  "failure_tests": {
+    "invalid_project_404": true,
+    "invalid_vehicle_404": true,
+    "validation_rejection_422": true,
+    "foreign_project_404": true,
+    "duplicate_build_success": true,
+    "delete_build_confirmed": true
+  },
+  "revision_tests": {
+    "revisions_count": 4,
+    "restoration_policy": "append_new_snapshot_revision",
+    "configuration_restored_accurately": true
+  },
+  "security_tests": {
+    "sql_injection_safe": true,
+    "sql_injection_search_safe": true,
+    "cors_enabled": true
+  }
+}
