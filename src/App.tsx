@@ -39,6 +39,14 @@ export const App: React.FC = () => {
 
   return (
     <div className="flex w-full h-[100dvh] bg-gt-obsidian text-gt-text-primary overflow-hidden font-sans">
+      {/* Accessible Skip Link for Keyboard Navigation */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-gt-accent focus:text-white focus:rounded-md focus:font-mono focus:text-xs focus:shadow-lg focus:outline-none"
+      >
+        Skip to main workstation content
+      </a>
+
       {/* 24-Module Navigation Rail with Workspace Filters & Quick Search */}
       <NavigationSidebar />
 
@@ -46,7 +54,7 @@ export const App: React.FC = () => {
       <div className="flex-1 flex flex-col h-[100dvh] overflow-hidden relative">
         <GranTurismoHeader />
 
-        <main className="flex-1 overflow-hidden relative">
+        <main id="main-content" tabIndex={-1} className="flex-1 overflow-hidden relative focus:outline-none">
           <Suspense fallback={<EngineeringModuleLoader label="Loading Module" moduleName={activeView} />}>
             {/* Core Workstation Views */}
             {activeView === 'dashboard' && <DashboardView />}
@@ -92,6 +100,9 @@ export const App: React.FC = () => {
 
       {/* Global Keyboard Shortcut Help Modal (?) */}
       <ShortcutHelpModal />
+
+      {/* Accessible Dynamic Announcement Region */}
+      <div id="a11y-status-announcer" role="status" aria-live="polite" className="sr-only" />
     </div>
   );
 };

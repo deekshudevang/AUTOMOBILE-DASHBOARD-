@@ -90,9 +90,10 @@ export const WorkspaceSwitcher: React.FC = () => {
             id={`workspace-tab-${ws.id}`}
             aria-selected={isActive}
             aria-controls={`workspace-panel-${ws.id}`}
+            aria-label={`Switch to ${ws.label} Workspace (Hotkey ${ws.hotkey})`}
             onClick={() => handleSwitch(ws)}
             title={`Switch to ${ws.label} Workspace (Hotkey ${ws.hotkey})`}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-sans transition-all duration-150 cursor-pointer ${
+            className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 min-h-[36px] rounded-md text-xs font-sans transition-all duration-150 cursor-pointer ${
               isActive
                 ? 'bg-gradient-to-b from-[#2A313D] to-[#1A1F26] text-white font-bold border border-white/10 shadow-sm'
                 : 'text-gt-text-secondary hover:text-gt-text-primary hover:bg-white/[0.04] border border-transparent font-medium'

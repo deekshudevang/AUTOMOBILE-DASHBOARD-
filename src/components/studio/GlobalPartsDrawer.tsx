@@ -226,7 +226,10 @@ export const GlobalPartsDrawer: React.FC = () => {
       )}
 
       {/* Sliding Bottom Parts Drawer Container */}
-      <div
+      <section
+        role="dialog"
+        aria-modal="true"
+        aria-label="Global OEM Parts Library Cross-Car Swapper"
         className={`fixed bottom-0 left-0 right-0 md:left-24 md:right-auto md:w-[calc(100%-480px)] md:left-[80px] z-30 transition-all duration-300 ease-out pointer-events-auto ${
           isPartsDrawerOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0 pointer-events-none'
         } ${
@@ -237,7 +240,7 @@ export const GlobalPartsDrawer: React.FC = () => {
           {/* Drawer Header */}
           <div className="px-4 py-3 bg-white/5 border-b border-white/10 flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="w-7 h-7 rounded-lg bg-gt-accent/20 border border-gt-accent/40 flex items-center justify-center text-gt-accent">
+              <div className="w-7 h-7 rounded-lg bg-gt-accent/20 border border-gt-accent/40 flex items-center justify-center text-gt-accent" aria-hidden="true">
                 <Layers className="w-4 h-4" />
               </div>
               <div>
@@ -254,10 +257,12 @@ export const GlobalPartsDrawer: React.FC = () => {
             </div>
 
             {/* Category Tabs */}
-            <div className="flex items-center gap-1 bg-black/40 p-1 rounded-xl border border-white/5 text-[11px] font-mono">
+            <div role="tablist" aria-label="Part categories" className="flex items-center gap-1 bg-black/40 p-1 rounded-xl border border-white/5 text-[11px] font-mono">
               {categories.map(cat => (
                 <button
                   key={cat}
+                  role="tab"
+                  aria-selected={selectedCategory === cat}
                   onClick={() => setSelectedCategory(cat)}
                   className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
                     selectedCategory === cat
@@ -275,13 +280,14 @@ export const GlobalPartsDrawer: React.FC = () => {
               onClick={() => setPartsDrawerOpen(false)}
               className="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-zinc-400 hover:text-white transition-colors cursor-pointer"
               title="Close Parts Drawer (P)"
+              aria-label="Close Parts Drawer"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
           {/* Horizontal Component Cards Carousel */}
-          <div className="p-3 overflow-x-auto flex gap-3 no-scrollbar scroll-smooth">
+          <div role="region" aria-label="Available donor parts" className="p-3 overflow-x-auto flex gap-3 no-scrollbar scroll-smooth">
             {filteredParts.length === 0 ? (
               <div className="w-full py-8 text-center text-xs font-mono text-zinc-500">
                 No donor components available for category "{selectedCategory}".
@@ -394,7 +400,7 @@ export const GlobalPartsDrawer: React.FC = () => {
             )}
           </div>
         </div>
-      </div>
+      </section>
     </>
   );
 };

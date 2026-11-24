@@ -19,7 +19,7 @@
 | **27.3c** | Car Studio: Parts Swapper Drawer, 50-Car Framing Pass, Mobile Sheet | **COMPLETED** | 6 unit tests passing, 6 screenshots captured | `180530d` |
 | **27.4** | Engineering Workspaces: CAD B-Rep, Aero Wind Tunnel, CFD, Dyno | **COMPLETED** | 7 unit tests passing, 4 screenshots captured | `3819b7d` |
 | **27.5** | Projects, Garage & Saved Builds UI, IndexedDB Thumbnails | **COMPLETED** | 7 unit tests passing, 3 screenshots captured | `d29b785` |
-| **27.6** | Multi-Viewport Responsiveness & Accessibility (WCAG 2.1 AA) | **PENDING** | - | - |
+| **27.6** | Multi-Viewport Responsiveness & Accessibility (WCAG 2.1 AA) | **COMPLETED** | 14 unit tests passing, 8 screenshots captured | Pending Commit |
 | **27.7** | Motion Polish, Material Shaders & Visual Consistency Sweep | **PENDING** | - | - |
 | **27.8** | Full Regression Verification, Performance Audit, Final Sign-Off | **PENDING** | - | - |
 
