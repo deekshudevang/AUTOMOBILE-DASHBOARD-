@@ -381,7 +381,7 @@ export class SchemaV2Migrator {
     if (s.includes('911') || s.includes('gt3_rs') || s.includes('rear-engine') || s.includes('rear_engine') || s.includes('comet_gt3rs')) {
       return 'rear_engine_coupe';
     }
-    if (s.includes('svj') || s.includes('aventador') || s.includes('revuelto') || s.includes('hypercar') || s.includes('chiron') || s.includes('jesko') || s.includes('valkyrie')) {
+    if (s.includes('svj') || s.includes('aventador') || s.includes('revuelto') || s.includes('huracan') || s.includes('sto') || s.includes('lamborghini') || s.includes('hypercar') || s.includes('chiron') || s.includes('jesko') || s.includes('valkyrie')) {
       return 'mid_engine_hypercar';
     }
     if (s.includes('pista') || s.includes('488') || s.includes('ferrari') || s.includes('mid-engine') || s.includes('mid_engine') || s.includes('supercar')) {

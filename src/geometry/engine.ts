@@ -102,6 +102,7 @@ export class VehicleGeometryEngine {
     // Attach provenance metadata
     root.userData = {
       isVehicleGeometryEngineV2: true,
+      generatorId: def.geometry.generatorId || 'coachwork_generator_v2',
       vehicleId: def.meta.id,
       fidelityTier: def.geometry.fidelityTier,
       archetype: def.meta.archetype,

@@ -65,10 +65,10 @@ export class QualityClassifier {
       case 'MODEL_SPECIFIC_RECONSTRUCTION':
         return {
           status,
-          label: 'MODEL-SPECIFIC',
-          badgeTitle: 'MODEL-SPECIFIC RECONSTRUCTION',
+          label: 'PROCEDURAL',
+          badgeTitle: 'PROCEDURAL (BRAND-INSPIRED)',
           hexColor: '#00F0FF', // Cyan
-          description: 'Discrete, model-tailored parametric coachwork lofted from OEM dimensional coordinates.',
+          description: 'Procedural, brand-inspired parametric coachwork lofted from published dimensions.',
           isModelSpecific: true,
           requiresPlacard: false
         };
@@ -157,9 +157,9 @@ export class QualityClassifier {
         return {
           classification,
           grade: 'B',
-          shortLabel: 'CLASS B',
-          badgeTitle: 'VERIFIED PRODUCTION MODEL',
-          badgeDescription: 'High-precision production vehicle mesh with documented model year, generation, and < 3.5% dimensional tolerance.',
+          shortLabel: 'Procedural (brand-inspired)',
+          badgeTitle: 'PROCEDURAL (BRAND-INSPIRED)',
+          badgeDescription: 'Dimension-anchored procedural geometry inspired by brand design language. Not an OEM CAD replica.',
           hexColor: '#00F0FF', // Cyan Apex
           isAuthentic: true,
           requiresApproximationBanner: false
@@ -169,9 +169,9 @@ export class QualityClassifier {
         return {
           classification,
           grade: 'C',
-          shortLabel: 'CLASS C',
-          badgeTitle: 'RECONSTRUCTED GEOMETRY',
-          badgeDescription: 'Geometry reconstructed from documented 3D laser scans or verified multiview photogrammetry.',
+          shortLabel: 'Procedural (brand-inspired)',
+          badgeTitle: 'PROCEDURAL (BRAND-INSPIRED)',
+          badgeDescription: 'Dimension-anchored procedural geometry inspired by brand design language.',
           hexColor: '#F59E0B', // Amber
           isAuthentic: false,
           requiresApproximationBanner: false
@@ -182,10 +182,10 @@ export class QualityClassifier {
         return {
           classification: 'CLASS_D_APPROXIMATE',
           grade: 'D',
-          shortLabel: 'CLASS D',
-          badgeTitle: 'APPROXIMATE TEMPLATE',
+          shortLabel: 'Procedural (brand-inspired)',
+          badgeTitle: 'PROCEDURAL (BRAND-INSPIRED)',
           badgeDescription: 'Procedural or approximate generic vehicle geometry. Not an authentic manufacturer model.',
-          hexColor: '#94A3B8', // Slate / Gray
+          hexColor: '#38BDF8', // Cyan / Slate
           isAuthentic: false,
           requiresApproximationBanner: true
         };

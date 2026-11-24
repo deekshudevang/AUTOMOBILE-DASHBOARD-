@@ -118,12 +118,12 @@ export const StudioView: React.FC = () => {
             onClick={toggleGeometryEngineV2}
             className={`px-1.5 py-0.5 rounded text-[9px] font-mono border font-semibold transition-colors ${
               useGeometryEngineV2
-                ? 'bg-red-950/60 text-red-300 border-red-800'
+                ? 'bg-cyan-950/60 text-cyan-300 border-cyan-800'
                 : 'bg-amber-950/60 text-amber-300 border-amber-800'
             }`}
-            title="Toggle between Coachwork V2 Engine and Legacy Engine"
+            title="Toggle between Coachwork V2 Engine and Legacy Fallback"
           >
-            {useGeometryEngineV2 ? 'V2 COACHWORK' : 'LEGACY'}
+            {useGeometryEngineV2 ? 'V2 COACHWORK' : 'FALLBACK'}
           </button>
         </div>
       </div>

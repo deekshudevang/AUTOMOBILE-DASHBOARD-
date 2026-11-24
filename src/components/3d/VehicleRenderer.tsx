@@ -70,7 +70,7 @@ export const VehicleRenderer: React.FC<VehicleRendererProps> = ({
   const v2Result = useMemo(() => {
     if (!useGeometryEngineV2) return null;
     const rawSpec = (config.parametricSpec || ((config as any).geometry?.body_shell ? (config as any) : config)) as any;
-    const vehicleId = modelMeta?.codeName || (modelMeta as any)?.id || 'porsche_911_gt3_rs';
+    const vehicleId = modelMeta?.codeName || (modelMeta as any)?.id || rawSpec?.vehicle?.id || (config as any)?.modelCode || 'porsche_911_gt3_rs';
     const def = SchemaV2Migrator.migrate(rawSpec, vehicleId);
 
     // Apply active custom colors
@@ -167,6 +167,23 @@ export const VehicleRenderer: React.FC<VehicleRendererProps> = ({
             targetObj.scale.x *= override.scale[0];
             targetObj.scale.y *= override.scale[1];
             targetObj.scale.z *= override.scale[2];
+          }
+
+          // Direct Wheel Controls Response (Rim Diameter, Offset Track Spacer, Camber)
+          const isWheel = id.includes('wheel') || v2Id.includes('wheel');
+          if (isWheel) {
+            if (override.wheelDiameterInches) {
+              const diamScale = override.wheelDiameterInches / 20;
+              targetObj.scale.set(diamScale, diamScale, diamScale);
+            }
+            if (override.wheelSpacerMm) {
+              const isOutwardLeft = targetObj.position.x > 0;
+              targetObj.position.x += (override.wheelSpacerMm / 1000) * (isOutwardLeft ? 1 : -1);
+            }
+            if (override.wheelCamberDeg !== undefined) {
+              const isOutwardLeft = targetObj.position.x > 0;
+              targetObj.rotation.z = (override.wheelCamberDeg * Math.PI / 180) * (isOutwardLeft ? 1 : -1);
+            }
           }
         }
       });
@@ -288,7 +305,34 @@ export const VehicleRenderer: React.FC<VehicleRendererProps> = ({
     );
   }
 
-  // Priority 1: Schema 2.0 High-Detail Interactive Component Assembly (Openings, Interiors, Engine Bays)
+  // Priority 1: V2 Automotive Authentic Geometry Engine (Coachwork V2)
+  if (useGeometryEngineV2 && v2Result?.group) {
+    const rawSpec = (config.parametricSpec || config) as any;
+    const dims = rawSpec?.dimensions || { length: 4.6, width: 2.0, height: 1.25 };
+    const frontPlateZ = (dims.length * 0.49);
+    const rearPlateZ = -(dims.length * 0.49);
+    const plateY = 0.22;
+
+    return (
+      <group position={[0, -suspensionDrop, 0]}>
+        <primitive object={v2Result.group} onPointerDown={handlePointerDown} />
+        <NeonUnderglow neonKits={config.neonKits} />
+        <LicensePlate3D
+          text={config.plateText || 'AUTOVERSE'}
+          plateIndex={config.plateTextIndex}
+          position={[0, plateY, frontPlateZ]}
+        />
+        <LicensePlate3D
+          text={config.plateText || 'AUTOVERSE'}
+          plateIndex={config.plateTextIndex}
+          position={[0, plateY + 0.03, rearPlateZ]}
+          rotation={[0, Math.PI, 0]}
+        />
+      </group>
+    );
+  }
+
+  // Quarantined Fallback 1: Schema 2.0 Fallback Component Assembly (Legacy quarantined)
   if (schema2Body) {
     const rawSpec = (config.parametricSpec || config) as any;
     const dims = rawSpec.dimensions || { length: 4.6, width: 2.0, height: 1.25 };
@@ -311,16 +355,6 @@ export const VehicleRenderer: React.FC<VehicleRendererProps> = ({
           position={[0, plateY + 0.03, rearPlateZ]}
           rotation={[0, Math.PI, 0]}
         />
-      </group>
-    );
-  }
-
-  // Priority 2: V2 Automotive Authentic Geometry Engine (Coachwork V2)
-  if (useGeometryEngineV2 && v2Result?.group) {
-    return (
-      <group position={[0, -suspensionDrop, 0]}>
-        <primitive object={v2Result.group} onPointerDown={handlePointerDown} />
-        <NeonUnderglow neonKits={config.neonKits} />
       </group>
     );
   }

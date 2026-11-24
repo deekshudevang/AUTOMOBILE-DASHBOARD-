@@ -6,6 +6,8 @@ export interface CornerWheelOptions {
   side: 'left' | 'right';
   trackWidthM: number;
   axleZM: number; // longitudinal position relative to origin
+  camberDeg?: number;
+  spacerMm?: number;
   materials: {
     tyre: THREE.Material;
     rim: THREE.Material;
@@ -35,12 +37,17 @@ export class WheelAssemblyGenerator {
     const offsetM = (spec.offsetMm / 1000);
 
     const isLeft = opts.side === 'left';
-    const xPos = isLeft ? (opts.trackWidthM / 2) : -(opts.trackWidthM / 2);
+    const spacerM = (opts.spacerMm ?? 0) / 1000;
+    const xPos = isLeft ? (opts.trackWidthM / 2 + spacerM) : -(opts.trackWidthM / 2 + spacerM);
     const yPos = outerRadiusM; // Ground contact: bottom of tyre touches exactly y = 0
     const zPos = opts.axleZM;
 
     group.position.set(xPos, yPos, zPos);
     group.rotation.y = isLeft ? 0 : Math.PI; // Face outwards
+    if (opts.camberDeg !== undefined && opts.camberDeg !== 0) {
+      const camberRad = THREE.MathUtils.degToRad(opts.camberDeg) * (isLeft ? 1 : -1);
+      group.rotation.z = camberRad;
+    }
 
     // 2. Tyre Mesh (Lathe Profile with Sidewall Bulge & Rounded Shoulder)
     const tyreMesh = this.buildTyreMesh(rimRadiusM, outerRadiusM, sectionWidthM, opts.materials.tyre);

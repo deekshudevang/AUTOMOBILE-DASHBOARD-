@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { CoachworkDimensions } from '../types';
+import { BrandDesignLanguage } from '../../vehicles/brandDesign/types';
 import {
   createNodeRegistrar,
   createCurvedPatch,
@@ -17,7 +18,8 @@ export class RearEngineCoupeGenerator {
   public static build(
     dims: CoachworkDimensions,
     materials: Record<string, THREE.Material>,
-    shutLineGapM = 0.0025
+    shutLineGapM = 0.0025,
+    brand?: BrandDesignLanguage
   ) {
     const reg = createNodeRegistrar('panelized_chassis_assembly');
 

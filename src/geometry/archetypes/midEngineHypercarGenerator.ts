@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { CoachworkDimensions } from '../types';
+import { BrandDesignLanguage } from '../../vehicles/brandDesign/types';
 import {
   createNodeRegistrar,
   createCurvedPatch,
@@ -10,7 +11,7 @@ import {
 
 export class MidEngineHypercarGenerator {
   /**
-   * Generates authentic, master-grade Lamborghini Aventador SVJ coachwork geometry
+   * Generates authentic, master-grade Lamborghini Aventador SVJ / Huracan STO coachwork geometry
    * featuring the extreme razor wedge monovolume profile (H = 1.136m), sharp hexagonal creases,
    * ALA 2.0 active aero front flaps, Y-signature LED DRLs, louvered central engine spine,
    * high-mounted ALA 2.0 carbon rear wing, and signature high-mounted center dual exhausts.
@@ -18,7 +19,8 @@ export class MidEngineHypercarGenerator {
   public static build(
     dims: CoachworkDimensions,
     materials: Record<string, THREE.Material>,
-    shutLineGapM = 0.0025
+    shutLineGapM = 0.0025,
+    brand?: BrandDesignLanguage
   ) {
     const reg = createNodeRegistrar('panelized_chassis_assembly');
 

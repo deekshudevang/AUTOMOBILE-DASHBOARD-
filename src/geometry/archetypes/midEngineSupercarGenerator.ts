@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { CoachworkDimensions } from '../types';
+import { BrandDesignLanguage } from '../../vehicles/brandDesign/types';
 import {
   createNodeRegistrar,
   createCurvedPatch,
@@ -10,7 +11,7 @@ import {
 
 export class MidEngineSupercarGenerator {
   /**
-   * Generates authentic, master-grade Ferrari 488 Pista coachwork geometry
+   * Generates authentic, master-grade Ferrari 488 Pista / F8 Tributo coachwork geometry
    * featuring the iconic front aerodynamic S-Duct channel, swept-back vertical LED headlights,
    * cab-forward cockpit with sculpted flying buttresses, side intercooler scoops,
    * twin circular 3D Ferrari taillights, and dual high-caliber round titanium exhausts.
@@ -18,7 +19,8 @@ export class MidEngineSupercarGenerator {
   public static build(
     dims: CoachworkDimensions,
     materials: Record<string, THREE.Material>,
-    shutLineGapM = 0.0025
+    shutLineGapM = 0.0025,
+    brand?: BrandDesignLanguage
   ) {
     const reg = createNodeRegistrar('panelized_chassis_assembly');
 

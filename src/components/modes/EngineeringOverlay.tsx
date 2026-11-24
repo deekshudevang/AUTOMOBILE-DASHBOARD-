@@ -54,7 +54,7 @@ export const EngineeringOverlay: React.FC = () => {
       return {
         generatorId: 'coachwork_generator_v2',
         version: '2.0.0',
-        tier: 'Tier B (Spec-accurate)',
+        tier: 'Procedural (brand-inspired)',
         vertices: 11420,
         triangles: report.triangleBudget.count,
         meshCount: comps.length,
@@ -101,7 +101,7 @@ export const EngineeringOverlay: React.FC = () => {
     return {
       generatorId: isSchema2 ? 'editable_vehicle_assembler_legacy' : 'parametric_generator_legacy',
       version: '1.0.0',
-      tier: 'Tier D (Approximate)',
+      tier: 'Fallback (legacy)',
       vertices,
       triangles,
       meshCount,
