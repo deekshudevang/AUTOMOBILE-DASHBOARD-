@@ -10,3 +10,4 @@ export * from './Tooltip';
 export * from './SectionHeader';
 export * from './Modal';
 export * from './Drawer';
+export * from './ErrorBoundary';

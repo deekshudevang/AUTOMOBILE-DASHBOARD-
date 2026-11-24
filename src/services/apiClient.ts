@@ -117,7 +117,8 @@ class AutoVerseApiClient {
     // Priority: Vite env variable -> standard port 8000 -> localhost fallback
     if (typeof window !== 'undefined') {
       const envUrl = (import.meta as any).env?.VITE_API_BASE_URL;
-      this.baseUrl = envUrl || 'http://localhost:8000';
+      const host = window.location.hostname || 'localhost';
+      this.baseUrl = envUrl || `http://${host}:8000`;
     } else {
       this.baseUrl = 'http://localhost:8000';
     }

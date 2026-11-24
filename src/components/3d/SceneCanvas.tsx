@@ -1,4 +1,4 @@
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { ContactShadows } from '@react-three/drei';
 import * as THREE from 'three';
@@ -7,6 +7,7 @@ import { EnvironmentPresets } from './EnvironmentPresets';
 import { VehicleRenderer } from './VehicleRenderer';
 import { MeasurementOverlay3D } from './MeasurementOverlay3D';
 import { useVehicleStore } from '../../hooks/useVehicleStore';
+import { ErrorBoundary } from '../ui/ErrorBoundary';
 
 interface SceneCanvasProps {
   customConfig?: any;
@@ -106,97 +107,125 @@ export const SceneCanvas: React.FC<SceneCanvasProps> = ({
     }
   }, [graphicsQuality, showShadows]);
 
+  // Mobile device detection for GPU memory safety
+  const isMobile = useMemo(() => {
+    if (typeof window === 'undefined') return false;
+    return window.innerWidth < 768 || ('ontouchstart' in window);
+  }, []);
+
+  const effectiveDpr = useMemo(() => {
+    if (isMobile) {
+      const native = typeof window !== 'undefined' ? window.devicePixelRatio : 1;
+      return Math.min(native, 1.5);
+    }
+    return qualitySettings.dpr;
+  }, [isMobile, qualitySettings.dpr]);
+
+  const effectiveContactResolution = useMemo(() => {
+    if (isMobile) {
+      return Math.min(qualitySettings.contactResolution, 512);
+    }
+    return qualitySettings.contactResolution;
+  }, [isMobile, qualitySettings.contactResolution]);
+
   return (
     <div className={`relative ${className} bg-gt-obsidian overflow-hidden select-none`}>
-      <Canvas
-        shadows={qualitySettings.shadows}
-        camera={{ position: [3.8, 1.8, 4.4], fov: 42 }}
-        gl={{
-          antialias: qualitySettings.antialias,
-          toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: 1.15,
-          preserveDrawingBuffer: true
-        }}
-        dpr={qualitySettings.dpr}
-      >
-        {/* Studio Lighting & Environment Reflections */}
-        <EnvironmentPresets preset={environmentPreset} showShadows={qualitySettings.shadows} />
+      <ErrorBoundary fallbackTitle="3D Stage Viewport Render Error">
+        <Canvas
+          shadows={qualitySettings.shadows && !isMobile}
+          camera={{ position: [3.8, 1.8, 4.4], fov: 42 }}
+          gl={{
+            antialias: qualitySettings.antialias,
+            toneMapping: THREE.ACESFilmicToneMapping,
+            toneMappingExposure: 1.15,
+            preserveDrawingBuffer: true,
+            powerPreference: 'default'
+          }}
+          dpr={effectiveDpr}
+        >
+          {/* Studio Lighting & Environment Reflections */}
+          <Suspense fallback={null}>
+            <EnvironmentPresets preset={environmentPreset} showShadows={qualitySettings.shadows && !isMobile} />
+          </Suspense>
 
-        {/* Defect 03 Resolution: Dynamic Interior Warm Spot Fill Light for Cockpit View */}
-        {isCockpitActive && (
-          <group>
-            {/* Primary Cabin Ceiling Warm Fill Light (3200K) */}
-            <pointLight
-              position={[0, dimensions.height * 0.72, 0.15]}
-              intensity={1.8}
-              color="#FFF0D4"
-              distance={3.2}
-              decay={2}
+          {/* Defect 03 Resolution: Dynamic Interior Warm Spot Fill Light for Cockpit View */}
+          {isCockpitActive && (
+            <group>
+              {/* Primary Cabin Ceiling Warm Fill Light (3200K) */}
+              <pointLight
+                position={[0, dimensions.height * 0.72, 0.15]}
+                intensity={1.8}
+                color="#FFF0D4"
+                distance={3.2}
+                decay={2}
+              />
+              {/* Secondary Footwell & Dashboard Cluster Fill Light */}
+              <pointLight
+                position={[0, dimensions.height * 0.38, 0.45]}
+                intensity={0.9}
+                color="#FFE4B5"
+                distance={2.0}
+                decay={2}
+              />
+            </group>
+          )}
+
+          {/* Dynamic Bounding-Box Camera Controller & Presets */}
+          {enableControls && (
+            <CameraRig
+              preset={cameraPreset}
+              trigger={cameraTrigger}
+              autoRotate={isAutoRotate}
+              dimensions={dimensions}
+              hasInterior={hasInterior}
             />
-            {/* Secondary Footwell & Dashboard Cluster Fill Light */}
-            <pointLight
-              position={[0, dimensions.height * 0.38, 0.45]}
-              intensity={0.9}
-              color="#FFE4B5"
-              distance={2.0}
-              decay={2}
+          )}
+
+          {/* 3D Vehicle Automotive Assembly */}
+          <Suspense fallback={null}>
+            <VehicleRenderer
+              config={currentConfig}
+              modelMeta={currentModelMeta}
+              assetBinding={currentBinding}
+              isWireframe={isWireframe}
             />
-          </group>
-        )}
+          </Suspense>
 
-        {/* Dynamic Bounding-Box Camera Controller & Presets */}
-        {enableControls && (
-          <CameraRig
-            preset={cameraPreset}
-            trigger={cameraTrigger}
-            autoRotate={isAutoRotate}
-            dimensions={dimensions}
-            hasInterior={hasInterior}
-          />
-        )}
+          {/* 2-Point 3D Measurement Tool (Caliper) */}
+          <MeasurementOverlay3D />
 
-        {/* 3D Vehicle Automotive Assembly */}
-        <VehicleRenderer
-          config={currentConfig}
-          modelMeta={currentModelMeta}
-          assetBinding={currentBinding}
-          isWireframe={isWireframe}
-        />
+          {/* Defect 13 Resolution: Enhanced Soft Contact Shadows under Tires & Chassis */}
+          {qualitySettings.shadows && (
+            <ContactShadows
+              position={[0, 0.005, 0]}
+              opacity={0.82}
+              scale={14}
+              blur={qualitySettings.contactBlur}
+              far={3.5}
+              resolution={effectiveContactResolution}
+              color="#000000"
+            />
+          )}
 
-        {/* 2-Point 3D Measurement Tool (Caliper) */}
-        <MeasurementOverlay3D />
+          {/* Defect 13 Resolution: Polished Reflective Onyx Showroom Floor */}
+          <mesh position={[0, -0.005, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+            <planeGeometry args={[60, 60]} />
+            <meshStandardMaterial
+              color="#07090E"
+              roughness={0.24}
+              metalness={0.38}
+            />
+          </mesh>
 
-        {/* Defect 13 Resolution: Enhanced Soft Contact Shadows under Tires & Chassis */}
-        {qualitySettings.shadows && (
-          <ContactShadows
-            position={[0, 0.005, 0]}
-            opacity={0.82}
-            scale={14}
-            blur={qualitySettings.contactBlur}
-            far={3.5}
-            resolution={qualitySettings.contactResolution}
-            color="#000000"
-          />
-        )}
-
-        {/* Defect 13 Resolution: Polished Reflective Onyx Showroom Floor */}
-        <mesh position={[0, -0.005, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-          <planeGeometry args={[60, 60]} />
-          <meshStandardMaterial
-            color="#07090E"
-            roughness={0.24}
-            metalness={0.38}
-          />
-        </mesh>
-
-        {/* Subtle Engineering Ground Calibration Grid (Toggleable, Non-Intrusive) */}
-        {showGrid && (
-          <gridHelper
-            args={[24, 48, '#334155', '#1E293B']}
-            position={[0, 0.001, 0]}
-          />
-        )}
-      </Canvas>
+          {/* Subtle Engineering Ground Calibration Grid (Toggleable, Non-Intrusive) */}
+          {showGrid && (
+            <gridHelper
+              args={[24, 48, '#334155', '#1E293B']}
+              position={[0, 0.001, 0]}
+            />
+          )}
+        </Canvas>
+      </ErrorBoundary>
     </div>
   );
 };
