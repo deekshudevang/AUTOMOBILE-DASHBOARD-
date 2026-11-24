@@ -14,6 +14,7 @@ import {
   Download,
   Settings,
   HelpCircle,
+  Layers,
   X
 } from 'lucide-react';
 import { useUiStore, Workspace } from '../../state/useUiStore';
@@ -35,7 +36,8 @@ export const CommandPalette: React.FC = () => {
     setCommandPaletteOpen,
     setActiveWorkspace,
     setShortcutHelpOpen,
-    toggleEngineeringGrid
+    toggleEngineeringGrid,
+    togglePartsDrawer
   } = useUiStore();
 
   const {
@@ -126,6 +128,15 @@ export const CommandPalette: React.FC = () => {
         subtitle: 'Switch between reflective onyx stage and CAD grid',
         icon: Grid,
         action: () => toggleEngineeringGrid()
+      },
+      {
+        id: 'act-parts-drawer',
+        category: 'Quick Actions',
+        title: 'Toggle Global OEM Parts Drawer',
+        subtitle: 'Cross-car swapper & donor component library',
+        icon: Layers,
+        hotkey: 'P',
+        action: () => togglePartsDrawer()
       },
       {
         id: 'act-help',

@@ -36,6 +36,7 @@ export const CameraRig: React.FC<CameraRigProps> = ({
 
   const { reducedMotion, openingState } = useVehicleStore();
   const setIsOrbitDragging = useUiStore(s => s.setIsOrbitDragging);
+  const isBladeCollapsed = useUiStore(s => s.isBladeCollapsed);
 
   // Defect 02 Resolution: Detect if any vehicle aperture (doors, bonnet, boot) is open
   const isApertureOpen = useMemo(() => {
@@ -60,13 +61,15 @@ export const CameraRig: React.FC<CameraRigProps> = ({
     // Defect 02: Elevate camera center when doors/clamshell are high in the air
     const centerY = isApertureOpen ? H * 0.55 : H * 0.45;
     const apertureBuffer = isApertureOpen ? 1.15 : 1.0;
+    // 50-Car Framing Pass: provide asymmetric stage clearance for 380px Atelier blade
+    const stageBuffer = !isBladeCollapsed ? 1.16 : 1.05;
 
     // Viewport framing distances derived from FOV (45 deg) with buffer
-    const distFront = Math.max(L * 0.5 + 2.8, (W * 0.5) / Math.tan(THREE.MathUtils.degToRad(22.5)) * 1.35) * apertureBuffer;
+    const distFront = Math.max(L * 0.5 + 3.0, (W * 0.5) / Math.tan(THREE.MathUtils.degToRad(22.5)) * 1.42) * apertureBuffer * stageBuffer;
     const distRear = distFront;
-    const distSide = Math.max(W * 0.5 + 3.2, (L * 0.5) / Math.tan(THREE.MathUtils.degToRad(22.5)) * 1.25) * apertureBuffer;
-    const distTop = Math.max((L * 0.5) / Math.tan(THREE.MathUtils.degToRad(22.5)) * 1.28, 8.5) * apertureBuffer;
-    const distIso = Math.max(R * 1.95, 5.8) * apertureBuffer;
+    const distSide = Math.max(W * 0.5 + 3.2, (L * 0.5) / Math.tan(THREE.MathUtils.degToRad(22.5)) * 1.32) * apertureBuffer * stageBuffer;
+    const distTop = Math.max((L * 0.5) / Math.tan(THREE.MathUtils.degToRad(22.5)) * 1.35, 8.8) * apertureBuffer * stageBuffer;
+    const distIso = Math.max(R * 2.12, 6.2) * apertureBuffer * stageBuffer;
 
     const pos: Record<CameraPreset, [number, number, number]> = {
       isometric: [distIso * 0.65, (H * 1.25) * apertureBuffer, distIso * 0.65],
@@ -112,7 +115,7 @@ export const CameraRig: React.FC<CameraRigProps> = ({
       minDistance: Math.max(R * 0.4, 0.8),
       maxDistance: R * 4.8
     };
-  }, [dimensions.length, dimensions.width, dimensions.height, isApertureOpen]);
+  }, [dimensions.length, dimensions.width, dimensions.height, isApertureOpen, isBladeCollapsed]);
 
   useEffect(() => {
     const prefersReducedMotion =

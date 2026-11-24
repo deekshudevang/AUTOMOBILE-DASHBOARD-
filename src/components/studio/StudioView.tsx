@@ -20,6 +20,7 @@ import {
 import { VehicleSelectionModal } from '../gallery/VehicleSelectionModal';
 import { VerticalCameraRail } from './VerticalCameraRail';
 import { AtelierBlade } from './AtelierBlade';
+import { GlobalPartsDrawer } from './GlobalPartsDrawer';
 import { BrandBadge } from '../ui/BrandBadge';
 
 export const StudioView: React.FC = () => {
@@ -132,6 +133,9 @@ export const StudioView: React.FC = () => {
 
       {/* Right Floating Atelier Blade Shell (Defect 01 Resolution) */}
       <AtelierBlade />
+
+      {/* Global OEM Parts Drawer (Sliding Bottom Carousel) */}
+      <GlobalPartsDrawer />
 
       {/* Vehicle Selection Modal */}
       <VehicleSelectionModal

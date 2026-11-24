@@ -24,6 +24,16 @@ interface UiStoreState {
   activeStudioTab: string;
   setActiveStudioTab: (tab: string) => void;
 
+  // Global Parts Drawer
+  isPartsDrawerOpen: boolean;
+  setPartsDrawerOpen: (open: boolean) => void;
+  togglePartsDrawer: () => void;
+
+  // Mobile Bottom Sheet (Viewport < 768px)
+  mobileSheetState: 'collapsed' | 'half' | 'expanded';
+  setMobileSheetState: (state: 'collapsed' | 'half' | 'expanded') => void;
+  cycleMobileSheetState: () => void;
+
   // Orbit & Camera Gesture State
   isOrbitDragging: boolean;
   setIsOrbitDragging: (dragging: boolean) => void;
@@ -101,6 +111,22 @@ export const useUiStore = create<UiStoreState>((set) => ({
     saveStoredPreference('active_studio_tab', tab);
     set({ activeStudioTab: tab });
   },
+
+  isPartsDrawerOpen: false,
+  setPartsDrawerOpen: (open) => set({ isPartsDrawerOpen: open }),
+  togglePartsDrawer: () => set((state) => ({ isPartsDrawerOpen: !state.isPartsDrawerOpen })),
+
+  mobileSheetState: 'half',
+  setMobileSheetState: (sheetState) => set({ mobileSheetState: sheetState }),
+  cycleMobileSheetState: () =>
+    set((state) => {
+      const nextMap: Record<'collapsed' | 'half' | 'expanded', 'collapsed' | 'half' | 'expanded'> = {
+        collapsed: 'half',
+        half: 'expanded',
+        expanded: 'collapsed'
+      };
+      return { mobileSheetState: nextMap[state.mobileSheetState] };
+    }),
 
   isOrbitDragging: false,
   setIsOrbitDragging: (dragging) => set({ isOrbitDragging: dragging }),

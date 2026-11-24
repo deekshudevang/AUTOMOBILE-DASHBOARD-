@@ -15,8 +15,8 @@
 | **27.1** | Navigation, Command Palette, Workspaces (Atelier/Telemetry/Eng) | **COMPLETED** | 4 deep-link tests passing, 5 screenshots captured | `f7287bc` |
 | **27.2** | Vehicle Gallery Redesign (50-Car Fleet, OEM Identity) | **COMPLETED** | 6 gallery tests passing, 5 screenshots captured | `2aae972` |
 | **27.3a** | Car Studio: Stable Viewport, Floor, Lighting, Camera Rail, Blade Shell | **COMPLETED** | 4 studio tests passing, 5 screenshots captured | `3976008` |
-| **27.3b** | Car Studio: Blade Content, Paint Speedforms, Wheels, Kinematics | **COMPLETED** | 5 unit tests passing, 5 screenshots captured | `58965a8` |
-| **27.3c** | Car Studio: Parts Swapper Drawer, 50-Car Framing Pass, Mobile Sheet | **PENDING** | - | - |
+| **27.3b** | Car Studio: Blade Content, Paint Speedforms, Wheels, Kinematics | **COMPLETED** | 5 unit tests passing, 5 screenshots captured | `26de0ef` |
+| **27.3c** | Car Studio: Parts Swapper Drawer, 50-Car Framing Pass, Mobile Sheet | **COMPLETED** | 6 unit tests passing, 6 screenshots captured | `0ca4d80` |
 | **27.4** | Engineering Workspaces: CAD B-Rep, Aero Wind Tunnel, CFD, Dyno | **PENDING** | - | - |
 | **27.5** | Projects, Garage & Saved Builds UI, IndexedDB Thumbnails | **PENDING** | - | - |
 | **27.6** | Multi-Viewport Responsiveness & Accessibility (WCAG 2.1 AA) | **PENDING** | - | - |
