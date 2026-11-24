@@ -13,8 +13,8 @@
 | **Preflight** | Preflight checks, tooling audit, View Map, baseline tests | **COMPLETED** | `PHASE_27_BASELINE_TESTS.md` (304/304 passing) | Baseline `a2609d1` |
 | **27.0** | Design System Foundation, Tokens, Shared UI Components, Store | **COMPLETED** | 9 vitest tests passing (`tests/design-system-foundation.test.ts`) | `8783cba` |
 | **27.1** | Navigation, Command Palette, Workspaces (Atelier/Telemetry/Eng) | **COMPLETED** | 4 deep-link tests passing, 5 screenshots captured | `f7287bc` |
-| **27.2** | Vehicle Gallery Redesign (50-Car Fleet, OEM Identity) | **COMPLETED** | 6 gallery tests passing, 5 screenshots captured | `bfcc636` |
-| **27.3a** | Car Studio: Stable Viewport, Floor, Lighting, Camera Rail, Blade Shell | **PENDING** | - | - |
+| **27.2** | Vehicle Gallery Redesign (50-Car Fleet, OEM Identity) | **COMPLETED** | 6 gallery tests passing, 5 screenshots captured | `2aae972` |
+| **27.3a** | Car Studio: Stable Viewport, Floor, Lighting, Camera Rail, Blade Shell | **COMPLETED** | 4 studio tests passing, 5 screenshots captured | `001c876` |
 | **27.3b** | Car Studio: Blade Content, Paint Speedforms, Wheels, Kinematics | **PENDING** | - | - |
 | **27.3c** | Car Studio: Parts Swapper Drawer, 50-Car Framing Pass, Mobile Sheet | **PENDING** | - | - |
 | **27.4** | Engineering Workspaces: CAD B-Rep, Aero Wind Tunnel, CFD, Dyno | **PENDING** | - | - |

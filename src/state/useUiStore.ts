@@ -24,6 +24,10 @@ interface UiStoreState {
   activeStudioTab: string;
   setActiveStudioTab: (tab: string) => void;
 
+  // Orbit & Camera Gesture State
+  isOrbitDragging: boolean;
+  setIsOrbitDragging: (dragging: boolean) => void;
+
   // Global Dialogs & Overlays
   isCommandPaletteOpen: boolean;
   setCommandPaletteOpen: (open: boolean) => void;
@@ -97,6 +101,9 @@ export const useUiStore = create<UiStoreState>((set) => ({
     saveStoredPreference('active_studio_tab', tab);
     set({ activeStudioTab: tab });
   },
+
+  isOrbitDragging: false,
+  setIsOrbitDragging: (dragging) => set({ isOrbitDragging: dragging }),
 
   isCommandPaletteOpen: false,
   setCommandPaletteOpen: (open) => set({ isCommandPaletteOpen: open }),
