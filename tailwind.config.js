@@ -8,31 +8,74 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Gran Turismo Workstation Semantic Tokens
+        gt: {
+          obsidian: 'var(--surface-obsidian)',
+          basalt: 'var(--surface-basalt)',
+          graphite: 'var(--surface-graphite)',
+          raised: 'var(--surface-graphite-raised)',
+          border: 'var(--border-hairline)',
+          'border-glass': 'var(--border-glass)',
+          accent: 'var(--accent)',
+          'accent-hover': 'var(--accent-hover)',
+          info: 'var(--info)',
+          ok: 'var(--ok)',
+          warn: 'var(--warn)',
+          error: 'var(--error)',
+          text: {
+            primary: 'var(--text-primary)',
+            secondary: 'var(--text-secondary)',
+            disabled: 'var(--text-disabled)',
+          }
+        },
+        // Backwards compatibility mapping for existing components
         autoverse: {
-          bg: '#0B0D11',
-          surface: '#12151C',
-          elevated: '#181C26',
-          overlay: '#202533',
-          border: '#262C3D',
-          borderLight: '#343D54',
-          cyan: '#00F0FF',
-          cyanGlow: 'rgba(0, 240, 255, 0.25)',
-          cyanDark: '#008B99',
-          amber: '#F59E0B',
-          emerald: '#10B981',
-          rose: '#F43F5E',
-          purple: '#A855F7'
+          bg: 'var(--surface-obsidian)',
+          surface: 'var(--surface-basalt)',
+          elevated: 'var(--surface-graphite)',
+          overlay: 'var(--surface-graphite-raised)',
+          border: 'var(--border-hairline)',
+          borderLight: '#2C3442',
+          cyan: 'var(--accent)', // Redirects legacy cyan highlights to motorsport accent
+          cyanGlow: 'rgba(229, 57, 53, 0.25)',
+          cyanDark: '#B91C1C',
+          amber: 'var(--warn)',
+          emerald: 'var(--ok)',
+          rose: 'var(--error)',
+          purple: '#8B5CF6'
         }
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-        mono: ['JetBrains Mono', 'Fira Code', 'monospace']
+        mono: ['JetBrains Mono', 'SF Mono', 'Consolas', 'monospace'],
+        display: ['Chakra Petch', 'Inter', 'sans-serif']
       },
       animation: {
         'pulse-subtle': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'fade-in': 'fadeIn 180ms cubic-bezier(0, 0, 0.2, 1)',
+        'slide-up': 'slideUp 240ms cubic-bezier(0, 0, 0.2, 1)',
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        slideUp: {
+          '0%': { opacity: '0', transform: 'translateY(8px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        }
+      },
+      zIndex: {
+        canvas: '0',
+        'scene-overlay': '10',
+        panel: '20',
+        header: '30',
+        drawer: '40',
+        modal: '50',
+        toast: '60',
+        palette: '70',
       }
     },
   },
   plugins: [],
 }
-

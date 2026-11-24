@@ -1,36 +1,71 @@
+@import '@fontsource/chakra-petch/600.css';
+@import '@fontsource/chakra-petch/700.css';
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/500.css';
+@import '@fontsource/jetbrains-mono/600.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --color-bg: #0A0C10;
-  --color-surface-1: #11141C;
-  --color-surface-2: #161C28;
-  --color-surface-3: #1E2533;
-  --color-surface-overlay: #252E3F;
+  /* Gran Turismo Workstation Surfaces */
+  --surface-obsidian: #050608;
+  --surface-basalt: #0F1216;
+  --surface-graphite: #1A1E23;
+  --surface-graphite-raised: #242930;
 
-  --color-text-primary: #F1F5F9;
-  --color-text-secondary: #94A3B8;
-  --color-text-tertiary: #64748B;
-  --color-text-disabled: #475569;
+  /* Structure & Borders */
+  --border-hairline: #1E222B;
+  --border-glass: rgba(255, 255, 255, 0.08);
 
-  --color-accent: #00F0FF;
-  --color-accent-hover: #00D4E0;
-  --color-accent-dim: rgba(0, 240, 255, 0.12);
-  --color-border: #1E2533;
+  /* High-Precision Typography (WCAG AA compliant) */
+  --text-primary: #F0F1F2;
+  --text-secondary: #A6ABB1;
+  --text-disabled: #6B7178;
+
+  /* Semantic Motorsport Accents */
+  --accent: #E53935;
+  --accent-hover: #F87171;
+  --focus-ring: #E53935;
+  --focus-ring-outer: rgba(240, 241, 242, 0.85);
+
+  --info: #2979FF;
+  --ok: #00C985;
+  --warn: #FFB300;
+  --error: #E53935;
+
+  /* Legacy variables aliased to new tokens */
+  --color-bg: var(--surface-obsidian);
+  --color-surface-1: var(--surface-basalt);
+  --color-surface-2: var(--surface-graphite);
+  --color-surface-3: var(--surface-graphite-raised);
+  --color-surface-overlay: #222934;
+  --color-border: var(--border-hairline);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: #848D98;
+  --color-text-disabled: var(--text-disabled);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-dim: rgba(229, 57, 53, 0.15);
 
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, Menlo, monospace;
+  --font-display: 'Chakra Petch', 'Inter', sans-serif;
 }
 
 @layer base {
   * {
-    border-color: var(--color-border);
+    border-color: var(--border-hairline);
   }
 
   body {
-    background-color: var(--color-bg);
-    color: var(--color-text-primary);
+    background-color: var(--surface-obsidian);
+    color: var(--text-primary);
     font-family: var(--font-sans);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     -webkit-font-smoothing: antialiased;
@@ -40,15 +75,22 @@
   code, kbd, samp, pre, .font-mono {
     font-family: var(--font-mono);
     font-feature-settings: "tnum" 1, "zero" 1;
+    font-variant-numeric: tabular-nums;
   }
 
-  /* Accessibility: Visible, high-contrast focus rings (WCAG 2.2 AA) */
+  h1, h2, h3, .font-display {
+    font-family: var(--font-display);
+    letter-spacing: 0.04em;
+  }
+
+  /* Dual-Ring High-Contrast Focus Ring for WCAG 2.1 AA Compliance */
   :focus-visible {
-    outline: 2px solid var(--color-accent);
+    outline: 2px solid var(--focus-ring);
     outline-offset: 2px;
+    box-shadow: 0 0 0 3px var(--focus-ring-outer);
   }
 
-  /* Reduced motion preference */
+  /* Respect reduced motion */
   @media (prefers-reduced-motion: reduce) {
     *, ::before, ::after {
       animation-duration: 0.01ms !important;
@@ -59,21 +101,39 @@
   }
 }
 
+/* Gran Turismo Glassmorphic HUD Panels */
+.hud-glass {
+  background: rgba(15, 18, 22, 0.72);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid var(--border-glass);
+  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.hud-glass-raised {
+  background: rgba(26, 30, 35, 0.85);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
 /* Precision scrollbar */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-bg);
+  background: var(--surface-obsidian);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-surface-3);
-  border-radius: 2px;
+  background: var(--surface-graphite);
+  border-radius: 3px;
+  border: 1px solid var(--border-hairline);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-accent);
+  background: var(--surface-graphite-raised);
 }
