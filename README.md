@@ -38,6 +38,7 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 ```bash
 npm test
 ```
+Runs 56 test files and 373 unit/integration tests (plus 3 test files and 16 Pytest backend tests in `tests_python/`).
 
 ### 3. Run Aerodynamic Benchmarks
 ```bash
