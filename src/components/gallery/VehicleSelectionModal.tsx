@@ -4,16 +4,16 @@ import {
   X,
   Car,
   Check,
-  Cpu,
-  DoorOpen,
-  Layers,
-  Sparkles,
+  ChevronRight,
   ShieldCheck,
-  ChevronRight
+  Zap,
+  SlidersHorizontal
 } from 'lucide-react';
 import { useVehicleStore } from '../../hooks/useVehicleStore';
 import libraryIndex from '../../../public/vehicles/index.json';
-import { parametricFiles } from '../../data/parametricCatalog';
+import { BrandBadge } from '../ui/BrandBadge';
+import { getManufacturerBrand } from '../../data/manufacturerBrands';
+import { getVehicleTechnicalSpecs } from '../../data/vehicleTechnicalSpecs';
 
 interface VehicleSelectionModalProps {
   isOpen: boolean;
@@ -24,15 +24,15 @@ const CATEGORY_TABS = [
   { id: 'all', label: 'All 50 Vehicles' },
   { id: 'supercars', label: 'Supercars' },
   { id: 'hypercars', label: 'Hypercars' },
+  { id: 'track_cars', label: 'Track Specials' },
   { id: 'sports_cars', label: 'Sports Cars' },
-  { id: 'luxury_cars', label: 'Luxury Cars' },
+  { id: 'luxury_cars', label: 'Luxury GT' },
   { id: 'jdm_cars', label: 'JDM Performance' },
-  { id: 'muscle_cars', label: 'Muscle' },
-  { id: 'track_cars', label: 'Track Cars' }
+  { id: 'muscle_cars', label: 'Muscle' }
 ];
 
 export const VehicleSelectionModal: React.FC<VehicleSelectionModalProps> = ({ isOpen, onClose }) => {
-  const { activeFile, loadVehicleByFile, setActiveView } = useVehicleStore();
+  const { activeFile, loadVehicleByFile } = useVehicleStore();
 
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -51,24 +51,11 @@ export const VehicleSelectionModal: React.FC<VehicleSelectionModalProps> = ({ is
   // All 50 vehicles from libraryIndex.assets
   const vehicles = useMemo(() => {
     return libraryIndex.assets.map(asset => {
-      // Determine kinematic door mechanism for badge display
-      let doorMech = 'Conventional';
-      const id = asset.asset_id.toLowerCase();
-      if (id.includes('aventador') || id.includes('countach') || id.includes('murcielago') || id.includes('diablo')) {
-        doorMech = 'Scissor Doors';
-      } else if (id.includes('mclaren') || id.includes('laferrari') || id.includes('valkyrie') || id.includes('amg_one')) {
-        doorMech = 'Butterfly / Dihedral';
-      } else if (id.includes('koenigsegg') || id.includes('jesko')) {
-        doorMech = 'Synchro-Helix';
-      } else if (id.includes('sls') || id.includes('gullwing')) {
-        doorMech = 'Gullwing';
-      } else if (id.includes('spectre') || id.includes('phantom') || id.includes('wraith')) {
-        doorMech = 'Coach Suicide Doors';
-      }
-
+      const specs = getVehicleTechnicalSpecs(asset.asset_id);
       return {
         ...asset,
-        doorMechanism: doorMech
+        specs,
+        doorMechanism: specs.doorMechanism
       };
     });
   }, []);
@@ -106,49 +93,57 @@ export const VehicleSelectionModal: React.FC<VehicleSelectionModalProps> = ({ is
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-      <div className="relative w-full max-w-5xl h-[85vh] bg-[#0E1117] border border-[#232936] rounded-xl flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="vehicle-selector-title"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-150"
+    >
+      <div className="relative w-full max-w-5xl h-[86vh] bg-gt-basalt border border-gt-border rounded-2xl flex flex-col shadow-2xl overflow-hidden">
         
         {/* Header */}
-        <div className="p-4 sm:p-5 border-b border-[#232936] bg-[#12161F] flex items-center justify-between shrink-0">
+        <div className="p-4 sm:p-5 border-b border-gt-border bg-gt-graphite flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-cyan-950/60 border border-cyan-800/80 flex items-center justify-center">
-              <Car className="w-5 h-5 text-[#00F0FF]" />
+            <div className="w-9 h-9 rounded-lg bg-red-950/60 border border-red-800/80 flex items-center justify-center">
+              <Car className="w-5 h-5 text-gt-accent" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-base font-bold text-zinc-100">Select Vehicle Fleet Model</h2>
-                <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[#181E29] text-[#00F0FF] border border-[#283244]">
-                  {filteredVehicles.length} of {vehicles.length} Vehicles
+                <h2 id="vehicle-selector-title" className="text-base font-heading font-bold text-white">
+                  Switch Active Supercar
+                </h2>
+                <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-gt-obsidian text-gt-accent border border-gt-border font-semibold">
+                  {filteredVehicles.length} of {vehicles.length} Models
                 </span>
               </div>
-              <p className="text-xs text-zinc-400 mt-0.5">
-                Full Schema 2.0 kinematic aperture models with manufacturer-specific interiors and engine bays
+              <p className="text-xs text-gt-text-secondary mt-0.5">
+                Full Schema 2.0 kinematic aperture models with OEM heritage colors and powertrain specifications
               </p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-[#1E2533] transition-colors"
-            title="Close modal"
+            className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-white/5 transition-colors"
+            title="Close modal (Esc)"
+            aria-label="Close modal"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Controls Bar: Search, Category Tabs, Manufacturer Dropdown */}
-        <div className="p-4 border-b border-[#232936] bg-[#0E1117] space-y-3 shrink-0">
+        <div className="p-4 border-b border-gt-border bg-gt-basalt space-y-3 shrink-0">
           <div className="flex flex-col sm:flex-row items-center gap-3">
             {/* Search Input */}
             <div className="relative flex-1 w-full">
               <Search className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="text"
-                placeholder="Search by make, model, engine or body style..."
+                placeholder="Search by make, model, powertrain or body style..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                className="w-full bg-[#141822] border border-[#232936] focus:border-[#00F0FF] text-zinc-100 placeholder-zinc-500 text-xs rounded-lg pl-9 pr-3 py-2 outline-none transition-colors"
+                className="w-full bg-gt-obsidian border border-gt-border focus:border-gt-accent focus:ring-1 focus:ring-gt-accent text-white placeholder-zinc-500 text-xs rounded-lg pl-9 pr-8 py-2 outline-none transition-colors"
                 autoFocus
               />
               {search && (
@@ -162,15 +157,15 @@ export const VehicleSelectionModal: React.FC<VehicleSelectionModalProps> = ({ is
             </div>
 
             {/* Manufacturer Dropdown */}
-            <div className="w-full sm:w-56 shrink-0">
+            <div className="w-full sm:w-60 shrink-0">
               <select
                 value={selectedManufacturer}
                 onChange={e => setSelectedManufacturer(e.target.value)}
-                className="w-full bg-[#141822] border border-[#232936] focus:border-[#00F0FF] text-zinc-200 text-xs rounded-lg px-3 py-2 outline-none transition-colors cursor-pointer"
+                className="w-full bg-gt-obsidian border border-gt-border focus:border-gt-accent text-zinc-200 text-xs rounded-lg px-3 py-2 outline-none transition-colors cursor-pointer"
               >
-                <option value="all">All Manufacturers ({manufacturers.length - 1})</option>
+                <option value="all" className="bg-gt-basalt text-white">All Manufacturers ({manufacturers.length - 1})</option>
                 {manufacturers.filter(m => m !== 'all').map(m => (
-                  <option key={m} value={m}>{m}</option>
+                  <option key={m} value={m} className="bg-gt-basalt text-white">{m}</option>
                 ))}
               </select>
             </div>
@@ -182,10 +177,10 @@ export const VehicleSelectionModal: React.FC<VehicleSelectionModalProps> = ({ is
               <button
                 key={tab.id}
                 onClick={() => setSelectedCategory(tab.id)}
-                className={`px-3 py-1.5 rounded-md whitespace-nowrap font-medium transition-all ${
+                className={`px-3 py-1.5 rounded-lg whitespace-nowrap font-medium transition-all ${
                   selectedCategory === tab.id
-                    ? 'bg-cyan-950/70 text-[#00F0FF] border border-cyan-800'
-                    : 'bg-[#141822] text-zinc-400 hover:text-zinc-200 border border-[#232936]'
+                    ? 'bg-red-950/80 text-white border border-red-800 shadow-sm font-semibold'
+                    : 'bg-gt-obsidian text-zinc-400 hover:text-zinc-200 border border-gt-border hover:border-zinc-700'
                 }`}
               >
                 {tab.label}
@@ -202,7 +197,7 @@ export const VehicleSelectionModal: React.FC<VehicleSelectionModalProps> = ({ is
               <p className="text-sm font-medium text-zinc-400">No vehicles match your search criteria</p>
               <button
                 onClick={() => { setSearch(''); setSelectedCategory('all'); setSelectedManufacturer('all'); }}
-                className="text-xs text-[#00F0FF] hover:underline"
+                className="text-xs text-gt-accent hover:underline font-mono"
               >
                 Reset filters
               </button>
@@ -211,30 +206,42 @@ export const VehicleSelectionModal: React.FC<VehicleSelectionModalProps> = ({ is
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {filteredVehicles.map(veh => {
                 const isCurrent = activeFile === veh.file || activeFile.endsWith(veh.file);
+                const brand = getManufacturerBrand(veh.manufacturer);
 
                 return (
                   <div
                     key={veh.asset_id}
                     onClick={() => handleSelectVehicle(veh.file)}
-                    className={`group relative p-3.5 rounded-lg border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                    className={`group relative p-3.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between overflow-hidden ${
                       isCurrent
-                        ? 'bg-cyan-950/30 border-[#00F0FF] shadow-lg shadow-cyan-950/40 ring-1 ring-[#00F0FF]'
-                        : 'bg-[#121620] border-[#232936] hover:border-zinc-500 hover:bg-[#151A27]'
+                        ? 'bg-[#0E1218] border-gt-accent shadow-lg shadow-red-950/20 ring-1 ring-gt-accent'
+                        : 'bg-gt-obsidian border-gt-border hover:border-zinc-500 hover:bg-[#0E1218]'
                     }`}
                   >
+                    {/* Top Heritage Accent Line */}
+                    <div
+                      className="absolute top-0 left-0 right-0 h-0.5"
+                      style={{
+                        background: `linear-gradient(90deg, ${brand.brandColor} 0%, transparent 100%)`,
+                        opacity: isCurrent ? 1 : 0.6
+                      }}
+                    />
+
                     <div>
-                      {/* Top Badges */}
-                      <div className="flex items-center justify-between gap-2 mb-2">
-                        <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-[#181E2B] text-zinc-300 border border-[#283244]">
-                          {veh.category.replace(/_/g, ' ')}
-                        </span>
+                      {/* Top Badges & Crest */}
+                      <div className="flex items-center justify-between gap-2 mb-2.5">
+                        <BrandBadge
+                          manufacturer={veh.manufacturer}
+                          size="xs"
+                          showWordmark={true}
+                        />
                         
                         <div className="flex items-center gap-1.5">
-                          <span className="text-[10px] font-mono text-cyan-400 px-1.5 py-0.2 rounded bg-cyan-950/60 border border-cyan-800/80">
+                          <span className="text-[10px] font-mono text-zinc-400 px-1.5 py-0.5 rounded bg-gt-graphite border border-white/5">
                             {veh.doorMechanism}
                           </span>
                           {isCurrent && (
-                            <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-400 bg-emerald-950/60 border border-emerald-800 px-1.5 py-0.2 rounded">
+                            <span className="flex items-center gap-1 text-[10px] font-semibold text-red-400 bg-red-950/60 border border-red-800 px-1.5 py-0.5 rounded">
                               <Check className="w-3 h-3" />
                               Active
                             </span>
@@ -244,29 +251,35 @@ export const VehicleSelectionModal: React.FC<VehicleSelectionModalProps> = ({ is
 
                       {/* Title & Brand */}
                       <div className="mb-2">
-                        <span className="text-xs text-zinc-400 font-medium block">
-                          {veh.manufacturer}
-                        </span>
-                        <h3 className="text-sm font-bold text-zinc-100 group-hover:text-[#00F0FF] transition-colors truncate">
+                        <h3 className="text-sm font-heading font-bold text-white group-hover:text-red-400 transition-colors truncate">
                           {veh.model}
                         </h3>
-                        <span className="text-[11px] text-zinc-400 block mt-0.5">
-                          {veh.generation} • {veh.year || 2024}
+                        <span className="text-[11px] font-mono text-zinc-400 block mt-0.5 truncate">
+                          {veh.generation} • {veh.year || 2024} • {veh.specs.powertrain}
                         </span>
                       </div>
 
-                      {/* Body Style & Powertrain Pill */}
-                      {veh.body_style && (
-                        <p className="text-[11px] text-zinc-400 line-clamp-1 mb-3">
-                          {veh.body_style}
-                        </p>
-                      )}
+                      {/* Key Performance Indicators */}
+                      <div className="grid grid-cols-3 gap-1.5 py-1.5 px-2 rounded-lg bg-black/40 border border-white/5 text-center text-xs font-mono my-2">
+                        <div>
+                          <span className="text-[9px] text-zinc-500 block">POWER</span>
+                          <span className="text-white font-bold tabular-nums text-[11px]">{veh.specs.powerHp} HP</span>
+                        </div>
+                        <div>
+                          <span className="text-[9px] text-zinc-500 block">TOP SPD</span>
+                          <span className="text-white font-bold tabular-nums text-[11px]">{veh.specs.topSpeedKmh} KMH</span>
+                        </div>
+                        <div>
+                          <span className="text-[9px] text-zinc-500 block">0-100</span>
+                          <span className="text-white font-bold tabular-nums text-[11px]">{veh.specs.zeroToHundredS}s</span>
+                        </div>
+                      </div>
                     </div>
 
                     {/* Bottom Action Footer */}
-                    <div className="pt-2.5 border-t border-[#232936] flex items-center justify-between text-xs">
-                      <span className="font-mono text-[10px] text-zinc-500">
-                        {veh.componentCount || 30} Components
+                    <div className="pt-2 border-t border-gt-border flex items-center justify-between text-xs">
+                      <span className="font-mono text-[10px] text-zinc-400">
+                        {veh.category.replace(/_/g, ' ')}
                       </span>
 
                       <button
@@ -274,10 +287,10 @@ export const VehicleSelectionModal: React.FC<VehicleSelectionModalProps> = ({ is
                           e.stopPropagation();
                           handleSelectVehicle(veh.file);
                         }}
-                        className={`px-2.5 py-1 rounded text-xs font-medium flex items-center gap-1 transition-all ${
+                        className={`px-2.5 py-1 rounded-md text-xs font-medium flex items-center gap-1 transition-all ${
                           isCurrent
-                            ? 'bg-[#00F0FF] text-zinc-950 font-bold'
-                            : 'bg-[#1A202C] text-zinc-300 group-hover:bg-[#00F0FF] group-hover:text-zinc-950'
+                            ? 'bg-gt-accent text-white font-bold shadow-sm'
+                            : 'bg-gt-graphite text-zinc-300 group-hover:bg-gt-accent group-hover:text-white'
                         }`}
                       >
                         <span>{isCurrent ? 'Current' : 'Select'}</span>
@@ -292,7 +305,7 @@ export const VehicleSelectionModal: React.FC<VehicleSelectionModalProps> = ({ is
         </div>
 
         {/* Modal Footer */}
-        <div className="p-3 px-5 border-t border-[#232936] bg-[#12161F] flex items-center justify-between text-xs text-zinc-400 shrink-0">
+        <div className="p-3 px-5 border-t border-gt-border bg-gt-graphite flex items-center justify-between text-xs text-zinc-400 shrink-0">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-400" />
             <span className="font-mono text-[11px]">All 50 vehicles verified Schema 2.0 with OEM geometry</span>
@@ -300,7 +313,7 @@ export const VehicleSelectionModal: React.FC<VehicleSelectionModalProps> = ({ is
 
           <button
             onClick={onClose}
-            className="px-3 py-1.5 rounded bg-[#181E29] hover:bg-[#202838] text-zinc-200 border border-[#283244] font-medium"
+            className="px-4 py-1.5 rounded-lg bg-gt-obsidian hover:bg-zinc-800 text-zinc-200 border border-gt-border font-medium transition-colors"
           >
             Close
           </button>
