@@ -7,16 +7,18 @@ import {
   Disc,
   Wind,
   Layers,
-  Sparkles,
-  Sliders,
-  Check,
-  RotateCcw
+  Sparkles
 } from 'lucide-react';
 import { useVehicleStore } from '../../hooks/useVehicleStore';
 import { useUiStore } from '../../state/useUiStore';
 import { BrandBadge } from '../ui/BrandBadge';
 import { getManufacturerBrand } from '../../data/manufacturerBrands';
 import { getVehicleTechnicalSpecs } from '../../data/vehicleTechnicalSpecs';
+import { PaintStudioSection } from './sections/PaintStudioSection';
+import { WheelStudioSection } from './sections/WheelStudioSection';
+import { VehicleAccessSection } from './sections/VehicleAccessSection';
+import { AeroPackageSection } from './sections/AeroPackageSection';
+import { CockpitTrimSection } from './sections/CockpitTrimSection';
 
 interface StudioTabDef {
   id: string;
@@ -25,9 +27,9 @@ interface StudioTabDef {
 }
 
 const STUDIO_TABS: StudioTabDef[] = [
-  { id: 'access', label: 'Access', icon: DoorOpen },
   { id: 'paint', label: 'Paint', icon: Paintbrush },
   { id: 'wheels', label: 'Wheels', icon: Disc },
+  { id: 'access', label: 'Access', icon: DoorOpen },
   { id: 'aero', label: 'Aero', icon: Wind },
   { id: 'cockpit', label: 'Cockpit', icon: Layers }
 ];
@@ -35,10 +37,7 @@ const STUDIO_TABS: StudioTabDef[] = [
 export const AtelierBlade: React.FC = () => {
   const {
     activeModel,
-    activeFile,
-    openingState,
-    openAllApertures,
-    closeAllApertures
+    activeFile
   } = useVehicleStore();
 
   const {
@@ -51,13 +50,6 @@ export const AtelierBlade: React.FC = () => {
 
   const brand = getManufacturerBrand(activeModel?.manufacturer || 'Porsche');
   const specs = getVehicleTechnicalSpecs(activeFile || activeModel?.codeName || '');
-
-  const areAperturesOpen = Boolean(
-    (openingState?.doorFrontLeft || 0) > 0.05 ||
-    (openingState?.doorFrontRight || 0) > 0.05 ||
-    (openingState?.hood || 0) > 0.05 ||
-    (openingState?.boot || 0) > 0.05
-  );
 
   return (
     <aside
@@ -115,7 +107,7 @@ export const AtelierBlade: React.FC = () => {
               <button
                 key={tab.id}
                 onClick={() => setActiveStudioTab(tab.id)}
-                className={`flex-1 py-1.5 px-2 rounded-lg flex items-center justify-center gap-1.5 transition-all text-xs ${
+                className={`flex-1 py-1.5 px-2 rounded-lg flex items-center justify-center gap-1.5 transition-all text-xs cursor-pointer ${
                   isActive
                     ? 'bg-gt-accent text-white font-bold shadow-md'
                     : 'text-zinc-400 hover:text-white hover:bg-white/5'
@@ -129,103 +121,19 @@ export const AtelierBlade: React.FC = () => {
         </div>
 
         {/* Tab Content Stage */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 text-xs font-mono">
-          {/* Quick Vehicle Kinematics Access (Always accessible or on Access tab) */}
-          <div className="p-3.5 rounded-xl bg-white/5 border border-white/5 space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-heading font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-                <DoorOpen className="w-3.5 h-3.5 text-gt-accent" />
-                Kinematic Apertures
-              </span>
-              <span className={`text-[10px] px-2 py-0.5 rounded font-bold ${
-                areAperturesOpen ? 'bg-amber-950/60 text-amber-300 border border-amber-800' : 'bg-black/40 text-zinc-400'
-              }`}>
-                {areAperturesOpen ? 'APERTURES OPEN' : 'SEALED'}
-              </span>
-            </div>
-
-            {/* Global Open/Close Everything Buttons */}
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                onClick={openAllApertures}
-                className={`py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
-                  areAperturesOpen
-                    ? 'bg-gt-accent text-white shadow-lg ring-1 ring-gt-accent'
-                    : 'bg-white/10 hover:bg-white/15 text-white border border-white/10'
-                }`}
-              >
-                <span>OPEN EVERYTHING</span>
-              </button>
-
-              <button
-                onClick={closeAllApertures}
-                className="py-2 px-3 rounded-lg bg-black/40 hover:bg-white/10 text-zinc-300 hover:text-white border border-white/10 text-xs font-bold transition-all flex items-center justify-center gap-1.5"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-                <span>CLOSE ALL</span>
-              </button>
-            </div>
-
-            {/* Aperture Status Chips */}
-            <div className="grid grid-cols-2 gap-1.5 pt-1 text-[11px]">
-              <div className="p-2 rounded-lg bg-black/40 border border-white/5 flex items-center justify-between">
-                <span className="text-zinc-400">Driver Door:</span>
-                <span className={(openingState?.doorFrontLeft || 0) > 0 ? 'text-gt-accent font-bold' : 'text-zinc-500'}>
-                  {Math.round((openingState?.doorFrontLeft || 0) * 100)}%
-                </span>
-              </div>
-              <div className="p-2 rounded-lg bg-black/40 border border-white/5 flex items-center justify-between">
-                <span className="text-zinc-400">Passenger Door:</span>
-                <span className={(openingState?.doorFrontRight || 0) > 0 ? 'text-gt-accent font-bold' : 'text-zinc-500'}>
-                  {Math.round((openingState?.doorFrontRight || 0) * 100)}%
-                </span>
-              </div>
-              <div className="p-2 rounded-lg bg-black/40 border border-white/5 flex items-center justify-between">
-                <span className="text-zinc-400">Engine Clamshell:</span>
-                <span className={(openingState?.hood || 0) > 0 ? 'text-gt-accent font-bold' : 'text-zinc-500'}>
-                  {Math.round((openingState?.hood || 0) * 100)}%
-                </span>
-              </div>
-              <div className="p-2 rounded-lg bg-black/40 border border-white/5 flex items-center justify-between">
-                <span className="text-zinc-400">Luggage Boot:</span>
-                <span className={(openingState?.boot || 0) > 0 ? 'text-gt-accent font-bold' : 'text-zinc-500'}>
-                  {Math.round((openingState?.boot || 0) * 100)}%
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Performance & Chassis Specs Telemetry */}
-          <div className="p-3.5 rounded-xl bg-white/5 border border-white/5 space-y-2">
-            <span className="text-xs font-heading font-bold text-white uppercase tracking-wider block">
-              Vehicle Chassis Telemetry
-            </span>
-            <div className="space-y-1.5 text-[11px]">
-              <div className="flex justify-between">
-                <span className="text-zinc-400">Powertrain:</span>
-                <span className="text-zinc-200 font-semibold">{specs.powertrain}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-zinc-400">Aero Downforce:</span>
-                <span className="text-zinc-200 font-semibold">{specs.downforceKg} kg @ {specs.downforceSpeedKmh} km/h</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-zinc-400">Drag Coefficient:</span>
-                <span className="text-zinc-200 font-semibold">{specs.dragCoefficient} Cd</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-zinc-400">Drivetrain:</span>
-                <span className="text-gt-info font-semibold">{specs.drivetrain}</span>
-              </div>
-            </div>
-          </div>
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {activeStudioTab === 'paint' && <PaintStudioSection />}
+          {activeStudioTab === 'wheels' && <WheelStudioSection />}
+          {activeStudioTab === 'access' && <VehicleAccessSection />}
+          {activeStudioTab === 'aero' && <AeroPackageSection />}
+          {activeStudioTab === 'cockpit' && <CockpitTrimSection />}
         </div>
 
         {/* Blade Bottom Footer Status */}
         <div className="p-3 px-4 border-t border-white/10 bg-black/40 flex items-center justify-between text-[11px] text-zinc-400 shrink-0 font-mono">
           <div className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-            <span>Atelier Stage Active</span>
+            <span>Atelier Blade Synchronized</span>
           </div>
           <span className="text-zinc-500">AutoVerse 3D</span>
         </div>
