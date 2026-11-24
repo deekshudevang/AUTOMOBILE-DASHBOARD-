@@ -1,5 +1,7 @@
 # AUTOVERSE — Automotive Engineering, CAD, Geometry, Customization & CFD Platform
 
+[![AutoVerse Engineering CI](https://github.com/deekshudevang/AUTOMOBILE-DASHBOARD-/actions/workflows/ci.yml/badge.svg)](https://github.com/deekshudevang/AUTOMOBILE-DASHBOARD-/actions/workflows/ci.yml)
+
 AutoVerse is a unified, production-grade automotive engineering workspace designed for engineering students, researchers, and vehicle designers. It bridges interactive 3D Class-A parametric CAD, component replacement compatibility, automated surface and volume meshing, OpenFOAM CFD aerodynamics, multibody suspension dynamics, and reproducible academic report generation.
 
 ---
@@ -36,7 +38,6 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 ```bash
 npm test
 ```
-Runs all 33 test files and 200 automated unit/integration tests.
 
 ### 3. Run Aerodynamic Benchmarks
 ```bash

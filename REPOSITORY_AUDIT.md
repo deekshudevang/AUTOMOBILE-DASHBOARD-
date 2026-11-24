@@ -22,7 +22,7 @@ All legacy primitive box slabs have been eradicated and replaced by continuous C
 | **Components & Sweeps** | `src/geometry/components/` | Healthy | Multi-category component tree with parent-child anchors, mass estimates, and dynamic collision sweeping across steering ($\pm 35^\circ$) and suspension travel ($+50\text{mm} / -30\text{mm}$). |
 | **CFD Orchestration** | `src/simulation/` | Healthy | Wind tunnel domain sizing (< 3% blockage), moving ground, rotating wheels, $k$-$\omega$ SST RANS case generation, and force convergence monitoring ($\sigma_{C_d} < 0.001$). |
 | **Benchmarks** | `benchmarks/`, `src/geometry/benchmarks/` | Verified | Ahmed body (1.4% error on 25° slant) and DrivAer body (0.82% error on Fastback). Both confirmed against literature. |
-| **Testing Suite** | `tests/` | 100% Passing | 33 test files, 200/200 tests passing. Zero test failures. |
+| **Testing Suite** | `tests/` | Pending CI Verification | Automated test suite execution pending green CI run. |
 
 ---
 
