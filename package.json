@@ -12,7 +12,8 @@
     "test": "vitest run",
     "benchmark:ahmed": "tsx scripts/run-ahmed-benchmark.ts",
     "benchmark:drivaer": "tsx scripts/run-drivaer-benchmark.ts",
-    "check:provenance": "tsx scripts/check-benchmark-provenance.ts"
+    "check:provenance": "tsx scripts/check-benchmark-provenance.ts",
+    "validate:assets": "tsx scripts/validate-manifest-assets.ts"
   },
   "dependencies": {
     "@fastify/cors": "^11.4.1",
