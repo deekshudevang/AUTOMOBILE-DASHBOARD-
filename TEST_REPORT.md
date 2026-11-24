@@ -37,7 +37,7 @@
 
 ---
 
-## 2. Benchmark CLI Commands
+## 2. Benchmark CLI Commands (ANALYTIC Estimates)
 
-- `npm run benchmark:ahmed`: Reproduces 25° $C_d = 0.289$ (error 1.40%) and 35° $C_d = 0.268$ (error 4.28%).
-- `npm run benchmark:drivaer`: Reproduces Fastback $C_d = 0.245$ (error 0.82%), Notchback $C_d = 0.258$ (error 1.57%), and Estate $C_d = 0.285$ (error 1.06%).
+- `npm run benchmark:ahmed`: Reproduces 25° $C_d = 0.289$ (error 1.40% vs literature) and 35° $C_d = 0.268$ (error 4.28% vs literature) via closed-form ANALYTIC formulation.
+- `npm run benchmark:drivaer`: Reproduces Fastback $C_d = 0.245$ (error 0.82% vs literature), Notchback $C_d = 0.258$ (error 1.57% vs literature), and Estate $C_d = 0.285$ (error 1.06% vs literature) via component-buildup ANALYTIC formulation.

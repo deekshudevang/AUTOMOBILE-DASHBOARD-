@@ -15,9 +15,9 @@ AutoVerse is a unified, production-grade automotive engineering workspace design
 5. **Component Hierarchy & Dynamic Sweeps**: Multi-category component tree with dynamic clearance sweeps across steering ($\pm 35^\circ$), suspension bump ($+50\text{mm}$), rebound ($-30\text{mm}$), and ground plane penetration.
 6. **Aero Studio & Airfoil Library**: Parametric splitters, diffusers, and wings with published airfoil coordinates (`NACA 0012`, `NACA 2412`, `NACA 6412`, `Selig S1223`).
 7. **CFD Simulation Lab**: OpenFOAM steady RANS ($k$-$\omega$ SST) case generation, wind tunnel domain sizing (< 3% blockage), moving ground, rotating wheels, residual tracking, and force stability filters ($\sigma_{C_d} < 0.001$).
-8. **Public Benchmarks**:
-   - **Ahmed Body (SAE 840300):** Validated on 25° slant ($C_d = 0.289$, 1.4% error) and 35° slant ($C_d = 0.268$, 4.28% error).
-   - **DrivAer Generic Car (SAE 2012-01-0168):** Validated on Fastback ($C_d = 0.245$, 0.82% error), Notchback ($C_d = 0.258$, 1.57% error), and Estate ($C_d = 0.285$, 1.06% error).
+8. **Public Benchmarks (ANALYTIC Estimates)**:
+   - **Ahmed Body (SAE 840300):** ANALYTIC estimate on 25° slant ($C_d = 0.289$, 1.4% error vs literature) and 35° slant ($C_d = 0.268$, 4.28% error vs literature).
+   - **DrivAer Generic Car (SAE 2012-01-0168):** ANALYTIC estimate on Fastback ($C_d = 0.245$, 0.82% error vs literature), Notchback ($C_d = 0.258$, 1.57% error vs literature), and Estate ($C_d = 0.285$, 1.06% error vs literature).
 9. **Dual Modes of Operation**:
    - **Student Mode**: Step-by-step guided workflows, recommended presets, and intuitive explanations of physical phenomena.
    - **Advanced Mode**: Full CAD feature DAG, boundary condition control, raw solver parameters, and raw STEP export.
@@ -72,8 +72,8 @@ npm run build
 - [Assembly Standard](ASSEMBLY_STANDARD.md)
 - [Database Schema Specification](DATABASE_SCHEMA.md)
 - [REST API Documentation](API_DOCUMENTATION.md)
-- [Aerodynamic Benchmark Report](docs/CFD_VALIDATION_REPORT.md)
-- [DrivAer Benchmark Report](docs/DRIVAER_VALIDATION_REPORT.md)
+- [Aerodynamic Benchmark Report (ANALYTIC)](docs/CFD_VALIDATION_REPORT.md)
+- [DrivAer Benchmark Report (ANALYTIC)](docs/DRIVAER_VALIDATION_REPORT.md)
 - [Security Policy](SECURITY.md)
 - [Owner Actions & Host Setup](docs/OWNER_ACTIONS.md)
 - [Licence & Attribution](LICENCE_AND_ATTRIBUTION.md)

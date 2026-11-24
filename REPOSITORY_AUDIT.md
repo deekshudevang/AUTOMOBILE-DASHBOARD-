@@ -7,8 +7,8 @@
 
 ## 1. Executive Summary
 
-AutoVerse has undergone a complete transformation from a visual car viewer into a validated automotive CAD and CFD engineering platform.
-All legacy primitive box slabs have been eradicated and replaced by continuous Class-A parametric lofts, validated on public benchmarks (Ahmed Body SAE 840300 and DrivAer Generic Car SAE 2012-01-0168).
+AutoVerse has undergone a complete transformation from a visual car viewer into an automotive CAD and CFD engineering platform.
+All legacy primitive box slabs have been eradicated and replaced by continuous Class-A parametric lofts, evaluated against public benchmarks (Ahmed Body SAE 840300 and DrivAer Generic Car SAE 2012-01-0168) via closed-form ANALYTIC estimates.
 
 ---
 
@@ -21,7 +21,7 @@ All legacy primitive box slabs have been eradicated and replaced by continuous C
 | **Parametric History** | `src/geometry/parametric/` | Healthy | Feature DAG with Kahn's topological sort, failure isolation, and driving-dimension constraint solver ($L = \text{overhang}_f + \text{wheelbase} + \text{overhang}_r$). |
 | **Components & Sweeps** | `src/geometry/components/` | Healthy | Multi-category component tree with parent-child anchors, mass estimates, and dynamic collision sweeping across steering ($\pm 35^\circ$) and suspension travel ($+50\text{mm} / -30\text{mm}$). |
 | **CFD Orchestration** | `src/simulation/` | Healthy | Wind tunnel domain sizing (< 3% blockage), moving ground, rotating wheels, $k$-$\omega$ SST RANS case generation, and force convergence monitoring ($\sigma_{C_d} < 0.001$). |
-| **Benchmarks** | `benchmarks/`, `src/geometry/benchmarks/` | Verified | Ahmed body (1.4% error on 25° slant) and DrivAer body (0.82% error on Fastback). Both confirmed against literature. |
+| **Benchmarks** | `benchmarks/`, `src/geometry/benchmarks/` | ANALYTIC Estimate | Ahmed body (1.4% error on 25° slant) and DrivAer body (0.82% error on Fastback). Both are closed-form ANALYTIC estimates compared against literature. |
 | **Testing Suite** | `tests/`, `tests_python/` | 100% Passing (CI Verified) | 59 test files, 389/389 tests passing across Vitest and Pytest. Verified green on GitHub Actions Run #18. |
 
 ---

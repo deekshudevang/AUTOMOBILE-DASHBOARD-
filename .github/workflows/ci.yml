@@ -32,6 +32,9 @@ jobs:
       - name: Run DrivAer Generic Car Benchmark Validation
         run: npm run benchmark:drivaer
 
+      - name: Check Benchmark Provenance Integrity
+        run: npm run check:provenance
+
       - name: Build Production Frontend Bundle
         run: npm run build
 

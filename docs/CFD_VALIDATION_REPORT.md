@@ -1,17 +1,19 @@
-# AUTOVERSE 3D — AERODYNAMIC VALIDATION & BENCHMARK REPORT
+# AUTOVERSE 3D — AERODYNAMIC BENCHMARK REPORT (ANALYTIC ESTIMATE)
 
 **Document ID:** `AV3D-CFD-VAL-001`  
 **Benchmark:** Canonical Ahmed Reference Body (SAE 840300)  
-**Date:** 2026-11-18T15:17:21.868Z  
+**Date:** 2026-11-24T14:05:25.046Z  
 **Authority:** AutoVerse 3D Aerodynamic Engineering Engine  
+**Provenance:** `ANALYTIC` (Closed-form empirical comparator)  
+**Status:** **ANALYTIC ESTIMATE (TOLERANCE PASSED)**  
 
 ---
 
 ## 1. Executive Summary & Benchmark Scope
 
-The Ahmed Body is the automotive industry's standard aerodynamic reference geometry for validating numerical flow solvers and turbulence models. It captures the essential three-dimensional flow phenomena of ground vehicles: front stagnation, rounded edge boundary-layer development, underbody flow, and complex three-dimensional rear wake separation with longitudinal trailing vortices.
+The Ahmed Body is the automotive industry's standard aerodynamic reference geometry for evaluating numerical flow solvers and turbulence models. It captures the essential three-dimensional flow phenomena of ground vehicles: front stagnation, rounded edge boundary-layer development, underbody flow, and complex three-dimensional rear wake separation with longitudinal trailing vortices.
 
-This benchmark validates the end-to-end aerodynamic pipeline:
+This benchmark provides an ANALYTIC benchmark comparison of the end-to-end aerodynamic pipeline:
 `PARAMETRIC GEOMETRY` → `WATERTIGHT STL EXPORT` → `OPENFOAM CASE TREE` → `DRAG EXTRACTION` → `LITERATURE COMPARISON`.
 
 ---
@@ -34,14 +36,14 @@ This benchmark validates the end-to-end aerodynamic pipeline:
 
 | Parameter | Ahmed 25° Slant | Ahmed 35° Slant | Trend Assertion ($C_d^{25} > C_d^{35}$) |
 | :--- | :--- | :--- | :--- |
-| **Data Provenance** | `ANALYTIC` | `ANALYTIC` | **CONFIRMED** |
-| **Calculated Drag ($C_d$)** | **0.289** | **0.268** | VALIDATED (Peak drag at 25° verified) |
+| **Data Provenance** | `ANALYTIC` | `ANALYTIC` | **ANALYTIC** |
+| **Calculated Drag ($C_d$)** | **0.289** | **0.268** | ANALYTIC (Peak drag at 25° reproduced) |
 | **Literature Drag ($C_d$)** | **0.285** | **0.257** | Documented SAE 840300 benchmark |
 | **Calculated Lift ($C_l$)** | -0.120 | -0.040 | Negative lift (downforce) from slant suction |
 | **Frontal Area ($A$)** | 0.1120 m² | 0.1120 m² | $0.389\text{m} \times 0.288\text{m} = 0.1120\text{m}^2$ |
 | **Absolute Error ($\Delta C_d$)** | 0.004 | 0.011 | Within engineering bounds |
 | **Percentage Discrepancy** | 1.40% | 4.28% | < 6.0% tolerance band |
-| **Tolerance Gate Status** | **PASSED** | **PASSED** | **100% WITHIN SPECIFICATION** |
+| **Tolerance Gate Status** | **ANALYTIC PASSED** | **ANALYTIC PASSED** | **WITHIN ENGINEERING BOUNDS** |
 | **Convergence / Method** | `ANALYTIC_CLOSED_FORM` | `ANALYTIC_CLOSED_FORM` | Closed-form boundary-layer skin friction and Hoerner wake decomposition formula. |
 
 ---
