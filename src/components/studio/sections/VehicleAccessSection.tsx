@@ -3,6 +3,7 @@ import { DoorOpen, RotateCcw, ShieldCheck } from 'lucide-react';
 import { useVehicleStore } from '../../../hooks/useVehicleStore';
 import { TechnicalSlider } from '../../ui/TechnicalSlider';
 import { getVehicleTechnicalSpecs } from '../../../data/vehicleTechnicalSpecs';
+import { playApertureLatch } from '../../../utils/audioFeedback';
 
 export const VehicleAccessSection: React.FC = () => {
   const {
@@ -45,7 +46,10 @@ export const VehicleAccessSection: React.FC = () => {
       {/* Global Open/Close Everything Buttons */}
       <div className="grid grid-cols-2 gap-2">
         <button
-          onClick={openAllApertures}
+          onClick={() => {
+            openAllApertures();
+            playApertureLatch();
+          }}
           className={`py-2 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
             areAperturesOpen
               ? 'bg-gt-accent text-white shadow-lg ring-1 ring-gt-accent'
@@ -56,7 +60,10 @@ export const VehicleAccessSection: React.FC = () => {
         </button>
 
         <button
-          onClick={closeAllApertures}
+          onClick={() => {
+            closeAllApertures();
+            playApertureLatch();
+          }}
           className="py-2 px-3 rounded-lg bg-black/40 hover:bg-white/10 text-zinc-300 hover:text-white border border-white/10 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
         >
           <RotateCcw className="w-3.5 h-3.5" />

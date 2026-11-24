@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { playSliderDetent } from '../../utils/audioFeedback';
 
 export interface TechnicalSliderProps {
   label: string;
@@ -103,7 +104,13 @@ export const TechnicalSlider: React.FC<TechnicalSliderProps> = ({
           step={step}
           value={value}
           disabled={disabled}
-          onChange={(e) => onChange(parseFloat(e.target.value))}
+          onChange={(e) => {
+            const next = parseFloat(e.target.value);
+            if (next !== value) {
+              playSliderDetent();
+            }
+            onChange(next);
+          }}
           onMouseDown={() => setIsDragging(true)}
           onMouseUp={() => setIsDragging(false)}
           onTouchStart={() => setIsDragging(true)}

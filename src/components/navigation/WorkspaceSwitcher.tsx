@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Palette, Activity, Wrench } from 'lucide-react';
 import { useUiStore, Workspace } from '../../state/useUiStore';
 import { useVehicleStore, ActiveView } from '../../hooks/useVehicleStore';
+import { playToggleClick } from '../../utils/audioFeedback';
 
 interface WorkspaceConfig {
   id: Workspace;
@@ -23,6 +24,7 @@ export const WorkspaceSwitcher: React.FC = () => {
 
   const handleSwitch = (ws: WorkspaceConfig) => {
     setActiveWorkspace(ws.id);
+    playToggleClick();
     // Switch to workspace's primary view unless already inside that workspace
     const isAtelierView = ['studio', 'library', 'dashboard', 'customizer', 'materialStudio'].includes(activeView);
     const isTelemetryView = ['dynamics', 'aeroStudio', 'results', 'comparison'].includes(activeView);

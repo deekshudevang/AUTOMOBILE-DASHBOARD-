@@ -15,6 +15,7 @@ import {
 import { useVehicleStore } from '../../hooks/useVehicleStore';
 import { useUiStore } from '../../state/useUiStore';
 import { CameraPreset } from '../../types/vehicle';
+import { playCameraClick, playToggleClick } from '../../utils/audioFeedback';
 
 interface CameraButtonDef {
   id: CameraPreset;
@@ -96,7 +97,10 @@ export const VerticalCameraRail: React.FC = () => {
             <div key={btn.id} className="relative group">
               <button
                 role="button"
-                onClick={() => setCameraPreset(btn.id)}
+                onClick={() => {
+                  setCameraPreset(btn.id);
+                  playCameraClick();
+                }}
                 className={`w-10 h-10 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center transition-all cursor-pointer ${
                   isActive
                     ? 'bg-gt-accent text-white shadow-lg shadow-red-950/40 ring-1 ring-gt-accent'
@@ -130,7 +134,10 @@ export const VerticalCameraRail: React.FC = () => {
         <div className="relative group">
           <button
             role="button"
-            onClick={toggleAutoRotate}
+            onClick={() => {
+              toggleAutoRotate();
+              playToggleClick();
+            }}
             className={`w-10 h-10 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center transition-all cursor-pointer ${
               isAutoRotate
                 ? 'bg-gt-accent text-white shadow-sm'
@@ -151,7 +158,10 @@ export const VerticalCameraRail: React.FC = () => {
         <div className="relative group">
           <button
             role="button"
-            onClick={toggleWireframe}
+            onClick={() => {
+              toggleWireframe();
+              playToggleClick();
+            }}
             className={`w-10 h-10 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center transition-all cursor-pointer ${
               isWireframe
                 ? 'bg-gt-accent text-white shadow-sm'

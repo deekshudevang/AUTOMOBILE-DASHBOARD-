@@ -8,7 +8,9 @@ import {
   Search,
   Database,
   HelpCircle,
-  GitBranch
+  GitBranch,
+  Volume2,
+  VolumeX
 } from 'lucide-react';
 import { useVehicleStore } from '../../hooks/useVehicleStore';
 import { useUiStore } from '../../state/useUiStore';
@@ -17,6 +19,7 @@ import { VehicleSelectionModal } from '../gallery/VehicleSelectionModal';
 import { LegacyMigrationModal } from '../modals/LegacyMigrationModal';
 import { LegacyStorageMigrator } from '../../services/legacyMigration';
 import { ProjectManager } from '../../projects/projectManager';
+import { playToggleClick } from '../../utils/audioFeedback';
 
 export const GranTurismoHeader: React.FC = () => {
   const {
@@ -31,7 +34,12 @@ export const GranTurismoHeader: React.FC = () => {
     syncBuildsWithBackend
   } = useVehicleStore();
 
-  const { setCommandPaletteOpen, setShortcutHelpOpen } = useUiStore();
+  const {
+    setCommandPaletteOpen,
+    setShortcutHelpOpen,
+    uiSoundsEnabled,
+    toggleUiSounds
+  } = useUiStore();
 
   const [isVehicleModalOpen, setIsVehicleModalOpen] = useState(false);
   const [isMigrationModalOpen, setIsMigrationModalOpen] = useState(false);
@@ -224,6 +232,24 @@ export const GranTurismoHeader: React.FC = () => {
           <span className="text-gt-text-primary hidden sm:inline font-semibold">
             {statusInfo.text}
           </span>
+        </button>
+
+        {/* Tactile Audio Feedback Toggle Button */}
+        <button
+          onClick={() => {
+            toggleUiSounds();
+            playToggleClick();
+          }}
+          title={uiSoundsEnabled ? 'Mute Mechanical Audio Feedback' : 'Enable Mechanical Audio Feedback'}
+          aria-label={uiSoundsEnabled ? 'Mute mechanical sound effects' : 'Enable mechanical sound effects'}
+          aria-pressed={uiSoundsEnabled}
+          className={`w-9 h-9 rounded-md border flex items-center justify-center transition-all cursor-pointer ${
+            uiSoundsEnabled
+              ? 'bg-gt-graphite border-gt-accent text-gt-accent shadow-sm'
+              : 'bg-gt-graphite border-gt-border text-gt-text-secondary hover:text-white'
+          }`}
+        >
+          {uiSoundsEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
         </button>
 
         {/* Keyboard Shortcuts Help Button */}

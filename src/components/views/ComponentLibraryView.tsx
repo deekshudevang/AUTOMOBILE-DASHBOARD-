@@ -190,7 +190,7 @@ export const ComponentLibraryView: React.FC = () => {
                           {comp.category}
                         </span>
                         {comp.hubInterface && (
-                          <span className="text-[10px] font-mono px-1.5 py-0.2 rounded border bg-purple-950/60 border-purple-800 text-purple-300">
+                          <span className="text-[10px] font-mono px-1.5 py-0.2 rounded border bg-slate-800/60 border-slate-700 text-slate-300">
                             {comp.hubInterface}
                           </span>
                         )}
@@ -255,7 +255,7 @@ export const ComponentLibraryView: React.FC = () => {
               {selectedComponent.hubInterface && (
                 <div className="flex justify-between py-1.5 border-b border-autoverse-border/50">
                   <span className="text-slate-400">Hub / Spline Type</span>
-                  <span className="font-mono text-[11px] text-purple-300">{selectedComponent.hubInterface}</span>
+                  <span className="font-mono text-[11px] text-slate-200">{selectedComponent.hubInterface}</span>
                 </div>
               )}
               {selectedComponent.boltPattern && (
