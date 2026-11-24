@@ -16,3 +16,4 @@ export * from './geometry/crossCarPartSwapper';
 export * from './geometry/vehicleInteriorGenerator';
 export * from './geometry/vehicleEngineBayGenerator';
 export * from './geometry/vehicleOpeningController';
+export * from './materials/proceduralPbrTextures';

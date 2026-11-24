@@ -17,6 +17,7 @@ import {
   DEFAULT_OPENING_STATE
 } from './vehicleOpeningController';
 import { geometryCachePool } from '../core/geometryCachePool';
+import { ProceduralPbrTextures } from '../materials/proceduralPbrTextures';
 
 export interface AssemblyOptions {
   componentOverrides?: Record<string, ComponentOverride>;
@@ -287,41 +288,21 @@ export class EditableVehicleAssembler {
 
       switch (m.type) {
         case 'paint_metallic':
-          mat = new THREE.MeshPhysicalMaterial({
-            color,
-            metalness: m.metalness ?? 0.75,
-            roughness: m.roughness ?? 0.22,
-            clearcoat: m.clearcoat ?? 1.0,
-            clearcoatRoughness: m.clearcoatRoughness ?? 0.08,
-            wireframe
-          });
+          mat = ProceduralPbrTextures.createClearcoatPaintMaterial(color.getHex(), 'metallic');
+          (mat as any).wireframe = wireframe;
           break;
         case 'paint_gloss':
-          mat = new THREE.MeshPhysicalMaterial({
-            color,
-            metalness: m.metalness ?? 0.45,
-            roughness: m.roughness ?? 0.20,
-            clearcoat: m.clearcoat ?? 0.90,
-            clearcoatRoughness: 0.10,
-            wireframe
-          });
+          mat = ProceduralPbrTextures.createClearcoatPaintMaterial(color.getHex(), 'gloss');
+          (mat as any).wireframe = wireframe;
           break;
         case 'paint_matte':
-          mat = new THREE.MeshStandardMaterial({
-            color,
-            metalness: m.metalness ?? 0.20,
-            roughness: m.roughness ?? 0.65,
-            wireframe
-          });
+          mat = ProceduralPbrTextures.createClearcoatPaintMaterial(color.getHex(), 'matte');
+          (mat as any).wireframe = wireframe;
           break;
         case 'carbon_fiber':
         case 'forged_carbon':
-          mat = new THREE.MeshStandardMaterial({
-            color: new THREE.Color(m.color || '#18181b'),
-            metalness: m.metalness ?? 0.35,
-            roughness: m.roughness ?? 0.42,
-            wireframe
-          });
+          mat = ProceduralPbrTextures.createCarbonFiberMaterial(m.color || '#18181b');
+          (mat as any).wireframe = wireframe;
           break;
         case 'chrome':
         case 'alloy':
@@ -333,15 +314,8 @@ export class EditableVehicleAssembler {
           });
           break;
         case 'glass':
-          mat = new THREE.MeshPhysicalMaterial({
-            color,
-            metalness: 0.05,
-            roughness: 0.05,
-            transmission: m.transmission ?? 0.75,
-            transparent: true,
-            opacity: 0.85,
-            wireframe
-          });
+          mat = ProceduralPbrTextures.createGlassMaterial(m.color || '#0e1724', m.transmission ?? 0.75);
+          (mat as any).wireframe = wireframe;
           break;
         case 'emissive_led':
           mat = new THREE.MeshStandardMaterial({
@@ -835,29 +809,125 @@ export class EditableVehicleAssembler {
     length: number,
     material: THREE.Material
   ): THREE.Object3D {
+    const group = new THREE.Group();
+    group.name = `${id}_lighting_assembly`;
+
     if (id.includes('taillight')) {
-      const geo = new THREE.BoxGeometry(width, height, length);
-      geo.computeVertexNormals();
-      const mesh = new THREE.Mesh(geo, material);
-      mesh.name = 'taillight_light_bar';
-      return mesh;
+      // 1. Ruby-red outer protective lens
+      const lensGeo = new THREE.BoxGeometry(width, height, length);
+      lensGeo.computeVertexNormals();
+      const outerLensMat = new THREE.MeshPhysicalMaterial({
+        color: new THREE.Color(0x990011),
+        transmission: 0.40,
+        transparent: true,
+        opacity: 0.85,
+        roughness: 0.08,
+        clearcoat: 0.95
+      });
+      const outerLens = new THREE.Mesh(lensGeo, outerLensMat);
+      outerLens.name = 'taillight_light_bar';
+      group.add(outerLens);
+
+      // 2. High-intensity continuous internal LED light guide blade
+      const bladeGeo = new THREE.BoxGeometry(width * 0.94, height * 0.45, length * 0.7);
+      bladeGeo.computeVertexNormals();
+      const bladeMat = new THREE.MeshStandardMaterial({
+        color: new THREE.Color(0xff0022),
+        emissive: new THREE.Color(0xff0022),
+        emissiveIntensity: 2.2,
+        roughness: 0.1
+      });
+      const blade = new THREE.Mesh(bladeGeo, bladeMat);
+      blade.name = 'taillight_led_blade';
+      blade.position.set(0, 0, -length * 0.1);
+      group.add(blade);
+
+      return group;
     }
 
-    const group = new THREE.Group();
-    // 4 Projector Dots
-    const dotOffsets = [
-      [-width * 0.25, -height * 0.2],
-      [width * 0.25, -height * 0.2],
-      [-width * 0.25, height * 0.2],
-      [width * 0.25, height * 0.2]
+    // Authentic Bi-LED Matrix Projector Headlight Assembly
+    // 1. Aerodynamic curved outer polycarbonate lens
+    const lensGeo = new THREE.BoxGeometry(width, height, length * 0.3);
+    lensGeo.computeVertexNormals();
+    const outerLensMat = ProceduralPbrTextures.createHeadlightProjectorLensMaterial();
+    const outerLens = new THREE.Mesh(lensGeo, outerLensMat);
+    outerLens.name = 'headlight_outer_lens';
+    outerLens.position.set(0, 0, length * 0.35);
+    group.add(outerLens);
+
+    // 2. Blacked-out inner optical housing bucket
+    const bucketGeo = new THREE.BoxGeometry(width * 0.96, height * 0.96, length * 0.7);
+    bucketGeo.computeVertexNormals();
+    const bucketMat = new THREE.MeshStandardMaterial({
+      color: new THREE.Color(0x0c0d0e),
+      roughness: 0.45,
+      metalness: 0.7
+    });
+    const bucket = new THREE.Mesh(bucketGeo, bucketMat);
+    bucket.name = 'headlight_reflector_bucket';
+    group.add(bucket);
+
+    // 3. Dual Projector Optics (Matrix Bi-LED Condensing Spheres + Chrome Bezels)
+    const projectorOffsets = [
+      [-width * 0.24, 0],
+      [width * 0.24, 0]
     ];
-    for (const [dx, dy] of dotOffsets) {
-      const dotGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.04, 12);
+    const chromeBezelMat = new THREE.MeshStandardMaterial({
+      color: new THREE.Color(0xe2e8f0),
+      metalness: 0.95,
+      roughness: 0.08
+    });
+    const ledCoreMat = new THREE.MeshStandardMaterial({
+      color: new THREE.Color(0xffffff),
+      emissive: new THREE.Color(0xf8fafc),
+      emissiveIntensity: 2.8,
+      roughness: 0.05
+    });
+
+    for (let i = 0; i < projectorOffsets.length; i++) {
+      const [px, py] = projectorOffsets[i];
+      const projUnit = new THREE.Group();
+      projUnit.name = `projector_optic_${i + 1}`;
+
+      // Chrome shroud ring
+      const shroudGeo = new THREE.CylinderGeometry(height * 0.32, height * 0.35, length * 0.35, 16);
+      shroudGeo.rotateX(Math.PI / 2);
+      const shroud = new THREE.Mesh(shroudGeo, chromeBezelMat);
+      projUnit.add(shroud);
+
+      // Glass condensing lens sphere
+      const sphereGeo = new THREE.SphereGeometry(height * 0.28, 16, 16, 0, Math.PI * 2, 0, Math.PI / 2);
+      sphereGeo.rotateX(-Math.PI / 2);
+      const sphereMat = ProceduralPbrTextures.createHeadlightProjectorLensMaterial();
+      const lens = new THREE.Mesh(sphereGeo, sphereMat);
+      lens.position.set(0, 0, length * 0.16);
+      projUnit.add(lens);
+
+      // Internal LED emitter dot
+      const dotGeo = new THREE.CylinderGeometry(height * 0.10, height * 0.10, 0.02, 12);
       dotGeo.rotateX(Math.PI / 2);
-      const dot = new THREE.Mesh(dotGeo, material);
-      dot.position.set(dx, dy, 0);
-      group.add(dot);
+      const dot = new THREE.Mesh(dotGeo, ledCoreMat);
+      dot.position.set(0, 0, -length * 0.05);
+      projUnit.add(dot);
+
+      projUnit.position.set(px, py, length * 0.05);
+      group.add(projUnit);
     }
+
+    // 4. Perimeter DRL (Daytime Running Light) light blade tube
+    const drlGeo = new THREE.BoxGeometry(width * 0.90, height * 0.10, 0.02);
+    drlGeo.computeVertexNormals();
+    const drlMat = new THREE.MeshStandardMaterial({
+      color: new THREE.Color(0xffffff),
+      emissive: new THREE.Color(0xffffff),
+      emissiveIntensity: 2.4,
+      roughness: 0.1
+    });
+    const drl = new THREE.Mesh(drlGeo, drlMat);
+    drl.name = 'headlight_drl_blade';
+    drl.position.set(0, height * 0.36, length * 0.28);
+    group.add(drl);
+
     return group;
   }
 
@@ -867,7 +937,10 @@ export class EditableVehicleAssembler {
     height: number,
     length: number,
     material: THREE.Material
-  ): THREE.Mesh {
+  ): THREE.Object3D {
+    const group = new THREE.Group();
+    group.name = `${id}_assembly`;
+
     const hw = width / 2;
     const shape = new THREE.Shape();
     shape.moveTo(-hw, 0);
@@ -885,7 +958,43 @@ export class EditableVehicleAssembler {
 
     const mesh = new THREE.Mesh(geo, material);
     mesh.name = `${id}_mesh`;
-    return mesh;
+    group.add(mesh);
+
+    // Black ceramic frit perimeter border band (OEM UV protection enamel)
+    const fritShape = new THREE.Shape();
+    fritShape.moveTo(-hw * 0.98, 0.01);
+    fritShape.lineTo(-hw * 0.87, height * 0.98);
+    fritShape.quadraticCurveTo(0, height + 0.02, hw * 0.87, height * 0.98);
+    fritShape.lineTo(hw * 0.98, 0.01);
+    fritShape.closePath();
+
+    const fritHole = new THREE.Path();
+    const margin = 0.035;
+    fritHole.moveTo(-hw * (0.98 - margin), margin);
+    fritHole.lineTo(hw * (0.98 - margin), margin);
+    fritHole.lineTo(hw * (0.87 - margin), height * (0.98 - margin));
+    fritHole.quadraticCurveTo(0, height * (0.98 - margin) + 0.01, -hw * (0.87 - margin), height * (0.98 - margin));
+    fritHole.closePath();
+    fritShape.holes.push(fritHole);
+
+    const fritGeo = new THREE.ExtrudeGeometry(fritShape, {
+      depth: 0.002,
+      bevelEnabled: false
+    });
+    fritGeo.center();
+    fritGeo.computeVertexNormals();
+
+    const fritMat = new THREE.MeshStandardMaterial({
+      color: new THREE.Color(0x0a0a0c),
+      roughness: 0.92,
+      metalness: 0.05
+    });
+    const fritMesh = new THREE.Mesh(fritGeo, fritMat);
+    fritMesh.name = `${id}_frit_border`;
+    fritMesh.position.set(0, 0, 0.007);
+    group.add(fritMesh);
+
+    return group;
   }
 
   private static buildWheelComponent(

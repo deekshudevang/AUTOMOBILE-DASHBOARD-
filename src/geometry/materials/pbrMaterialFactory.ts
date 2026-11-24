@@ -1,28 +1,37 @@
 import * as THREE from 'three';
 import { MaterialDefinition } from '../types';
+import { ProceduralPbrTextures } from '@autoverse/vehicle-generation-engine';
 
 export class PbrMaterialFactory {
   /**
-   * Builds production automotive PBR material with clearcoat, roughness, and metalness
+   * Builds production automotive PBR material with clearcoat, roughness, metalness, and procedural micro-normal textures
    */
   public static createMaterial(def: MaterialDefinition, wireframe = false): THREE.Material {
     switch (def.type) {
-      case 'clearcoat_paint':
+      case 'clearcoat_paint': {
+        const isMetallic = (def.metalness ?? 0.35) > 0.4;
         return new THREE.MeshPhysicalMaterial({
           color: new THREE.Color(def.color),
           metalness: def.metalness ?? 0.35,
           roughness: def.roughness ?? 0.18,
           clearcoat: def.clearcoat ?? 1.0,
           clearcoatRoughness: def.clearcoatRoughness ?? 0.04,
+          clearcoatNormalMap: ProceduralPbrTextures.getOrangePeelNormalMap(),
+          clearcoatNormalScale: new THREE.Vector2(0.06, 0.06),
+          normalMap: isMetallic ? ProceduralPbrTextures.getMetallicFlakeTexture() : null,
+          normalScale: isMetallic ? new THREE.Vector2(0.08, 0.08) : new THREE.Vector2(0, 0),
           wireframe,
           side: THREE.DoubleSide
         });
+      }
 
       case 'tyre_rubber':
         return new THREE.MeshStandardMaterial({
           color: new THREE.Color(def.color || '#1A1C1E'),
           roughness: 0.88,
           metalness: 0.05,
+          normalMap: ProceduralPbrTextures.getTireTreadNormalMap(),
+          normalScale: new THREE.Vector2(0.5, 0.5),
           wireframe
         });
 
@@ -37,10 +46,12 @@ export class PbrMaterialFactory {
       case 'carbon_fiber':
         return new THREE.MeshPhysicalMaterial({
           color: new THREE.Color(def.color || '#15171A'),
-          roughness: 0.55,
-          metalness: 0.20,
-          clearcoat: 0.20,
-          clearcoatRoughness: 0.25,
+          roughness: 0.40,
+          metalness: 0.30,
+          clearcoat: 0.45,
+          clearcoatRoughness: 0.12,
+          normalMap: ProceduralPbrTextures.getCarbonWeaveNormalMap(),
+          normalScale: new THREE.Vector2(0.35, 0.35),
           wireframe,
           side: THREE.DoubleSide
         });
@@ -51,7 +62,7 @@ export class PbrMaterialFactory {
           transmission: def.transmission ?? 0.92,
           opacity: 1,
           transparent: true,
-          roughness: 0.05,
+          roughness: 0.02,
           ior: 1.52,
           wireframe,
           side: THREE.DoubleSide
@@ -61,7 +72,7 @@ export class PbrMaterialFactory {
         return new THREE.MeshStandardMaterial({
           color: new THREE.Color(def.color || '#FFFFFF'),
           emissive: new THREE.Color(def.emissive || def.color || '#FFFFFF'),
-          emissiveIntensity: def.emissiveIntensity ?? 1.8,
+          emissiveIntensity: def.emissiveIntensity ?? 2.2,
           roughness: 0.1,
           metalness: 0.2,
           wireframe,
@@ -74,6 +85,8 @@ export class PbrMaterialFactory {
           color: new THREE.Color(def.color || '#1E232A'),
           roughness: 0.75,
           metalness: 0.1,
+          normalMap: ProceduralPbrTextures.getPerforatedLeatherNormalMap(),
+          normalScale: new THREE.Vector2(0.25, 0.25),
           wireframe,
           side: THREE.DoubleSide
         });
