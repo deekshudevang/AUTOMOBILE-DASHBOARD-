@@ -1,6 +1,18 @@
 import React, { useState, useMemo } from 'react';
+import {
+  Activity,
+  Gauge,
+  TrendingUp,
+  Cpu,
+  Layers,
+  ShieldCheck,
+  Zap,
+  Sliders,
+  ChevronRight
+} from 'lucide-react';
 import { useVehicleStore } from '../../hooks/useVehicleStore';
 import { AeroDynamicsCoupler, VehicleDynamicsInput } from '../../simulation/dynamics/aeroDynamicsCoupler';
+import { TechnicalSlider } from '../ui/TechnicalSlider';
 
 export const VehicleDynamicsView: React.FC = () => {
   const { engineeringMode, activeModel } = useVehicleStore();
@@ -74,455 +86,331 @@ export const VehicleDynamicsView: React.FC = () => {
   }, [couplingReport, selectedSpeedKmh]);
 
   return (
-    <div className="h-full flex flex-col bg-autoverse-bg text-slate-100 p-6 overflow-y-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between pb-4 border-b border-autoverse-border shrink-0">
-        <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-xl font-bold tracking-tight">Vehicle Dynamics & Aerodynamic Coupling</h1>
-            <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-cyan-950/60 border border-cyan-800 text-cyan-300">
-              CFD COUPLED MULTIBODY
-            </span>
-            {engineeringMode === 'student' && (
-              <span className="text-[11px] font-medium px-2 py-0.5 rounded bg-emerald-950/60 border border-emerald-800 text-emerald-300">
-                Student Mode Active
-              </span>
-            )}
+    <div className="h-full flex flex-col bg-gt-obsidian text-zinc-100 overflow-hidden select-none font-sans">
+      {/* 1. Header Toolbar */}
+      <header className="h-14 px-6 bg-gt-basalt/80 border-b border-gt-border backdrop-blur-xl flex items-center justify-between shrink-0 z-10">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-gt-accent/15 border border-gt-accent/30 flex items-center justify-center text-gt-accent">
+            <Activity className="w-4 h-4" />
           </div>
-          <p className="text-xs text-autoverse-muted mt-1">
-            Coupling CFD aero forces into 4-wheel normal load distribution, suspension deflection, dynamic rake shifts, and high-speed lateral grip.
-          </p>
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-sm font-heading font-bold text-white tracking-wide">
+                VEHICLE DYNAMICS & AERO COUPLING
+              </h1>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-black/60 border border-gt-border text-gt-accent font-bold">
+                MULTIBODY TELEMETRY
+              </span>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-950/60 border border-emerald-800 text-emerald-300 font-bold">
+                TIRE μ = {tireMu}
+              </span>
+            </div>
+            <p className="text-[11px] font-mono text-zinc-400">
+              Coupled aero downforce normal load, suspension deflection, roll-center kinematics, and high-speed grip
+            </p>
+          </div>
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex gap-1 bg-autoverse-surface p-1 rounded border border-autoverse-border text-xs font-mono">
+        <div className="flex items-center bg-black/40 border border-gt-border rounded-lg p-0.5 text-xs font-mono">
           <button
             onClick={() => setActiveTab('aero-coupling')}
-            className={`px-3 py-1 rounded transition-colors ${
+            className={`px-3 py-1 rounded transition-all cursor-pointer ${
               activeTab === 'aero-coupling'
-                ? 'bg-cyan-950/80 text-cyan-300 border border-cyan-700/60'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-gt-accent text-white font-bold shadow-md'
+                : 'text-zinc-400 hover:text-white'
             }`}
           >
-            Aero Normal Load Coupling
+            Aero Load Coupling
           </button>
           <button
             onClick={() => setActiveTab('kinematics')}
-            className={`px-3 py-1 rounded transition-colors ${
+            className={`px-3 py-1 rounded transition-all cursor-pointer ${
               activeTab === 'kinematics'
-                ? 'bg-cyan-950/80 text-cyan-300 border border-cyan-700/60'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-gt-accent text-white font-bold shadow-md'
+                : 'text-zinc-400 hover:text-white'
             }`}
           >
             Suspension Kinematics
           </button>
         </div>
-      </div>
+      </header>
 
-      {activeTab === 'aero-coupling' ? (
-        /* Aerodynamic Normal Load Coupling View */
-        <div className="space-y-6 mt-6">
-          {/* Top KPI Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="p-4 rounded bg-autoverse-surface border border-autoverse-border">
-              <span className="text-[10px] font-mono uppercase text-slate-400">Mechanical Grip (0 km/h)</span>
-              <div className="text-xl font-mono font-bold text-slate-200 mt-1">
+      {/* 2. Main Workstation Body */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Left Parameter Adjustment Blade (320px) */}
+        <div className="w-80 bg-gt-basalt/60 border-r border-gt-border p-4 space-y-5 overflow-y-auto shrink-0 font-mono">
+          {activeTab === 'aero-coupling' ? (
+            <>
+              <div className="space-y-3">
+                <h3 className="text-xs font-heading font-bold text-zinc-300 uppercase tracking-wider">
+                  Coupling Parameters
+                </h3>
+                <TechnicalSlider
+                  label="Speed Sweep Point"
+                  value={selectedSpeedKmh}
+                  min={50}
+                  max={320}
+                  step={10}
+                  unit="km/h"
+                  onChange={setSelectedSpeedKmh}
+                />
+                <TechnicalSlider
+                  label="Tire Friction Coeff (μ)"
+                  value={tireMu}
+                  min={0.8}
+                  max={1.8}
+                  step={0.05}
+                  unit="mu"
+                  onChange={setTireMu}
+                />
+              </div>
+
+              <div className="pt-2 border-t border-gt-border space-y-3">
+                <h3 className="text-xs font-heading font-bold text-zinc-300 uppercase tracking-wider">
+                  Aerodynamic Coefficients
+                </h3>
+                <TechnicalSlider
+                  label="Drag Coefficient (Cd)"
+                  value={cd}
+                  min={0.25}
+                  max={0.55}
+                  step={0.01}
+                  unit="Cd"
+                  onChange={setCd}
+                />
+                <TechnicalSlider
+                  label="Front Lift Coeff (Cl_F)"
+                  value={Math.abs(clFront)}
+                  min={0.05}
+                  max={0.4}
+                  step={0.01}
+                  unit="Cl"
+                  onChange={(v) => setClFront(-v)}
+                />
+                <TechnicalSlider
+                  label="Rear Lift Coeff (Cl_R)"
+                  value={Math.abs(clRear)}
+                  min={0.1}
+                  max={0.6}
+                  step={0.01}
+                  unit="Cl"
+                  onChange={(v) => setClRear(-v)}
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="space-y-3">
+                <h3 className="text-xs font-heading font-bold text-zinc-300 uppercase tracking-wider">
+                  Suspension Stiffness
+                </h3>
+                <TechnicalSlider
+                  label="Front Spring Rate"
+                  value={frontSpringRateNmm}
+                  min={80}
+                  max={240}
+                  step={5}
+                  unit="N/mm"
+                  onChange={setFrontSpringRateNmm}
+                />
+                <TechnicalSlider
+                  label="Rear Spring Rate"
+                  value={rearSpringRateNmm}
+                  min={100}
+                  max={280}
+                  step={5}
+                  unit="N/mm"
+                  onChange={setRearSpringRateNmm}
+                />
+              </div>
+
+              <div className="pt-2 border-t border-gt-border space-y-3">
+                <h3 className="text-xs font-heading font-bold text-zinc-300 uppercase tracking-wider">
+                  Anti-Roll Bars & Load
+                </h3>
+                <TechnicalSlider
+                  label="Front ARB Stiffness"
+                  value={frontArbStiffness}
+                  min={15}
+                  max={80}
+                  step={5}
+                  unit="N/mm"
+                  onChange={setFrontArbStiffness}
+                />
+                <TechnicalSlider
+                  label="Rear ARB Stiffness"
+                  value={rearArbStiffness}
+                  min={15}
+                  max={70}
+                  step={5}
+                  unit="N/mm"
+                  onChange={setRearArbStiffness}
+                />
+                <TechnicalSlider
+                  label="Target Lateral G"
+                  value={lateralG}
+                  min={0.5}
+                  max={1.8}
+                  step={0.05}
+                  unit="G"
+                  onChange={setLateralG}
+                />
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Center Stage: Multibody Telemetry HUD & Vector Diagrams */}
+        <div className="flex-1 flex flex-col bg-gt-obsidian p-6 overflow-y-auto space-y-6">
+          {/* Top KPI Telemetry Cards */}
+          <div className="grid grid-cols-4 gap-4 font-mono">
+            <div className="p-4 rounded-2xl bg-gt-basalt/60 border border-gt-border shadow-xl">
+              <div className="text-[10px] text-zinc-400 uppercase">Mechanical Grip (0 km/h)</div>
+              <div className="text-2xl font-bold text-white mt-1">
                 {couplingReport.speedSweep[0].maxCorneringLateralG.toFixed(2)} G
               </div>
-              <span className="text-[11px] text-slate-400 font-mono">Friction coefficient &mu; = {tireMu}</span>
+              <div className="text-[10px] text-zinc-500 mt-1">Base mechanical grip</div>
             </div>
 
-            <div className="p-4 rounded bg-autoverse-surface border border-autoverse-border">
-              <span className="text-[10px] font-mono uppercase text-slate-400">High-Speed Grip (300 km/h)</span>
-              <div className="text-xl font-mono font-bold text-cyan-400 mt-1">
-                {couplingReport.topSpeedPoint.maxCorneringLateralG.toFixed(2)} G
+            <div className="p-4 rounded-2xl bg-gt-basalt/60 border border-gt-border shadow-xl">
+              <div className="text-[10px] text-zinc-400 uppercase">High-Speed Grip ({selectedSpeedKmh} km/h)</div>
+              <div className="text-2xl font-bold text-gt-accent mt-1">
+                {currentSpeedPoint.maxCorneringLateralG.toFixed(2)} G
               </div>
-              <span className="text-[11px] text-emerald-400 font-mono font-semibold">
-                +{couplingReport.highSpeedGripEnhancementPct}% grip enhancement
-              </span>
+              <div className="text-[10px] text-emerald-400 mt-1 font-bold">
+                +{couplingReport.highSpeedGripEnhancementPct}% aero enhancement
+              </div>
             </div>
 
-            <div className="p-4 rounded bg-autoverse-surface border border-autoverse-border">
-              <span className="text-[10px] font-mono uppercase text-slate-400">Total Downforce @ 280 km/h</span>
-              <div className="text-xl font-mono font-bold text-slate-200 mt-1">
-                {couplingReport.speedSweep[8]?.totalDownforceN.toLocaleString()} N
+            <div className="p-4 rounded-2xl bg-gt-basalt/60 border border-gt-border shadow-xl">
+              <div className="text-[10px] text-zinc-400 uppercase">Total Normal Downforce</div>
+              <div className="text-2xl font-bold text-white mt-1">
+                {currentSpeedPoint.totalDownforceN} N
               </div>
-              <span className="text-[11px] text-slate-400 font-mono">
-                {Math.round((couplingReport.speedSweep[8]?.totalDownforceN || 0) / 9.81)} kgf aerodynamic load
-              </span>
+              <div className="text-[10px] text-zinc-400 mt-1">
+                {Math.round(currentSpeedPoint.totalDownforceN / 9.80665)} kgf aero load
+              </div>
             </div>
 
-            <div className="p-4 rounded bg-autoverse-surface border border-autoverse-border">
-              <span className="text-[10px] font-mono uppercase text-slate-400">High-Speed Aero Balance</span>
-              <div className="text-xl font-mono font-bold text-slate-200 mt-1">
-                {couplingReport.topSpeedPoint.dynamicWeightFrontPct.toFixed(1)}% Front
+            <div className="p-4 rounded-2xl bg-gt-basalt/60 border border-gt-border shadow-xl">
+              <div className="text-[10px] text-zinc-400 uppercase">Dynamic Aero Balance</div>
+              <div className="text-2xl font-bold text-white mt-1">
+                {currentSpeedPoint.dynamicWeightFrontPct.toFixed(1)}% Front
               </div>
-              <span className="text-[11px] text-slate-400 font-mono">
-                Static balance: {frontWeightDistPct.toFixed(1)}% Front
-              </span>
+              <div className="text-[10px] text-zinc-500 mt-1">
+                Static: {frontWeightDistPct}% Front
+              </div>
             </div>
           </div>
 
-          {/* Configuration and Live Sweep Table */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Input Controls */}
-            <div className="p-5 rounded bg-autoverse-surface border border-autoverse-border space-y-4">
-              <h2 className="text-sm font-bold text-slate-100 border-b border-autoverse-border pb-2">
-                Aero & Chassis Coupling Parameters
-              </h2>
-
-              <div className="space-y-3 text-xs">
-                <div>
-                  <div className="flex justify-between mb-1">
-                    <span className="text-slate-300">Drag Coefficient (Cd)</span>
-                    <span className="font-mono text-cyan-400 font-bold">{cd.toFixed(3)}</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="0.25"
-                    max="0.55"
-                    step="0.005"
-                    value={cd}
-                    onChange={e => setCd(parseFloat(e.target.value))}
-                    className="w-full accent-cyan-400"
-                  />
-                </div>
-
-                <div>
-                  <div className="flex justify-between mb-1">
-                    <span className="text-slate-300">Front Lift Coeff (Cl_front)</span>
-                    <span className="font-mono text-cyan-400 font-bold">{clFront.toFixed(3)}</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="-0.40"
-                    max="0.10"
-                    step="0.005"
-                    value={clFront}
-                    onChange={e => setClFront(parseFloat(e.target.value))}
-                    className="w-full accent-cyan-400"
-                  />
-                  <span className="text-[10px] text-slate-400">Negative indicates downforce</span>
-                </div>
-
-                <div>
-                  <div className="flex justify-between mb-1">
-                    <span className="text-slate-300">Rear Lift Coeff (Cl_rear)</span>
-                    <span className="font-mono text-cyan-400 font-bold">{clRear.toFixed(3)}</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="-0.60"
-                    max="0.10"
-                    step="0.005"
-                    value={clRear}
-                    onChange={e => setClRear(parseFloat(e.target.value))}
-                    className="w-full accent-cyan-400"
-                  />
-                  <span className="text-[10px] text-slate-400">Adjusted by rear wing angle & profile</span>
-                </div>
-
-                <div>
-                  <div className="flex justify-between mb-1">
-                    <span className="text-slate-300">Tire Friction Coefficient (&mu;)</span>
-                    <span className="font-mono text-cyan-400 font-bold">{tireMu.toFixed(2)}</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="1.0"
-                    max="1.7"
-                    step="0.05"
-                    value={tireMu}
-                    onChange={e => setTireMu(parseFloat(e.target.value))}
-                    className="w-full accent-cyan-400"
-                  />
-                  <span className="text-[10px] text-slate-400">1.35 = Michelin Cup 2 R; 1.60 = Slick</span>
-                </div>
-
-                <div className="pt-2 border-t border-autoverse-border">
-                  <div className="flex justify-between mb-1">
-                    <span className="text-slate-300 font-medium">Front Coilover Spring Rate</span>
-                    <span className="font-mono text-cyan-400 font-bold">{frontSpringRateNmm} N/mm</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="60"
-                    max="220"
-                    step="5"
-                    value={frontSpringRateNmm}
-                    onChange={e => setFrontSpringRateNmm(parseInt(e.target.value))}
-                    className="w-full accent-cyan-400"
-                  />
-                </div>
-
-                <div>
-                  <div className="flex justify-between mb-1">
-                    <span className="text-slate-300 font-medium">Rear Coilover Spring Rate</span>
-                    <span className="font-mono text-cyan-400 font-bold">{rearSpringRateNmm} N/mm</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="80"
-                    max="260"
-                    step="5"
-                    value={rearSpringRateNmm}
-                    onChange={e => setRearSpringRateNmm(parseInt(e.target.value))}
-                    className="w-full accent-cyan-400"
-                  />
-                </div>
-              </div>
-
-              {/* Student Help Box */}
-              {engineeringMode === 'student' && (
-                <div className="p-3 rounded bg-autoverse-elevated border border-autoverse-border text-[11px] text-slate-300 space-y-1.5">
-                  <p className="font-semibold text-cyan-400">🎓 Why Aero Dynamic Coupling Matters</p>
-                  <p className="leading-relaxed">
-                    Aerodynamic downforce increases with velocity squared (v&sup2;). At high speeds, normal load on the tires can double, radically expanding cornering grip from 1.35G to over 1.70G. However, if front and rear downforce are unbalanced, the dynamic pitch (rake) changes and can shift vehicle handling toward severe understeer or oversteer.
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* Live Speed Sweep Table */}
-            <div className="lg:col-span-2 p-5 rounded bg-autoverse-surface border border-autoverse-border space-y-4">
-              <div className="flex items-center justify-between border-b border-autoverse-border pb-2">
-                <h2 className="text-sm font-bold text-slate-100">
-                  Speed Sweep Response Envelope (0 - 300 km/h)
-                </h2>
-                <span className="text-[11px] font-mono text-slate-400">
-                  ISO-15037 Dynamic Response
-                </span>
-              </div>
-
+          {activeTab === 'aero-coupling' ? (
+            /* Speed Sweep Multibody Table */
+            <div className="p-5 rounded-2xl bg-gt-basalt/60 border border-gt-border shadow-xl space-y-4">
+              <h3 className="text-xs font-heading font-bold text-zinc-300 uppercase tracking-wider flex items-center gap-2">
+                <Gauge className="w-4 h-4 text-gt-accent" />
+                <span>Speed Sweep Telemetry Matrix</span>
+              </h3>
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs font-mono">
+                <table className="w-full text-left font-mono text-xs">
                   <thead>
-                    <tr className="border-b border-autoverse-border/80 text-slate-400 text-[11px]">
-                      <th className="py-2 px-2">Speed (km/h)</th>
-                      <th className="py-2 px-2">Downforce (N)</th>
-                      <th className="py-2 px-2">Front Load (N)</th>
-                      <th className="py-2 px-2">Rear Load (N)</th>
-                      <th className="py-2 px-2">Front Bal (%)</th>
-                      <th className="py-2 px-2 text-cyan-400">Max Grip (G)</th>
-                      <th className="py-2 px-2">Defl F/R (mm)</th>
-                      <th className="py-2 px-2">Rake (&deg;)</th>
+                    <tr className="border-b border-gt-border text-zinc-400 text-[10px] uppercase">
+                      <th className="py-2 px-3">Speed (km/h)</th>
+                      <th className="py-2 px-3">Total DF (N)</th>
+                      <th className="py-2 px-3">Front Load (N)</th>
+                      <th className="py-2 px-3">Rear Load (N)</th>
+                      <th className="py-2 px-3">Front Bump (mm)</th>
+                      <th className="py-2 px-3">Rear Bump (mm)</th>
+                      <th className="py-2 px-3">Max Lat. G</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-autoverse-border/40">
-                    {couplingReport.speedSweep.map((pt) => (
+                  <tbody>
+                    {couplingReport.speedSweep.map((pt, idx) => (
                       <tr
-                        key={pt.velocityKmh}
-                        className={`hover:bg-autoverse-elevated/40 transition-colors ${
-                          pt.velocityKmh === currentSpeedPoint.velocityKmh ? 'bg-cyan-950/40 text-cyan-200' : ''
+                        key={idx}
+                        className={`border-b border-gt-border/40 hover:bg-white/5 ${
+                          Math.abs(pt.velocityKmh - selectedSpeedKmh) < 15 ? 'bg-gt-accent/15 text-white font-bold' : 'text-zinc-300'
                         }`}
                       >
-                        <td className="py-2 px-2 font-bold">{pt.velocityKmh}</td>
-                        <td className="py-2 px-2">{pt.totalDownforceN.toLocaleString()}</td>
-                        <td className="py-2 px-2">{pt.totalAxleLoadFrontN.toLocaleString()}</td>
-                        <td className="py-2 px-2">{pt.totalAxleLoadRearN.toLocaleString()}</td>
-                        <td className="py-2 px-2">{pt.dynamicWeightFrontPct.toFixed(1)}%</td>
-                        <td className="py-2 px-2 font-bold text-cyan-400">{pt.maxCorneringLateralG.toFixed(2)}</td>
-                        <td className="py-2 px-2">-{pt.suspensionCompressionFrontMm} / -{pt.suspensionCompressionRearMm}</td>
-                        <td className="py-2 px-2">{pt.dynamicRakeChangeDeg > 0 ? `+${pt.dynamicRakeChangeDeg}` : pt.dynamicRakeChangeDeg}</td>
+                        <td className="py-2 px-3">{pt.velocityKmh}</td>
+                        <td className="py-2 px-3 text-gt-accent">{pt.totalDownforceN}</td>
+                        <td className="py-2 px-3">{pt.totalAxleLoadFrontN}</td>
+                        <td className="py-2 px-3">{pt.totalAxleLoadRearN}</td>
+                        <td className="py-2 px-3">{pt.suspensionCompressionFrontMm.toFixed(1)}</td>
+                        <td className="py-2 px-3">{pt.suspensionCompressionRearMm.toFixed(1)}</td>
+                        <td className="py-2 px-3 text-emerald-400 font-bold">{pt.maxCorneringLateralG.toFixed(2)} G</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-
-              {/* Dynamic Rake & Aero Elasticity Callout */}
-              <div className="p-3 rounded bg-autoverse-elevated/80 border border-autoverse-border/70 flex items-center justify-between text-xs">
-                <div>
-                  <span className="text-slate-400">Dynamic Aero Pitch Shift @ Top Speed:</span>{' '}
-                  <span className="font-mono font-bold text-slate-200">
-                    {couplingReport.topSpeedPoint.dynamicRakeChangeDeg > 0
-                      ? `+${couplingReport.topSpeedPoint.dynamicRakeChangeDeg}° (Squat)`
-                      : `${couplingReport.topSpeedPoint.dynamicRakeChangeDeg}° (Dive)`}
-                  </span>
+            </div>
+          ) : (
+            /* Kinematics Stage: Vector Roll Center Diagram & 4-Corner Telemetry */
+            <div className="space-y-6">
+              {/* 4-Corner Wheel Deflection Gauges */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 font-mono">
+                <div className="p-4 rounded-xl bg-gt-basalt/60 border border-gt-border">
+                  <div className="text-[10px] text-zinc-400 mb-1">FRONT LEFT (FL)</div>
+                  <div className="text-xl font-bold text-white">{(latTransferFrontN / frontSpringRateNmm).toFixed(1)} mm</div>
+                  <div className="text-[10px] text-zinc-500 mt-1">Camber: {(frontCamberGain * 10).toFixed(2)}°</div>
                 </div>
-                <div>
-                  <span className="text-slate-400">Understeer Gradient Shift:</span>{' '}
-                  <span className="font-mono font-bold text-cyan-400">
-                    {couplingReport.highSpeedUndersteerShiftDegPerG > 0
-                      ? `+${couplingReport.highSpeedUndersteerShiftDegPerG}°/G understeer`
-                      : `${couplingReport.highSpeedUndersteerShiftDegPerG}°/G oversteer`}
-                  </span>
+                <div className="p-4 rounded-xl bg-gt-basalt/60 border border-gt-border">
+                  <div className="text-[10px] text-zinc-400 mb-1">FRONT RIGHT (FR)</div>
+                  <div className="text-xl font-bold text-white">{(-latTransferFrontN / frontSpringRateNmm).toFixed(1)} mm</div>
+                  <div className="text-[10px] text-zinc-500 mt-1">Camber: {(-frontCamberGain * 10).toFixed(2)}°</div>
+                </div>
+                <div className="p-4 rounded-xl bg-gt-basalt/60 border border-gt-border">
+                  <div className="text-[10px] text-zinc-400 mb-1">REAR LEFT (RL)</div>
+                  <div className="text-xl font-bold text-white">{(latTransferRearN / rearSpringRateNmm).toFixed(1)} mm</div>
+                  <div className="text-[10px] text-zinc-500 mt-1">Camber: {(rearCamberGain * 10).toFixed(2)}°</div>
+                </div>
+                <div className="p-4 rounded-xl bg-gt-basalt/60 border border-gt-border">
+                  <div className="text-[10px] text-zinc-400 mb-1">REAR RIGHT (RR)</div>
+                  <div className="text-xl font-bold text-white">{(-latTransferRearN / rearSpringRateNmm).toFixed(1)} mm</div>
+                  <div className="text-[10px] text-zinc-500 mt-1">Camber: {(-rearCamberGain * 10).toFixed(2)}°</div>
+                </div>
+              </div>
+
+              {/* Vector Roll-Center Diagram */}
+              <div className="p-5 rounded-2xl bg-gt-basalt/60 border border-gt-border shadow-xl space-y-4">
+                <h3 className="text-xs font-heading font-bold text-zinc-300 uppercase tracking-wider flex items-center gap-2">
+                  <Activity className="w-4 h-4 text-gt-accent" />
+                  <span>Instantaneous Roll-Center & Roll Axis Diagram</span>
+                </h3>
+
+                <div className="relative w-full h-48 bg-black/60 rounded-xl border border-gt-border p-4 flex items-center justify-center">
+                  <svg className="w-full h-full" viewBox="0 0 600 160" fill="none">
+                    {/* Ground line */}
+                    <line x1="50" y1="130" x2="550" y2="130" stroke="#3F3F46" strokeWidth="2" strokeDasharray="8 4" />
+
+                    {/* Roll Axis Line connecting Front RC to Rear RC */}
+                    <line x1="150" y1={130 - frontRollCenterMm} x2="450" y2={130 - rearRollCenterMm} stroke="#E53935" strokeWidth="2" />
+
+                    {/* Front Roll Center Point */}
+                    <circle cx="150" cy={130 - frontRollCenterMm} r="5" fill="#E53935" />
+                    <text x="120" y={115 - frontRollCenterMm} fill="#E53935" fontSize="10" fontFamily="monospace">
+                      Front RC ({frontRollCenterMm} mm)
+                    </text>
+
+                    {/* Rear Roll Center Point */}
+                    <circle cx="450" cy={130 - rearRollCenterMm} r="5" fill="#E53935" />
+                    <text x="420" y={115 - rearRollCenterMm} fill="#E53935" fontSize="10" fontFamily="monospace">
+                      Rear RC ({rearRollCenterMm} mm)
+                    </text>
+
+                    {/* Center of Gravity (CG) */}
+                    <circle cx="300" cy={130 - cgHeightM * 200} r="6" fill="#F59E0B" />
+                    <text x="270" y={115 - cgHeightM * 200} fill="#F59E0B" fontSize="10" fontFamily="monospace">
+                      CG (420 mm)
+                    </text>
+                  </svg>
                 </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
-      ) : (
-        /* Suspension Kinematics View */
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-          {/* Suspension Setup Controls */}
-          <div className="lg:col-span-2 space-y-4">
-            <div className="p-5 rounded bg-autoverse-surface border border-autoverse-border space-y-5">
-              <h2 className="text-sm font-bold text-slate-100 border-b border-autoverse-border pb-3">
-                Spring & Anti-Roll Bar Stiffness Setup
-              </h2>
-
-              {/* Front & Rear Springs */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-slate-300 font-medium">Front Coilover Spring Rate</span>
-                    <span className="font-mono text-autoverse-cyan font-bold">{frontSpringRateNmm} N/mm</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="60"
-                    max="220"
-                    step="5"
-                    value={frontSpringRateNmm}
-                    onChange={e => setFrontSpringRateNmm(parseInt(e.target.value))}
-                    className="w-full accent-cyan-400"
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-slate-300 font-medium">Rear Coilover Spring Rate</span>
-                    <span className="font-mono text-autoverse-cyan font-bold">{rearSpringRateNmm} N/mm</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="80"
-                    max="260"
-                    step="5"
-                    value={rearSpringRateNmm}
-                    onChange={e => setRearSpringRateNmm(parseInt(e.target.value))}
-                    className="w-full accent-cyan-400"
-                  />
-                </div>
-              </div>
-
-              {/* Anti-Roll Bars */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                <div className="space-y-1.5">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-slate-300 font-medium">Front Anti-Roll Bar Stiffness</span>
-                    <span className="font-mono text-autoverse-cyan font-bold">{frontArbStiffness} N/mm</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="15"
-                    max="80"
-                    step="5"
-                    value={frontArbStiffness}
-                    onChange={e => setFrontArbStiffness(parseInt(e.target.value))}
-                    className="w-full accent-cyan-400"
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-slate-300 font-medium">Rear Anti-Roll Bar Stiffness</span>
-                    <span className="font-mono text-autoverse-cyan font-bold">{rearArbStiffness} N/mm</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="15"
-                    max="70"
-                    step="5"
-                    value={rearArbStiffness}
-                    onChange={e => setRearArbStiffness(parseInt(e.target.value))}
-                    className="w-full accent-cyan-400"
-                  />
-                </div>
-              </div>
-
-              {/* Acceleration G-Force Sliders */}
-              <div className="pt-2 border-t border-autoverse-border">
-                <h3 className="text-xs font-bold text-slate-200 mb-3">Cornering & Braking Acceleration Test</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <div className="flex justify-between text-xs">
-                      <span className="text-slate-400">Lateral Cornering Acceleration</span>
-                      <span className="font-mono text-autoverse-cyan font-bold">{lateralG.toFixed(1)} G</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="0.5"
-                      max="1.8"
-                      step="0.1"
-                      value={lateralG}
-                      onChange={e => setLateralG(parseFloat(e.target.value))}
-                      className="w-full accent-cyan-400"
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <div className="flex justify-between text-xs">
-                      <span className="text-slate-400">Straight-Line Deceleration</span>
-                      <span className="font-mono text-autoverse-cyan font-bold">{brakingG.toFixed(1)} G</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="0.5"
-                      max="1.6"
-                      step="0.1"
-                      value={brakingG}
-                      onChange={e => setBrakingG(parseFloat(e.target.value))}
-                      className="w-full accent-cyan-400"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Dynamics Readout Column */}
-          <div className="lg:col-span-1 space-y-4">
-            <div className="p-5 rounded bg-autoverse-surface border border-autoverse-border space-y-4">
-              <h3 className="text-xs font-mono uppercase tracking-wider text-autoverse-muted">
-                Suspension Kinematic Metrics
-              </h3>
-
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between py-1.5 border-b border-autoverse-border/50">
-                  <span className="text-slate-400">Front Scrub Radius</span>
-                  <span className="font-mono font-bold text-autoverse-cyan">+{frontScrubRadiusMm} mm</span>
-                </div>
-                <div className="flex justify-between py-1.5 border-b border-autoverse-border/50">
-                  <span className="text-slate-400">Front Camber Gain</span>
-                  <span className="font-mono font-bold text-slate-200">{frontCamberGain} deg/mm</span>
-                </div>
-                <div className="flex justify-between py-1.5 border-b border-autoverse-border/50">
-                  <span className="text-slate-400">Rear Camber Gain</span>
-                  <span className="font-mono font-bold text-slate-200">{rearCamberGain} deg/mm</span>
-                </div>
-                <div className="flex justify-between py-1.5 border-b border-autoverse-border/50">
-                  <span className="text-slate-400">Front Roll Center Height</span>
-                  <span className="font-mono font-bold text-slate-200">{frontRollCenterMm} mm</span>
-                </div>
-                <div className="flex justify-between py-1.5 border-b border-autoverse-border/50">
-                  <span className="text-slate-400">Rear Roll Center Height</span>
-                  <span className="font-mono font-bold text-slate-200">{rearRollCenterMm} mm</span>
-                </div>
-                <div className="flex justify-between py-1.5 border-b border-autoverse-border/50">
-                  <span className="text-slate-400">Front Lateral Load Transfer</span>
-                  <span className="font-mono font-bold text-slate-200">{Math.round(latTransferFrontN)} N</span>
-                </div>
-                <div className="flex justify-between py-1.5 border-b border-autoverse-border/50">
-                  <span className="text-slate-400">Rear Lateral Load Transfer</span>
-                  <span className="font-mono font-bold text-slate-200">{Math.round(latTransferRearN)} N</span>
-                </div>
-              </div>
-
-              {/* Student Explanation */}
-              {engineeringMode === 'student' && (
-                <div className="p-3 rounded bg-autoverse-elevated border border-autoverse-border text-[11px] text-slate-300 space-y-1">
-                  <p className="font-semibold text-autoverse-cyan">🎓 Scrub Radius & Camber Gain</p>
-                  <p className="leading-relaxed">
-                    Negative camber gain counters body roll during cornering, keeping the tire tread flat against the asphalt. A small positive scrub radius provides clear mechanical feedback through the steering wheel.
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      </div>
     </div>
   );
 };

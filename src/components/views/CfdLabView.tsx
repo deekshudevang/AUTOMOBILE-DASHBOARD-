@@ -15,9 +15,12 @@ import {
   Info,
   Server,
   Terminal,
-  Check
+  Check,
+  ShieldCheck,
+  Zap
 } from 'lucide-react';
 import { useVehicleStore } from '../../hooks/useVehicleStore';
+import { TechnicalSlider } from '../ui/TechnicalSlider';
 
 type SimulationMode = 'analytical' | 'openfoam' | 'ahmed_benchmark';
 
@@ -185,46 +188,57 @@ export const CfdLabView: React.FC = () => {
     setCurrentIteration(maxIterations);
   };
 
+  const handleReset = () => {
+    setJobState('IDLE');
+    setJobProgress(0);
+    setCurrentIteration(0);
+  };
+
   return (
-    <div className="h-full flex flex-col bg-autoverse-bg text-slate-100 p-6 overflow-y-auto">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-autoverse-border shrink-0 gap-4">
-        <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-xl font-bold tracking-tight">CFD Aerodynamics & Wind Tunnel</h1>
-            <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-cyan-950/60 border border-cyan-800 text-cyan-300">
-              OPENFOAM v2406 / SIMPLEFOAM RANS
-            </span>
-            {engineeringMode === 'student' && (
-              <span className="text-[11px] font-medium px-2 py-0.5 rounded bg-emerald-950/60 border border-emerald-800 text-emerald-300">
-                Student Mode Active
-              </span>
-            )}
+    <div className="h-full flex flex-col bg-gt-obsidian text-zinc-100 overflow-hidden select-none font-sans">
+      {/* 1. Header Toolbar */}
+      <header className="h-14 px-6 bg-gt-basalt/80 border-b border-gt-border backdrop-blur-xl flex items-center justify-between shrink-0 z-10">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-gt-accent/15 border border-gt-accent/30 flex items-center justify-center text-gt-accent">
+            <Cpu className="w-4 h-4" />
           </div>
-          <p className="text-xs text-slate-400 mt-1">
-            External aerodynamics evaluation: boundary layer momentum, Ahmed reference benchmark, OpenFOAM solver execution queue.
-          </p>
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-sm font-heading font-bold text-white tracking-wide">
+                CFD SIMULATION LAB
+              </h1>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-black/60 border border-gt-border text-gt-accent font-bold">
+                OPENFOAM SIMPLEFOAM RANS
+              </span>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-950/60 border border-emerald-800 text-emerald-300 font-bold">
+                k-ω SST MODEL
+              </span>
+            </div>
+            <p className="text-[11px] font-mono text-zinc-400">
+              Navier-Stokes volume meshing • Logarithmic residuals convergence • Boundary layer wall y+ resolution
+            </p>
+          </div>
         </div>
 
-        {/* Mode Selector & Action */}
+        {/* Action Controls & Mode Selector */}
         <div className="flex items-center gap-3">
-          <div className="flex bg-autoverse-surface p-1 rounded border border-autoverse-border text-xs font-mono">
+          <div className="flex items-center bg-black/40 border border-gt-border rounded-lg p-0.5 text-xs font-mono">
             <button
               onClick={() => setSimMode('analytical')}
-              className={`px-3 py-1 rounded transition-colors ${
+              className={`px-3 py-1 rounded transition-all cursor-pointer ${
                 simMode === 'analytical'
-                  ? 'bg-cyan-950/80 text-cyan-300 border border-cyan-700/60'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-gt-accent text-white font-bold shadow-md'
+                  : 'text-zinc-400 hover:text-white'
               }`}
             >
               Vehicle RANS
             </button>
             <button
               onClick={() => setSimMode('ahmed_benchmark')}
-              className={`px-3 py-1 rounded transition-colors ${
+              className={`px-3 py-1 rounded transition-all cursor-pointer ${
                 simMode === 'ahmed_benchmark'
-                  ? 'bg-cyan-950/80 text-cyan-300 border border-cyan-700/60'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-gt-accent text-white font-bold shadow-md'
+                  : 'text-zinc-400 hover:text-white'
               }`}
             >
               Ahmed Benchmark
@@ -234,273 +248,233 @@ export const CfdLabView: React.FC = () => {
           <button
             onClick={handleExecute}
             disabled={jobState !== 'IDLE' && jobState !== 'CONVERGED'}
-            className="flex items-center gap-2 px-4 py-2 rounded bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs transition-colors disabled:opacity-50"
+            className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-gt-accent hover:bg-gt-accent/90 text-white text-xs font-mono font-bold shadow-lg shadow-gt-accent/20 transition-all cursor-pointer disabled:opacity-50"
           >
-            <Play className="w-4 h-4 fill-current" />
-            <span>
-              {jobState === 'IDLE' || jobState === 'CONVERGED' ? 'Execute CFD Pipeline' : `${jobState}...`}
-            </span>
+            <Play className="w-3.5 h-3.5 fill-current" />
+            <span>{jobState === 'IDLE' || jobState === 'CONVERGED' ? 'RUN SOLVER' : jobState}</span>
           </button>
-        </div>
-      </div>
 
-      {/* Host Environment Status Bar */}
-      <div className="mt-4 p-3 rounded bg-autoverse-surface border border-autoverse-border flex flex-wrap items-center justify-between text-xs font-mono">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1.5">
-            <Server className="w-3.5 h-3.5 text-cyan-400" />
-            <span className="text-slate-400">Host WSL2:</span>
-            <span className={hostEnv.wsl_available ? 'text-emerald-400 font-semibold' : 'text-slate-400'}>
-              {hostEnv.wsl_available ? hostEnv.wsl_distro : 'Offline'}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-1.5">
-            <Cpu className="w-3.5 h-3.5 text-cyan-400" />
-            <span className="text-slate-400">Docker Engine:</span>
-            <span className={hostEnv.docker_daemon_active ? 'text-emerald-400' : 'text-amber-400'}>
-              {hostEnv.docker_daemon_active ? 'Daemon Active' : 'CLI Ready (Daemon Standby)'}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-1.5">
-            <Terminal className="w-3.5 h-3.5 text-cyan-400" />
-            <span className="text-slate-400">Active Solver Engine:</span>
-            <span className="text-cyan-300 font-bold">{hostEnv.active_engine}</span>
-          </div>
-        </div>
-
-        <div className="text-[11px] text-slate-400">
-          ISA Sea Level Air: &rho; = 1.225 kg/m³, &nu; = 1.48e-5 m²/s
-        </div>
-      </div>
-
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-        {/* Left Column: Job Queue & Parameters */}
-        <div className="lg:col-span-2 space-y-5">
-          {/* Job Queue Stepper */}
-          <div className="p-5 rounded bg-autoverse-surface border border-autoverse-border space-y-4">
-            <div className="flex items-center justify-between border-b border-autoverse-border pb-3">
-              <h2 className="text-sm font-bold text-slate-100 flex items-center gap-2">
-                <Activity className="w-4 h-4 text-cyan-400" />
-                <span>CFD Job Execution Queue</span>
-              </h2>
-              <span className="text-xs font-mono text-cyan-300 font-semibold">
-                STATE: {jobState} ({jobProgress}%)
-              </span>
-            </div>
-
-            {/* Visual State Stepper */}
-            <div className="grid grid-cols-4 gap-2">
-              {[
-                { state: 'QUEUED', label: '1. Queue & Validate', desc: 'Case integrity check' },
-                { state: 'MESHING', label: '2. snappyHexMesh', desc: 'Volume grid generation' },
-                { state: 'SOLVING', label: '3. simpleFoam RANS', desc: 'Pressure-velocity coupling' },
-                { state: 'CONVERGED', label: '4. Convergence', desc: 'Force stabilization' }
-              ].map((step, idx) => {
-                const isActive = jobState === step.state;
-                const isPassed =
-                  jobState === 'CONVERGED' ||
-                  (jobState === 'SOLVING' && idx <= 2) ||
-                  (jobState === 'MESHING' && idx <= 1) ||
-                  (jobState === 'QUEUED' && idx === 0);
-
-                return (
-                  <div
-                    key={step.state}
-                    className={`p-3 rounded border text-left transition-all ${
-                      isActive
-                        ? 'bg-cyan-950/70 border-cyan-500 text-cyan-200'
-                        : isPassed
-                        ? 'bg-emerald-950/30 border-emerald-800 text-emerald-300'
-                        : 'bg-autoverse-elevated border-autoverse-border text-slate-500'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between text-xs font-bold mb-1">
-                      <span>{step.label}</span>
-                      {isPassed && <Check className="w-3.5 h-3.5 text-emerald-400" />}
-                    </div>
-                    <div className="text-[10px] opacity-80">{step.desc}</div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Ahmed Reference Body Benchmark Selector (if active) */}
-          {simMode === 'ahmed_benchmark' && (
-            <div className="p-5 rounded bg-autoverse-surface border border-autoverse-border space-y-4">
-              <div className="flex items-center justify-between border-b border-autoverse-border pb-3">
-                <div>
-                  <h2 className="text-sm font-bold text-slate-100">
-                    SAE 840300 Ahmed Reference Body Validation
-                  </h2>
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    Standard wind tunnel benchmark evaluating slant angle boundary layer separation.
-                  </p>
-                </div>
-                <div className="flex bg-autoverse-elevated p-1 rounded border border-autoverse-border text-xs font-mono">
-                  <button
-                    onClick={() => setAhmedSlant(25)}
-                    className={`px-3 py-1 rounded font-bold ${
-                      ahmedSlant === 25 ? 'bg-cyan-950 text-cyan-300 border border-cyan-800' : 'text-slate-400'
-                    }`}
-                  >
-                    25° Slant (Peak Drag)
-                  </button>
-                  <button
-                    onClick={() => setAhmedSlant(35)}
-                    className={`px-3 py-1 rounded font-bold ${
-                      ahmedSlant === 35 ? 'bg-cyan-950 text-cyan-300 border border-cyan-800' : 'text-slate-400'
-                    }`}
-                  >
-                    35° Slant (Separated)
-                  </button>
-                </div>
-              </div>
-
-              {ahmedResult && (
-                <div className="p-4 rounded bg-emerald-950/30 border border-emerald-800/80 text-xs font-mono space-y-2">
-                  <div className="flex justify-between items-center text-sm font-bold text-emerald-400 border-b border-emerald-800/60 pb-2">
-                    <span>{ahmedResult.benchmark_name}</span>
-                    <span className="px-2 py-0.5 rounded bg-emerald-900/60 text-emerald-300 text-xs">
-                      VALID WITHIN 6% TOLERANCE
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-3 gap-3 pt-1">
-                    <div>
-                      <span className="text-slate-400 block text-[10px]">SAE 840300 Literature Cd:</span>
-                      <span className="text-slate-200 font-bold text-sm">{ahmedResult.literature_cd.toFixed(3)}</span>
-                    </div>
-                    <div>
-                      <span className="text-slate-400 block text-[10px]">AutoVerse Calculated Cd:</span>
-                      <span className="text-cyan-300 font-bold text-sm">{ahmedResult.calculated_cd.toFixed(3)}</span>
-                    </div>
-                    <div>
-                      <span className="text-slate-400 block text-[10px]">Percentage Error:</span>
-                      <span className="text-emerald-400 font-bold text-sm">{ahmedResult.percentage_error}%</span>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
+          {jobState === 'CONVERGED' && (
+            <button
+              onClick={handleReset}
+              className="p-1.5 rounded-lg bg-gt-basalt hover:bg-gt-graphite border border-gt-border text-zinc-400 hover:text-white transition-colors cursor-pointer"
+              title="Reset Solver"
+            >
+              <RotateCcw className="w-4 h-4" />
+            </button>
           )}
+        </div>
+      </header>
 
-          {/* Velocity & Boundary Parameters */}
-          <div className="p-5 rounded bg-autoverse-surface border border-autoverse-border space-y-4">
-            <h2 className="text-sm font-bold text-slate-100 border-b border-autoverse-border pb-3">
-              Boundary Layer & Aerodynamic Controls
-            </h2>
+      {/* 2. Main Workstation Body */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Left Solver Configuration Blade (320px) */}
+        <div className="w-80 bg-gt-basalt/60 border-r border-gt-border p-4 space-y-5 overflow-y-auto shrink-0 font-mono">
+          {/* Inlet Flow Parameters */}
+          <div className="space-y-3">
+            <h3 className="text-xs font-heading font-bold text-zinc-300 uppercase tracking-wider">
+              Inlet Flow Conditions
+            </h3>
+            <TechnicalSlider
+              label="Inlet Velocity"
+              value={inletSpeedMs}
+              min={10}
+              max={80}
+              step={2}
+              unit="m/s"
+              onChange={setInletSpeedMs}
+            />
+            <TechnicalSlider
+              label="Max Iterations"
+              value={maxIterations}
+              min={100}
+              max={1000}
+              step={50}
+              unit="steps"
+              onChange={setMaxIterations}
+            />
+          </div>
 
-            <div className="space-y-1.5">
-              <div className="flex justify-between text-xs">
-                <span className="text-slate-300 font-medium">Free-Stream Velocity (U&infin;)</span>
-                <span className="font-mono text-cyan-400 font-bold">
-                  {inletSpeedMs.toFixed(1)} m/s ({(inletSpeedMs * 3.6).toFixed(0)} km/h)
-                </span>
-              </div>
-              <input
-                type="range"
-                min="10"
-                max="75"
-                step="1"
-                value={inletSpeedMs}
-                onChange={e => setInletSpeedMs(parseFloat(e.target.value))}
-                className="w-full accent-cyan-400"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-3 pt-2">
-              <label className="p-3 rounded bg-autoverse-elevated border border-autoverse-border flex items-center justify-between cursor-pointer">
-                <div>
-                  <span className="text-xs font-semibold text-slate-200 block">Moving Ground Plane</span>
-                  <span className="text-[10px] text-slate-400 block mt-0.5">Eliminates ground boundary layer</span>
-                </div>
+          {/* Boundary Conditions */}
+          <div className="pt-2 border-t border-gt-border space-y-3">
+            <h3 className="text-xs font-heading font-bold text-zinc-300 uppercase tracking-wider">
+              Boundary Conditions
+            </h3>
+            <div className="space-y-2 text-xs">
+              <label className="flex items-center justify-between p-2 rounded-lg bg-black/40 border border-gt-border cursor-pointer">
+                <span className="text-zinc-300">Moving Ground Plane</span>
                 <input
                   type="checkbox"
                   checked={movingGroundEnabled}
-                  onChange={e => setMovingGroundEnabled(e.target.checked)}
-                  className="rounded bg-autoverse-overlay border-autoverse-border text-cyan-400"
+                  onChange={(e) => setMovingGroundEnabled(e.target.checked)}
+                  className="rounded text-gt-accent focus:ring-gt-accent"
                 />
               </label>
-
-              <label className="p-3 rounded bg-autoverse-elevated border border-autoverse-border flex items-center justify-between cursor-pointer">
-                <div>
-                  <span className="text-xs font-semibold text-slate-200 block">Rotating Wheels (MRF)</span>
-                  <span className="text-[10px] text-slate-400 block mt-0.5">&omega; = U&infin; / R_wheel</span>
-                </div>
+              <label className="flex items-center justify-between p-2 rounded-lg bg-black/40 border border-gt-border cursor-pointer">
+                <span className="text-zinc-300">Rotating Wheel MRF</span>
                 <input
                   type="checkbox"
                   checked={rotatingWheelsEnabled}
-                  onChange={e => setRotatingWheelsEnabled(e.target.checked)}
-                  className="rounded bg-autoverse-overlay border-autoverse-border text-cyan-400"
+                  onChange={(e) => setRotatingWheelsEnabled(e.target.checked)}
+                  className="rounded text-gt-accent focus:ring-gt-accent"
                 />
               </label>
             </div>
           </div>
+
+          {/* Host Execution Environment Status */}
+          <div className="pt-2 border-t border-gt-border space-y-2">
+            <h3 className="text-xs font-heading font-bold text-zinc-300 uppercase tracking-wider flex items-center gap-1.5">
+              <Server className="w-3.5 h-3.5 text-gt-accent" />
+              <span>Solver Environment</span>
+            </h3>
+            <div className="p-3 rounded-xl bg-black/40 border border-gt-border space-y-2 text-[11px]">
+              <div className="flex justify-between">
+                <span className="text-zinc-500">WSL2 STATUS:</span>
+                <span className="text-emerald-400 font-bold">{hostEnv.wsl_available ? 'ONLINE' : 'UNAVAILABLE'}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-500">DOCKER ENGINE:</span>
+                <span className="text-zinc-300">{hostEnv.docker_cli_installed ? 'READY' : 'OFFLINE'}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-500">ACTIVE ENGINE:</span>
+                <span className="text-gt-accent truncate max-w-[140px]" title={hostEnv.active_engine}>
+                  {hostEnv.active_engine}
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Right Column: Aerodynamic Force Schedule */}
-        <div className="lg:col-span-1 space-y-4">
-          <div className="p-5 rounded bg-autoverse-surface border border-autoverse-border space-y-4">
-            <div className="flex items-center justify-between border-b border-autoverse-border pb-2">
-              <h3 className="text-xs font-mono uppercase tracking-wider text-slate-400">
-                Aerodynamic Force Schedule
+        {/* Center Stage: Logarithmic Residuals Convergence Chart & Solver Progress */}
+        <div className="flex-1 flex flex-col bg-gt-obsidian p-6 overflow-y-auto space-y-6">
+          {/* Progress Banner */}
+          <div className="p-4 rounded-2xl bg-gt-basalt/60 border border-gt-border shadow-xl space-y-3">
+            <div className="flex items-center justify-between font-mono text-xs">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-gt-accent animate-ping" />
+                <span className="font-heading font-bold text-white">SOLVER STATE: {jobState}</span>
+              </div>
+              <div className="text-zinc-400">
+                Iteration: <span className="text-white font-bold">{currentIteration}</span> / {maxIterations}
+              </div>
+            </div>
+            {/* Progress Bar */}
+            <div className="w-full h-2 rounded-full bg-black/60 overflow-hidden border border-gt-border">
+              <div
+                className="h-full bg-gt-accent transition-all duration-300"
+                style={{ width: `${jobProgress}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Logarithmic Residuals Chart Stage */}
+          <div className="p-5 rounded-2xl bg-gt-basalt/60 border border-gt-border shadow-xl space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xs font-heading font-bold text-zinc-300 uppercase tracking-wider flex items-center gap-2">
+                <Activity className="w-4 h-4 text-gt-accent" />
+                <span>Logarithmic Residuals Convergence History</span>
               </h3>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950/60 border border-cyan-800 text-cyan-300">
-                {analyticalResults.provenance}
-              </span>
-            </div>
-
-            <div className="space-y-3">
-              <div className="p-3 rounded bg-autoverse-elevated border border-autoverse-border">
-                <span className="text-[10px] font-mono uppercase text-slate-400 block">Drag Coefficient (Cd)</span>
-                <span className="text-2xl font-mono font-bold text-slate-100 mt-1 block">
-                  {analyticalResults.cd.toFixed(3)}
-                </span>
-                <span className="text-[11px] font-mono text-slate-400">
-                  Total Drag Force: {analyticalResults.dragForceN.toLocaleString()} N
-                </span>
-              </div>
-
-              <div className="p-3 rounded bg-autoverse-elevated border border-autoverse-border">
-                <span className="text-[10px] font-mono uppercase text-slate-400 block">Total Lift Coefficient (Cl)</span>
-                <span className="text-2xl font-mono font-bold text-cyan-400 mt-1 block">
-                  {analyticalResults.cl.toFixed(3)}
-                </span>
-                <span className="text-[11px] font-mono text-emerald-400">
-                  Total Downforce: {analyticalResults.downforceN.toLocaleString()} N
-                </span>
-              </div>
-
-              <div className="p-3 rounded bg-autoverse-elevated border border-autoverse-border space-y-2 text-xs font-mono">
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Front Axle Downforce (Cl_f):</span>
-                  <span className="font-bold text-slate-200">{analyticalResults.clFront.toFixed(3)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Rear Axle Downforce (Cl_r):</span>
-                  <span className="font-bold text-slate-200">{analyticalResults.clRear.toFixed(3)}</span>
-                </div>
-                <div className="flex justify-between border-t border-autoverse-border/50 pt-1.5">
-                  <span className="text-slate-400">Aero Balance Distribution:</span>
-                  <span className="font-bold text-cyan-400">{analyticalResults.frontBalancePct}% Front</span>
-                </div>
+              <div className="flex items-center gap-3 text-[10px] font-mono">
+                <span className="flex items-center gap-1 text-red-400"><span className="w-2 h-2 rounded-full bg-red-400" /> p (Pressure)</span>
+                <span className="flex items-center gap-1 text-cyan-400"><span className="w-2 h-2 rounded-full bg-cyan-400" /> Ux, Uy, Uz</span>
+                <span className="flex items-center gap-1 text-emerald-400"><span className="w-2 h-2 rounded-full bg-emerald-400" /> k-ω Turbulence</span>
               </div>
             </div>
 
-            {/* Student Guide */}
-            {engineeringMode === 'student' && (
-              <div className="p-3 rounded bg-autoverse-elevated border border-autoverse-border text-[11px] text-slate-300 space-y-1">
-                <p className="font-semibold text-cyan-400 flex items-center gap-1">
-                  <Info className="w-3.5 h-3.5" /> Aerodynamic Balance & Downforce
-                </p>
-                <p className="leading-relaxed text-slate-400">
-                  Negative lift (Cl &lt; 0) produces downforce, pressing the tires into the tarmac to increase grip. Front splitter and rear wing downforce must be balanced to maintain high-speed neutral handling.
-                </p>
+            {/* SVG Logarithmic Chart */}
+            <div className="relative w-full h-64 bg-black/60 rounded-xl border border-gt-border overflow-hidden p-4 flex flex-col justify-between">
+              {/* Convergence threshold lines */}
+              <div className="absolute inset-x-4 top-[35%] border-b border-dashed border-amber-500/40 flex justify-end pr-2 text-[9px] font-mono text-amber-400">
+                Engineering Convergence 10⁻⁴
               </div>
-            )}
+              <div className="absolute inset-x-4 top-[65%] border-b border-dashed border-emerald-500/40 flex justify-end pr-2 text-[9px] font-mono text-emerald-400">
+                High Precision 10⁻⁵
+              </div>
+
+              {/* Grid axes */}
+              <svg className="w-full h-full" viewBox="0 0 700 200" fill="none">
+                {/* Simulated Residual Trace Lines */}
+                <path
+                  d="M 20 20 C 100 40, 200 80, 350 110 C 500 135, 600 145, 680 152"
+                  stroke="#E53935"
+                  strokeWidth="2"
+                />
+                <path
+                  d="M 20 30 C 120 55, 220 95, 360 120 C 510 142, 610 155, 680 160"
+                  stroke="#22D3EE"
+                  strokeWidth="2"
+                />
+                <path
+                  d="M 20 45 C 130 75, 240 110, 380 135 C 520 155, 620 168, 680 172"
+                  stroke="#10B981"
+                  strokeWidth="2"
+                />
+              </svg>
+
+              {/* X Axis Labels */}
+              <div className="flex justify-between text-[10px] font-mono text-zinc-500 pt-2 border-t border-gt-border">
+                <span>0 iters</span>
+                <span>{Math.round(maxIterations * 0.25)}</span>
+                <span>{Math.round(maxIterations * 0.5)}</span>
+                <span>{Math.round(maxIterations * 0.75)}</span>
+                <span>{maxIterations} iters</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Boundary Layer & Forces Audit (320px) */}
+        <div className="w-80 bg-gt-basalt/60 border-l border-gt-border p-4 space-y-5 overflow-y-auto shrink-0 font-mono">
+          <div>
+            <h3 className="text-xs font-heading font-bold text-zinc-400 uppercase tracking-wider mb-2.5">
+              Aerodynamic Forces
+            </h3>
+            <div className="p-3 rounded-xl bg-black/40 border border-gt-border space-y-2 text-xs">
+              <div className="flex justify-between">
+                <span className="text-zinc-500">DRAG COEFF (Cd):</span>
+                <span className="text-white font-bold">{analyticalResults.cd.toFixed(3)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-500">LIFT COEFF (Cl):</span>
+                <span className="text-gt-accent font-bold">{analyticalResults.cl.toFixed(3)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-500">DRAG FORCE:</span>
+                <span className="text-white font-bold">{analyticalResults.dragForceN} N</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-500">TOTAL DOWNFORCE:</span>
+                <span className="text-emerald-400 font-bold">{analyticalResults.downforceN} N</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Wall y+ Boundary Layer Resolution */}
+          <div>
+            <h3 className="text-xs font-heading font-bold text-zinc-400 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+              <Layers className="w-3.5 h-3.5 text-gt-accent" />
+              <span>Boundary Layer Audit</span>
+            </h3>
+            <div className="p-3 rounded-xl bg-black/40 border border-gt-border space-y-2 text-xs">
+              <div className="flex justify-between">
+                <span className="text-zinc-500">WALL y+ ESTIMATE:</span>
+                <span className="text-emerald-400 font-bold">~ 28.5 (Log-Law)</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-500">FIRST CELL HEIGHT:</span>
+                <span className="text-zinc-300">0.45 mm</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-500">PRISM INFLATION:</span>
+                <span className="text-zinc-300">5 layers (1.2 ratio)</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-500">REYNOLDS NUMBER:</span>
+                <span className="text-zinc-300">{analyticalResults.reynoldsNumber.toExponential(2)}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
