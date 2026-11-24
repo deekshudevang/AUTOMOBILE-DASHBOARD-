@@ -16,6 +16,7 @@ import {
   VehicleOpeningState,
   DEFAULT_OPENING_STATE
 } from './vehicleOpeningController';
+import { geometryCachePool } from '../core/geometryCachePool';
 
 export interface AssemblyOptions {
   componentOverrides?: Record<string, ComponentOverride>;
@@ -1121,21 +1122,7 @@ export class EditableVehicleAssembler {
    * preventing GPU memory leaks across repeated vehicle customization cycles.
    */
   public static dispose(root: THREE.Object3D): void {
-    root.traverse((child) => {
-      if ((child as THREE.Mesh).isMesh) {
-        const mesh = child as THREE.Mesh;
-        if (mesh.geometry) {
-          mesh.geometry.dispose();
-        }
-        if (mesh.material) {
-          if (Array.isArray(mesh.material)) {
-            mesh.material.forEach(m => m.dispose());
-          } else {
-            mesh.material.dispose();
-          }
-        }
-      }
-    });
+    geometryCachePool.disposeResource(root);
   }
 }
 

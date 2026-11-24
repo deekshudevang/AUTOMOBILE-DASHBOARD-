@@ -34,7 +34,15 @@ const CATEGORIES = [
 ];
 
 export const VehicleLibraryView: React.FC = () => {
-  const { allFiles, allModels, assetBindings, loadVehicleByFile, setActiveView } = useVehicleStore();
+  const {
+    allFiles,
+    allModels,
+    assetBindings,
+    loadVehicleByFile,
+    setActiveView,
+    isLegacyCatalogLoaded,
+    loadLegacyGtaCatalog
+  } = useVehicleStore();
 
   const [fleetTab, setFleetTab] = useState<'schema2' | 'all'>('schema2');
   const [searchTerm, setSearchTerm] = useState('');
@@ -153,7 +161,12 @@ export const VehicleLibraryView: React.FC = () => {
                 <span>AutoVerse 50 Fleet (Schema 2.0)</span>
               </button>
               <button
-                onClick={() => setFleetTab('all')}
+                onClick={() => {
+                  setFleetTab('all');
+                  if (!isLegacyCatalogLoaded) {
+                    loadLegacyGtaCatalog();
+                  }
+                }}
                 className={`px-3 py-1.5 rounded-md font-medium transition-all ${
                   fleetTab === 'all'
                     ? 'bg-cyan-950/90 text-[#00F0FF] border border-cyan-800 shadow-sm'

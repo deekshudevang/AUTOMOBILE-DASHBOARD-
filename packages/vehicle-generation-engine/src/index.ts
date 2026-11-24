@@ -1,4 +1,5 @@
 export * from './core/engine';
+export * from './core/geometryCachePool';
 export * from './geometry/proceduralChassis';
 export * from './geometry/longitudinalProfile';
 export * from './geometry/crossSectionGenerator';

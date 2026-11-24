@@ -11,6 +11,7 @@ import { ProceduralChassisGenerator, ParametricGeometryBuilder, EditableVehicleA
 import { VehicleGeometryEngine, SchemaV2Migrator } from '../../geometry';
 import { toCanonicalV2Id } from '../../geometry/components/canonicalComponentMap';
 import { useVehicleStore } from '../../hooks/useVehicleStore';
+import { geometryCachePool } from '../../utils/geometryCachePool';
 
 interface VehicleRendererProps {
   config: CheraxVehicleConfig;
@@ -227,6 +228,14 @@ export const VehicleRenderer: React.FC<VehicleRendererProps> = ({
     });
   }, [useGeometryEngineV2, schema2Body, config.parametricSpec, (config as any).geometry, primaryPaint.hex, wheelColor.hex, isWireframe]);
 
+  useEffect(() => {
+    return () => {
+      if (parametricBody) {
+        geometryCachePool.disposeResource(parametricBody);
+      }
+    };
+  }, [parametricBody]);
+
   // Procedural sculpted chassis assembly (Rule 6 compliant: sculpted real geometry, honest label)
   const proceduralBody = useMemo(() => {
     if (useGeometryEngineV2 || schema2Body || parametricBody) return null;
@@ -242,6 +251,14 @@ export const VehicleRenderer: React.FC<VehicleRendererProps> = ({
       }
     );
   }, [useGeometryEngineV2, schema2Body, parametricBody, modelMeta?.category, primaryPaint.hex, secondaryPaint.hex, wheelColor.hex, isWireframe]);
+
+  useEffect(() => {
+    return () => {
+      if (proceduralBody) {
+        geometryCachePool.disposeResource(proceduralBody);
+      }
+    };
+  }, [proceduralBody]);
 
   // Direct 3D Raycasting Component Click Handler
   const handlePointerDown = useCallback((e: any) => {

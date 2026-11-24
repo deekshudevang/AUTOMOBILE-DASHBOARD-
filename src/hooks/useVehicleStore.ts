@@ -2,7 +2,6 @@ import { create } from 'zustand';
 import { CheraxVehicleConfig, VehicleModelMetadata, VehicleFileSummary, CameraPreset, EnvironmentPreset, RGBColor, VehicleAssetBinding } from '../types/vehicle';
 import { ComponentOverride } from '@autoverse/shared-types';
 import { VehicleOpeningState, DEFAULT_OPENING_STATE } from '@autoverse/vehicle-generation-engine';
-import vehicleDatabaseRaw from '../data/vehicleDatabase.json';
 import manifestRaw from '../../public/vehicle-assets/manifest.json';
 import porscheGt3RsRaw from '../../public/vehicles/porsche_911_gt3_rs_992_2022.json';
 import { parseVehicleJson } from '../utils/jsonParser';
@@ -181,6 +180,10 @@ interface VehicleStoreState {
   toggleGrid: () => void;
   setGraphicsQuality: (quality: 'low' | 'medium' | 'high' | 'ultra') => void;
   registerAssetBinding: (binding: VehicleAssetBinding) => void;
+
+  // Lazy Catalog Loading (Phase 22 Performance)
+  isLegacyCatalogLoaded: boolean;
+  loadLegacyGtaCatalog: () => Promise<void>;
 }
 
 // Prepare initial manifest bindings
@@ -291,8 +294,24 @@ export const useVehicleStore = create<VehicleStoreState>((set, get) => ({
   setEngineeringMode: (mode: EngineeringMode) => set({ engineeringMode: mode }),
   toggleEngineeringMode: () => set(state => ({ engineeringMode: state.engineeringMode === 'student' ? 'advanced' : 'student' })),
 
-  allFiles: [porscheGt3RsFile, ...parametricFiles.filter(f => f.fileName !== 'porsche_911_gt3_rs_2022.json'), ...(vehicleDatabaseRaw.files as any)],
-  allModels: [porscheGt3RsModel, ...parametricModels.filter(m => m.hash !== 706080074), ...(vehicleDatabaseRaw.models as any)],
+  allFiles: [porscheGt3RsFile, ...parametricFiles.filter(f => f.fileName !== 'porsche_911_gt3_rs_2022.json')],
+  allModels: [porscheGt3RsModel, ...parametricModels.filter(m => m.hash !== 706080074)],
+  isLegacyCatalogLoaded: false,
+  loadLegacyGtaCatalog: async () => {
+    if (get().isLegacyCatalogLoaded) return;
+    try {
+      const db = await import('../data/vehicleDatabase.json');
+      const gtaFiles = (db.default?.files || (db as any).files) as VehicleFileSummary[];
+      const gtaModels = (db.default?.models || (db as any).models) as VehicleModelMetadata[];
+      set(state => ({
+        isLegacyCatalogLoaded: true,
+        allFiles: [...state.allFiles, ...gtaFiles],
+        allModels: [...state.allModels, ...gtaModels]
+      }));
+    } catch (err) {
+      console.warn('Failed to dynamically load legacy GTA vehicle database:', err);
+    }
+  },
   activeFile: defaultFile.fileName,
   activeModel: defaultModel as any,
   activeConfig: initialFallbackConfig,
@@ -908,13 +927,26 @@ export const useVehicleStore = create<VehicleStoreState>((set, get) => ({
         return true;
       }
 
-      const fileInfo = get().allFiles.find(f =>
+      let fileInfo = get().allFiles.find(f =>
         f.fileName === fileName ||
         f.fileName.endsWith(`/${fileName}`) ||
         f.fileName.replace(/\.json$/, '') === fileName.replace(/\.json$/, '') ||
         f.fileName.split('/').pop() === fileName.split('/').pop() ||
         f.fileName.split('/').pop()?.replace(/\.json$/, '') === fileName.replace(/\.json$/, '')
       );
+
+      // If not found in high-priority Schema 2.0 fleet, attempt lazy load of legacy GTA catalog
+      if (!fileInfo && !get().isLegacyCatalogLoaded) {
+        await get().loadLegacyGtaCatalog();
+        fileInfo = get().allFiles.find(f =>
+          f.fileName === fileName ||
+          f.fileName.endsWith(`/${fileName}`) ||
+          f.fileName.replace(/\.json$/, '') === fileName.replace(/\.json$/, '') ||
+          f.fileName.split('/').pop() === fileName.split('/').pop() ||
+          f.fileName.split('/').pop()?.replace(/\.json$/, '') === fileName.replace(/\.json$/, '')
+        );
+      }
+
       if (!fileInfo) return false;
 
       const modelInfo = get().allModels.find(m => m.hash === fileInfo.modelHash) || null;
@@ -1064,10 +1096,14 @@ export const useVehicleStore = create<VehicleStoreState>((set, get) => ({
     }
   },
 
-  loadVehicleByModelHash: (hash: number) => {
-    const model = get().allModels.find(m => m.hash === hash);
+  loadVehicleByModelHash: async (hash: number) => {
+    let model = get().allModels.find(m => m.hash === hash);
+    if (!model && !get().isLegacyCatalogLoaded) {
+      await get().loadLegacyGtaCatalog();
+      model = get().allModels.find(m => m.hash === hash);
+    }
     if (!model || model.configurations.length === 0) return;
-    get().loadVehicleByFile(model.configurations[0].fileName);
+    await get().loadVehicleByFile(model.configurations[0].fileName);
   },
 
   importCustomJson: (jsonString: string, fileName: string = 'imported_custom.json') => {

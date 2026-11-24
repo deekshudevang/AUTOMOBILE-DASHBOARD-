@@ -20,5 +20,26 @@ export default defineConfig({
   server: {
     port: 5173,
     host: true
+  },
+  build: {
+    chunkSizeWarningLimit: 600,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules/three/')) {
+            return 'vendor-three';
+          }
+          if (id.includes('node_modules')) {
+            return 'vendor-core';
+          }
+          if (id.includes('/packages/vehicle-exporter/') || id.includes('/packages/authentic-geometry-engine/')) {
+            return 'engine-cad-export';
+          }
+          if (id.includes('/packages/vehicle-generation-engine/')) {
+            return 'engine-vehicle-gen';
+          }
+        }
+      }
+    }
   }
 });
