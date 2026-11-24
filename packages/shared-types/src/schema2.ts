@@ -191,6 +191,22 @@ export interface ComponentOverride {
   wheelDiameterInches?: number;
   wheelCamberDeg?: number;
   wheelSpacerMm?: number;
+  wheelFrontCamberDeg?: number;
+  wheelRearCamberDeg?: number;
+  tireCompound?: 'street' | 'cup2r' | 'trofeo' | 'slick';
+  caliperColorHex?: string;
+  clearcoatRoughness?: number;
+  metallicFlakeDensity?: number;
+  clearcoatStrength?: number;
+  wingAngleDeg?: number;
+  splitterExtensionMm?: number;
+  divePlanesEnabled?: boolean;
+  exhaustTipStyle?: 'burnt_titanium' | 'quad_black' | 'center_inconel' | 'chrome_dual';
+  exhaustValvesOpen?: boolean;
+  drlColorTemp?: 'ice_blue' | 'yellow' | 'white';
+  interiorTrim?: 'matte_carbon' | 'gloss_carbon' | 'aluminum';
+  upholsteryTheme?: 'alcantara' | 'nappa' | 'carbon_bucket' | 'clubsport';
+  stitchingColorHex?: string;
 }
 
 export interface VehicleSchema2 {

@@ -230,15 +230,15 @@ export const GlobalPartsDrawer: React.FC = () => {
         role="dialog"
         aria-modal="true"
         aria-label="Global OEM Parts Library Cross-Car Swapper"
-        className={`fixed bottom-0 left-0 right-0 md:left-24 md:right-auto md:w-[calc(100%-480px)] md:left-[80px] z-30 transition-all duration-300 ease-out pointer-events-auto ${
+        className={`fixed bottom-0 left-0 right-0 md:left-24 md:right-auto md:w-[calc(100%-480px)] phone-landscape:left-12 phone-landscape:w-[calc(100%-310px)] md:left-[80px] z-30 transition-all duration-300 ease-out pointer-events-auto ${
           isPartsDrawerOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0 pointer-events-none'
         } ${
           isOrbitDragging ? 'opacity-20 pointer-events-none' : ''
         }`}
       >
-        <div className="m-3 md:m-4 rounded-2xl bg-black/80 backdrop-blur-2xl border border-white/10 shadow-2xl overflow-hidden flex flex-col">
+        <div className="m-3 md:m-4 phone-landscape:m-1 rounded-2xl bg-black/85 backdrop-blur-2xl border border-white/10 shadow-2xl overflow-hidden flex flex-col phone-landscape:max-h-[160px]">
           {/* Drawer Header */}
-          <div className="px-4 py-3 bg-white/5 border-b border-white/10 flex items-center justify-between gap-3">
+          <div className="px-4 py-3 phone-landscape:py-1.5 phone-landscape:px-2.5 bg-white/5 border-b border-white/10 flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="w-7 h-7 rounded-lg bg-gt-accent/20 border border-gt-accent/40 flex items-center justify-center text-gt-accent" aria-hidden="true">
                 <Layers className="w-4 h-4" />

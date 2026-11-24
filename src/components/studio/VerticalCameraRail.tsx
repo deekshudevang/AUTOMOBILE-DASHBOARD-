@@ -83,12 +83,12 @@ export const VerticalCameraRail: React.FC = () => {
     <div
       role="toolbar"
       aria-label="Camera Controls Rail"
-      className={`absolute left-4 sm:left-5 top-1/2 -translate-y-1/2 z-20 flex flex-col items-center gap-1.5 p-1.5 rounded-2xl bg-black/60 backdrop-blur-xl border border-white/10 shadow-2xl transition-all duration-200 select-none ${
+      className={`absolute left-3 sm:left-5 phone-landscape:left-2 top-1/2 -translate-y-1/2 z-20 flex flex-col items-center gap-1.5 phone-landscape:gap-0.5 p-1.5 phone-landscape:p-1 rounded-2xl phone-landscape:rounded-xl bg-black/60 backdrop-blur-xl border border-white/10 shadow-2xl transition-all duration-200 select-none phone-landscape-rail ${
         isOrbitDragging ? 'opacity-20 pointer-events-none' : 'opacity-100 pointer-events-auto'
       }`}
     >
       {/* Camera Presets Stack */}
-      <div className="flex flex-col items-center gap-1" role="group" aria-label="Camera Presets">
+      <div className="flex flex-col items-center gap-1 phone-landscape:gap-0.5" role="group" aria-label="Camera Presets">
         {CAMERA_PRESETS.map((btn) => {
           const isActive = cameraPreset === btn.id;
           const Icon = btn.icon;
@@ -101,7 +101,7 @@ export const VerticalCameraRail: React.FC = () => {
                   setCameraPreset(btn.id);
                   playCameraClick();
                 }}
-                className={`w-10 h-10 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center transition-all cursor-pointer ${
+                className={`w-9 h-9 sm:w-9 sm:h-9 phone-landscape:w-7 phone-landscape:h-7 rounded-xl phone-landscape:rounded-lg flex items-center justify-center transition-all cursor-pointer ${
                   isActive
                     ? 'bg-gt-accent text-white shadow-lg shadow-red-950/40 ring-1 ring-gt-accent'
                     : 'text-zinc-400 hover:text-white hover:bg-white/10'
@@ -110,7 +110,7 @@ export const VerticalCameraRail: React.FC = () => {
                 aria-label={`Switch camera to ${btn.label} view (Hotkey ${btn.hotkey})`}
                 aria-pressed={isActive}
               >
-                <Icon className="w-4 h-4" />
+                <Icon className="w-4 h-4 phone-landscape:w-3.5 phone-landscape:h-3.5" />
               </button>
 
               {/* Tooltip on hover */}
@@ -126,10 +126,10 @@ export const VerticalCameraRail: React.FC = () => {
       </div>
 
       {/* Divider */}
-      <div className="w-5 h-[1px] bg-white/10 my-0.5" aria-hidden="true" />
+      <div className="w-5 phone-landscape:w-4 h-[1px] bg-white/10 my-0.5 phone-landscape:my-0" aria-hidden="true" />
 
       {/* Auxiliary Studio Tools */}
-      <div className="flex flex-col items-center gap-1" role="group" aria-label="Studio Viewport Utilities">
+      <div className="flex flex-col items-center gap-1 phone-landscape:gap-0.5" role="group" aria-label="Studio Viewport Utilities">
         {/* Turntable Rotation */}
         <div className="relative group">
           <button
@@ -138,7 +138,7 @@ export const VerticalCameraRail: React.FC = () => {
               toggleAutoRotate();
               playToggleClick();
             }}
-            className={`w-10 h-10 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center transition-all cursor-pointer ${
+            className={`w-9 h-9 sm:w-9 sm:h-9 phone-landscape:w-7 phone-landscape:h-7 rounded-xl phone-landscape:rounded-lg flex items-center justify-center transition-all cursor-pointer ${
               isAutoRotate
                 ? 'bg-gt-accent text-white shadow-sm'
                 : 'text-zinc-400 hover:text-white hover:bg-white/10'
@@ -147,7 +147,7 @@ export const VerticalCameraRail: React.FC = () => {
             aria-label="Toggle 360-degree turntable rotation"
             aria-pressed={isAutoRotate}
           >
-            <RotateCw className="w-4 h-4" />
+            <RotateCw className="w-4 h-4 phone-landscape:w-3.5 phone-landscape:h-3.5" />
           </button>
           <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-md bg-gt-basalt border border-gt-border text-[11px] font-mono whitespace-nowrap text-white opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity shadow-xl z-30">
             Turntable Rotation
@@ -162,7 +162,7 @@ export const VerticalCameraRail: React.FC = () => {
               toggleWireframe();
               playToggleClick();
             }}
-            className={`w-10 h-10 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center transition-all cursor-pointer ${
+            className={`w-9 h-9 sm:w-9 sm:h-9 phone-landscape:w-7 phone-landscape:h-7 rounded-xl phone-landscape:rounded-lg flex items-center justify-center transition-all cursor-pointer ${
               isWireframe
                 ? 'bg-gt-accent text-white shadow-sm'
                 : 'text-zinc-400 hover:text-white hover:bg-white/10'
@@ -171,7 +171,7 @@ export const VerticalCameraRail: React.FC = () => {
             aria-label="Toggle wireframe inspection mode"
             aria-pressed={isWireframe}
           >
-            <Grid className="w-4 h-4" />
+            <Grid className="w-4 h-4 phone-landscape:w-3.5 phone-landscape:h-3.5" />
           </button>
           <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-md bg-gt-basalt border border-gt-border text-[11px] font-mono whitespace-nowrap text-white opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity shadow-xl z-30">
             Wireframe Inspection
@@ -183,7 +183,7 @@ export const VerticalCameraRail: React.FC = () => {
           <button
             role="button"
             onClick={handleCaptureScreenshot}
-            className={`w-10 h-10 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center transition-all cursor-pointer ${
+            className={`w-9 h-9 sm:w-9 sm:h-9 phone-landscape:w-7 phone-landscape:h-7 rounded-xl phone-landscape:rounded-lg flex items-center justify-center transition-all cursor-pointer ${
               screenshotSuccess
                 ? 'bg-emerald-600 text-white shadow-sm'
                 : 'text-zinc-400 hover:text-white hover:bg-white/10'
@@ -191,7 +191,11 @@ export const VerticalCameraRail: React.FC = () => {
             title="Capture Viewport Screenshot"
             aria-label="Capture viewport screenshot"
           >
-            {screenshotSuccess ? <Check className="w-4 h-4" /> : <Camera className="w-4 h-4" />}
+            {screenshotSuccess ? (
+              <Check className="w-4 h-4 phone-landscape:w-3.5 phone-landscape:h-3.5" />
+            ) : (
+              <Camera className="w-4 h-4 phone-landscape:w-3.5 phone-landscape:h-3.5" />
+            )}
           </button>
           <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-md bg-gt-basalt border border-gt-border text-[11px] font-mono whitespace-nowrap text-white opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity shadow-xl z-30">
             {screenshotSuccess ? 'Captured!' : 'Capture Screenshot'}
@@ -203,12 +207,16 @@ export const VerticalCameraRail: React.FC = () => {
           <button
             role="button"
             onClick={toggleFullscreen}
-            className="w-10 h-10 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+            className="w-9 h-9 sm:w-9 sm:h-9 phone-landscape:w-7 phone-landscape:h-7 rounded-xl phone-landscape:rounded-lg flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
             title="Toggle Fullscreen"
             aria-label={isFullscreen ? 'Exit fullscreen mode' : 'Enter fullscreen mode'}
             aria-pressed={isFullscreen}
           >
-            {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+            {isFullscreen ? (
+              <Minimize2 className="w-4 h-4 phone-landscape:w-3.5 phone-landscape:h-3.5" />
+            ) : (
+              <Maximize2 className="w-4 h-4 phone-landscape:w-3.5 phone-landscape:h-3.5" />
+            )}
           </button>
           <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-md bg-gt-basalt border border-gt-border text-[11px] font-mono whitespace-nowrap text-white opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity shadow-xl z-30">
             Toggle Fullscreen

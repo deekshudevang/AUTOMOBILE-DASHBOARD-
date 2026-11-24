@@ -137,3 +137,46 @@
 ::-webkit-scrollbar-thumb:hover {
   background: var(--surface-graphite-raised);
 }
+
+/* ============================================================ */
+/* Phone Landscape Optimization (< 500px height in landscape)   */
+/* ============================================================ */
+@media (max-height: 500px) and (orientation: landscape) {
+  .phone-landscape-header {
+    height: 2.25rem !important; /* 36px */
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  .desktop-blade-container {
+    display: flex !important;
+    top: 2.5rem !important;
+    bottom: 0.5rem !important;
+    right: 0.5rem !important;
+  }
+
+  .desktop-blade-container > div {
+    width: 280px !important;
+  }
+
+  .mobile-sheet-container {
+    display: none !important;
+  }
+
+  .phone-landscape-rail {
+    left: 0.5rem !important;
+    gap: 0.25rem !important;
+    padding: 0.25rem !important;
+  }
+
+  .phone-landscape-rail button {
+    width: 1.75rem !important; /* 28px */
+    height: 1.75rem !important; /* 28px */
+  }
+
+  .phone-landscape-rail svg {
+    width: 0.875rem !important; /* 14px */
+    height: 0.875rem !important;
+  }
+}
+

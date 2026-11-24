@@ -106,33 +106,33 @@ export const GranTurismoHeader: React.FC = () => {
     : '50-Vehicle Fleet';
 
   return (
-    <header role="banner" aria-label="Gran Turismo Workstation Header" className="h-12 w-full hud-glass border-b border-gt-border px-3 md:px-5 flex items-center justify-between shrink-0 select-none z-header text-xs">
+    <header role="banner" aria-label="Gran Turismo Workstation Header" className="h-12 phone-landscape:h-9 w-full hud-glass border-b border-gt-border px-3 md:px-5 phone-landscape:px-2 flex items-center justify-between shrink-0 select-none z-header text-xs phone-landscape-header">
       {/* Left: Brand Identity & Active Vehicle Switcher */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 phone-landscape:gap-1.5">
         {/* Brand Wordmark */}
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center text-white shadow-sm font-bold text-xs" aria-hidden="true">
+        <div className="flex items-center gap-2 phone-landscape:gap-1">
+          <div className="w-6 h-6 phone-landscape:w-5 phone-landscape:h-5 rounded bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center text-white shadow-sm font-bold text-xs phone-landscape:text-[10px]" aria-hidden="true">
             A
           </div>
-          <span className="font-display font-bold text-sm tracking-wider text-gt-text-primary hidden sm:inline">
+          <span className="font-display font-bold text-sm phone-landscape:text-xs tracking-wider text-gt-text-primary hidden sm:inline phone-landscape:inline">
             AUTOVERSE
           </span>
         </div>
 
-        <div className="h-4 w-px bg-gt-border hidden md:block" />
+        <div className="h-4 w-px bg-gt-border hidden md:block phone-landscape:hidden" />
 
         {/* 1-Click Vehicle Switcher Pill */}
         <button
           onClick={() => setIsVehicleModalOpen(true)}
-          className="flex items-center gap-2 px-2.5 py-1.5 min-h-[36px] rounded-md bg-gt-graphite/80 hover:bg-gt-raised border border-gt-border hover:border-gt-accent text-gt-text-primary transition-all cursor-pointer group"
+          className="flex items-center gap-2 phone-landscape:gap-1.5 px-2.5 py-1.5 phone-landscape:py-0.5 phone-landscape:px-2 min-h-[36px] phone-landscape:min-h-[26px] rounded-md bg-gt-graphite/80 hover:bg-gt-raised border border-gt-border hover:border-gt-accent text-gt-text-primary transition-all cursor-pointer group"
           title="Click to switch vehicle (50 Schema 2.0 models available)"
           aria-label={`Switch vehicle, currently selected ${vehicleName}`}
         >
           <Car className="w-3.5 h-3.5 text-gt-accent group-hover:scale-110 transition-transform" />
-          <span className="font-semibold truncate max-w-[140px] sm:max-w-[220px] capitalize">
+          <span className="font-semibold truncate max-w-[140px] sm:max-w-[220px] phone-landscape:max-w-[120px] capitalize phone-landscape:text-[11px]">
             {vehicleName}
           </span>
-          <span className="font-mono text-[9px] px-1 py-0.2 rounded bg-black/40 text-gt-text-secondary border border-white/10 hidden sm:inline">
+          <span className="font-mono text-[9px] px-1 py-0.2 rounded bg-black/40 text-gt-text-secondary border border-white/10 hidden sm:inline phone-landscape:hidden">
             50 FLEET
           </span>
         </button>
@@ -162,11 +162,11 @@ export const GranTurismoHeader: React.FC = () => {
           onClick={() => setCommandPaletteOpen(true)}
           title="Open Global Command Dispatcher (Ctrl+K)"
           aria-label="Open Command Search (Ctrl+K)"
-          className="hidden md:flex items-center gap-2 px-2.5 py-1.5 min-h-[36px] rounded-md bg-gt-graphite/80 hover:bg-gt-raised border border-gt-border hover:border-slate-500 text-gt-text-secondary hover:text-gt-text-primary transition-all text-xs cursor-pointer"
+          className="hidden md:flex phone-landscape:flex items-center gap-2 phone-landscape:gap-1.5 px-2.5 py-1.5 phone-landscape:py-0.5 phone-landscape:px-2 min-h-[36px] phone-landscape:min-h-[26px] rounded-md bg-gt-graphite/80 hover:bg-gt-raised border border-gt-border hover:border-slate-500 text-gt-text-secondary hover:text-gt-text-primary transition-all text-xs cursor-pointer"
         >
           <Search className="w-3.5 h-3.5 text-gt-accent" />
           <span className="font-sans font-medium">Search</span>
-          <kbd className="font-mono text-[10px] font-bold px-1 py-0.2 rounded bg-gt-obsidian border border-gt-border text-slate-400">
+          <kbd className="font-mono text-[10px] font-bold px-1 py-0.2 rounded bg-gt-obsidian border border-gt-border text-slate-400 hidden sm:inline phone-landscape:hidden">
             Ctrl+K
           </kbd>
         </button>
@@ -176,14 +176,14 @@ export const GranTurismoHeader: React.FC = () => {
           onClick={() => setCommandPaletteOpen(true)}
           title="Search Views (Ctrl+K)"
           aria-label="Search Views"
-          className="flex md:hidden items-center justify-center w-9 h-9 rounded-md bg-gt-graphite/80 hover:bg-gt-raised border border-gt-border text-gt-accent hover:text-white transition-all cursor-pointer"
+          className="flex md:hidden phone-landscape:hidden items-center justify-center w-9 h-9 rounded-md bg-gt-graphite/80 hover:bg-gt-raised border border-gt-border text-gt-accent hover:text-white transition-all cursor-pointer"
         >
           <Search className="w-4 h-4" />
         </button>
       </div>
 
       {/* Right: Diagnostics, Mode Toggle & Keyboard Help */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 phone-landscape:gap-1.5">
         {/* Legacy Storage Migration Pill (if found) */}
         {hasLocalBuilds && (
           <button
@@ -202,7 +202,7 @@ export const GranTurismoHeader: React.FC = () => {
           onClick={toggleEngineeringMode}
           title="Toggle between Student Mode (guided explanations) and Advanced CAE (raw engineering parameters)"
           aria-label={`Toggle engineering mode, currently ${engineeringMode === 'student' ? 'Student' : 'Advanced CAE'}`}
-          className={`px-2.5 py-1.5 min-h-[36px] rounded-md flex items-center gap-1.5 font-medium transition-all border text-xs cursor-pointer ${
+          className={`px-2.5 py-1.5 phone-landscape:py-0.5 phone-landscape:px-2 min-h-[36px] phone-landscape:min-h-[26px] rounded-md flex items-center gap-1.5 font-medium transition-all border text-xs cursor-pointer ${
             engineeringMode === 'student'
               ? 'bg-emerald-950/60 border-emerald-800 text-emerald-300 hover:bg-emerald-900/60'
               : 'bg-gt-graphite border-gt-border text-gt-text-primary hover:bg-gt-raised'
@@ -211,12 +211,12 @@ export const GranTurismoHeader: React.FC = () => {
           {engineeringMode === 'student' ? (
             <>
               <GraduationCap className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="hidden sm:inline">Student</span>
+              <span className="hidden sm:inline phone-landscape:hidden">Student</span>
             </>
           ) : (
             <>
               <Wrench className="w-3.5 h-3.5 text-gt-accent" />
-              <span className="hidden sm:inline">Advanced CAE</span>
+              <span className="hidden sm:inline phone-landscape:hidden">Advanced CAE</span>
             </>
           )}
         </button>
@@ -226,7 +226,7 @@ export const GranTurismoHeader: React.FC = () => {
           title={statusInfo.tooltip}
           onClick={() => refreshBackendHealth()}
           aria-label={`Backend status: ${statusInfo.text}. Click to refresh.`}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 min-h-[36px] rounded-md bg-gt-graphite border border-gt-border font-mono text-[10px] cursor-pointer hover:border-slate-500 transition-all select-none"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 phone-landscape:py-0.5 phone-landscape:px-2 min-h-[36px] phone-landscape:min-h-[26px] rounded-md bg-gt-graphite border border-gt-border font-mono text-[10px] cursor-pointer hover:border-slate-500 transition-all select-none"
         >
           <span className={`w-2 h-2 rounded-full ${statusInfo.dotClass}`} />
           <span className="text-gt-text-primary hidden sm:inline font-semibold">
