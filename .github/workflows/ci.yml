@@ -46,5 +46,7 @@ jobs:
           pip install fastapi pydantic sqlalchemy pytest uvicorn httpx alembic
 
       - name: Run Python Backend Unit Tests
+        env:
+          PYTHONPATH: .
         run: |
-          pytest tests_python/
+          python -m pytest tests_python/
