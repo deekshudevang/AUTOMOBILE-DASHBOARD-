@@ -21,7 +21,7 @@
 | **27.5** | Projects, Garage & Saved Builds UI, IndexedDB Thumbnails | **COMPLETED** | 7 unit tests passing, 3 screenshots captured | `d29b785` |
 | **27.6** | Multi-Viewport Responsiveness & Accessibility (WCAG 2.1 AA) | **COMPLETED** | 14 unit tests passing, 8 screenshots captured | `96a34ff` |
 | **27.7** | Motion Polish, Material Shaders & Visual Consistency Sweep | **COMPLETED** | 10 unit tests passing, 3 screenshots captured | `dd33c69` |
-| **27.8** | Full Regression Verification, Performance Audit, Final Sign-Off | **COMPLETED** | 55 Vitest (360 tests) + 16 Pytest passing, Build Verified | Pending Commit |
+| **27.8** | Full Regression Verification, Performance Audit, Final Sign-Off | **COMPLETED** | 55 Vitest (360 tests) + 16 Pytest passing, Build Verified | `025f199` |
 
 ---
 
