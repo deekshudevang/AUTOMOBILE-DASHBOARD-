@@ -3,14 +3,11 @@ import {
   LayoutDashboard,
   Layers,
   Box,
-  FileCode2,
   SlidersHorizontal,
-  GitCompare,
   FolderArchive,
   History,
   Download,
   Settings,
-  ChevronRight,
   Car,
   FolderKanban,
   Sliders,
@@ -23,251 +20,191 @@ import {
   Cpu,
   Activity,
   FileText,
-  BookOpen,
   GraduationCap,
   Search,
-  X
+  X,
+  ChevronRight,
+  ChevronLeft
 } from 'lucide-react';
 import { useVehicleStore, ActiveView } from '../../hooks/useVehicleStore';
-import { toHex32 } from '../../utils/joaat';
+import { useUiStore, Workspace } from '../../state/useUiStore';
 
 interface NavItem {
   id: ActiveView;
   label: string;
   icon: React.ComponentType<{ className?: string }>;
+  workspace: Workspace | 'global';
   badge?: string;
 }
 
-interface NavSection {
-  title: string;
-  items: NavItem[];
-}
-
 export const NavigationSidebar: React.FC = () => {
-  const {
-    activeView,
-    setActiveView,
-    activeFile,
-    activeModel,
-    isDirty,
-    allFiles,
-    engineeringMode,
-    toggleEngineeringMode
-  } = useVehicleStore();
+  const { activeView, setActiveView, allFiles } = useVehicleStore();
+  const { activeWorkspace, setActiveWorkspace } = useUiStore();
 
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isHoverExpanded, setIsHoverExpanded] = useState(false);
 
-  const NAV_SECTIONS: NavSection[] = useMemo(() => [
-    {
-      title: 'Workspace',
-      items: [
-        { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-        { id: 'library', label: 'Vehicle Library', icon: Layers, badge: `${allFiles.length}` },
-        { id: 'projects', label: 'Projects DAG', icon: FolderKanban },
-        { id: 'studio', label: '3D Studio', icon: Box }
-      ]
-    },
-    {
-      title: 'CAD & Components',
-      items: [
-        { id: 'componentLibrary', label: 'Component Library', icon: Layers, badge: '80+' },
-        { id: 'componentEditor', label: 'Parametric Editor', icon: Sliders },
-        { id: 'assembly', label: 'Assembly Validation', icon: ShieldCheck },
-        { id: 'cadDesigner', label: 'CAD Designer', icon: FileCode },
-        { id: 'geometryEditor', label: 'Geometry & Mesh', icon: Wrench },
-        { id: 'materialStudio', label: 'Material Studio', icon: Palette }
-      ]
-    },
-    {
-      title: 'Simulation & Aero',
-      items: [
-        { id: 'aeroStudio', label: 'Aero Studio', icon: Wind },
-        { id: 'meshGenerator', label: 'Mesh Generator', icon: Grid },
-        { id: 'cfdLab', label: 'CFD Wind Tunnel', icon: Cpu },
-        { id: 'dynamics', label: 'Vehicle Dynamics', icon: Activity },
-        { id: 'results', label: 'Results Analyzer', icon: Activity }
-      ]
-    },
-    {
-      title: 'Knowledge & System',
-      items: [
-        { id: 'reports', label: 'Engineering Reports', icon: FileText },
-        { id: 'learning', label: 'Learning Centre', icon: GraduationCap },
-        { id: 'assetManager', label: 'Asset Manager', icon: FolderArchive },
-        { id: 'settings', label: 'Settings', icon: Settings }
-      ]
+  // Complete registry of all 24 views classified by workspace
+  const ALL_NAV_ITEMS: NavItem[] = useMemo(
+    () => [
+      // Atelier Workspace
+      { id: 'dashboard', label: 'Showroom Home', icon: LayoutDashboard, workspace: 'atelier' },
+      { id: 'studio', label: '3D Car Studio', icon: Box, workspace: 'atelier' },
+      { id: 'library', label: 'Vehicle Fleet', icon: Car, workspace: 'atelier', badge: `${allFiles.length}` },
+      { id: 'customizer', label: 'Studio Customizer', icon: SlidersHorizontal, workspace: 'atelier' },
+      { id: 'materialStudio', label: 'Material Studio', icon: Palette, workspace: 'atelier' },
+
+      // Telemetry Workspace
+      { id: 'dynamics', label: 'Vehicle Dynamics', icon: Activity, workspace: 'telemetry' },
+      { id: 'aeroStudio', label: 'Aero Wind Tunnel', icon: Wind, workspace: 'telemetry' },
+      { id: 'results', label: 'Simulation Results', icon: Activity, workspace: 'telemetry' },
+      { id: 'comparison', label: 'Spec Comparison', icon: Sliders, workspace: 'telemetry' },
+
+      // Engineering Workspace
+      { id: 'cadDesigner', label: 'CAD Modeler (STEP)', icon: FileCode, workspace: 'engineering' },
+      { id: 'componentLibrary', label: 'CAD Components', icon: Layers, workspace: 'engineering', badge: '80+' },
+      { id: 'componentEditor', label: 'Parametric Editor', icon: Sliders, workspace: 'engineering' },
+      { id: 'assembly', label: 'Assembly Validation', icon: ShieldCheck, workspace: 'engineering' },
+      { id: 'geometryEditor', label: 'Mesh Healer', icon: Wrench, workspace: 'engineering' },
+      { id: 'cfdLab', label: 'OpenFOAM CFD Lab', icon: Cpu, workspace: 'engineering' },
+      { id: 'meshGenerator', label: 'Mesh Generator', icon: Grid, workspace: 'engineering' },
+      { id: 'explorer', label: 'B-Rep Explorer', icon: FileCode, workspace: 'engineering' },
+      { id: 'reports', label: 'CAE Reports', icon: FileText, workspace: 'engineering' },
+
+      // Global System Views
+      { id: 'projects', label: 'Projects & Builds', icon: FolderKanban, workspace: 'global' },
+      { id: 'history', label: 'Revision Timeline', icon: History, workspace: 'global' },
+      { id: 'export', label: 'Export Center', icon: Download, workspace: 'global' },
+      { id: 'learning', label: 'Learning Centre', icon: GraduationCap, workspace: 'global' },
+      { id: 'assetManager', label: 'Asset Pipeline', icon: FolderArchive, workspace: 'global' },
+      { id: 'settings', label: 'System Settings', icon: Settings, workspace: 'global' }
+    ],
+    [allFiles.length]
+  );
+
+  // Filter items: if searching, search all 24 views; otherwise filter by active workspace + global items
+  const visibleItems = useMemo(() => {
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      return ALL_NAV_ITEMS.filter(
+        (item) => item.label.toLowerCase().includes(q) || item.id.toLowerCase().includes(q)
+      );
     }
-  ], [allFiles.length]);
+    return ALL_NAV_ITEMS.filter(
+      (item) => item.workspace === activeWorkspace || item.workspace === 'global'
+    );
+  }, [ALL_NAV_ITEMS, activeWorkspace, searchQuery]);
 
-  const filteredSections = useMemo(() => {
-    if (!searchQuery.trim()) return NAV_SECTIONS;
-    const q = searchQuery.toLowerCase();
-    return NAV_SECTIONS.map(sec => ({
-      ...sec,
-      items: sec.items.filter(item =>
-        item.label.toLowerCase().includes(q) || item.id.toLowerCase().includes(q)
-      )
-    })).filter(sec => sec.items.length > 0);
-  }, [NAV_SECTIONS, searchQuery]);
+  const handleItemClick = (item: NavItem) => {
+    if (item.workspace !== 'global') {
+      setActiveWorkspace(item.workspace);
+    }
+    setActiveView(item.id);
+  };
 
   return (
-    <>
-      {/* Desktop & Tablet Sidebar */}
-      <aside className="hidden sm:flex flex-col justify-between w-16 md:w-64 h-screen bg-autoverse-surface border-r border-autoverse-border select-none z-30 shrink-0">
-        {/* Top Header & Navigation */}
-        <div className="flex flex-col flex-1 overflow-hidden">
-          {/* Brand Header */}
-          <div className="h-12 px-3 md:px-5 flex items-center justify-between border-b border-autoverse-border shrink-0">
-            <div className="flex items-center gap-3">
-              <div className="w-7 h-7 rounded bg-autoverse-elevated border border-autoverse-border flex items-center justify-center text-autoverse-cyan shrink-0">
-                <Car className="w-4 h-4" />
-              </div>
-              <div className="hidden md:block">
-                <div className="flex items-center gap-2">
-                  <span className="font-bold tracking-wider text-xs text-slate-100">AUTOVERSE</span>
-                  <span className="text-[9px] px-1.5 py-0.2 rounded font-mono font-semibold bg-autoverse-elevated border border-autoverse-border text-autoverse-cyan">
-                    3D
-                  </span>
-                </div>
-                <p className="text-[10px] text-autoverse-muted tracking-tight -mt-0.5">Automotive CAD & Aero</p>
-              </div>
+    <aside
+      onMouseEnter={() => setIsHoverExpanded(true)}
+      onMouseLeave={() => setIsHoverExpanded(false)}
+      className={`hidden sm:flex flex-col justify-between h-screen hud-glass border-r border-gt-border select-none z-panel shrink-0 transition-all duration-200 ease-out ${
+        isHoverExpanded ? 'w-56 shadow-2xl' : 'w-16'
+      }`}
+    >
+      <div className="flex flex-col flex-1 overflow-hidden">
+        {/* Top Header Rail Indicator */}
+        <div className="h-12 px-3 flex items-center justify-between border-b border-gt-border shrink-0">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-md bg-gt-graphite border border-gt-border flex items-center justify-center text-gt-accent shrink-0 font-display font-bold text-xs shadow-sm">
+              GT
             </div>
+            {isHoverExpanded && (
+              <div className="truncate animate-fade-in">
+                <span className="font-display font-bold tracking-wider text-xs text-gt-text-primary block">
+                  WORKSTATION
+                </span>
+                <span className="text-[10px] font-mono text-gt-accent uppercase tracking-tight block">
+                  {activeWorkspace} Mode
+                </span>
+              </div>
+            )}
           </div>
+        </div>
 
-          {/* Quick Search across 19 views */}
-          <div className="hidden md:block px-3 py-2 border-b border-autoverse-border/80">
+        {/* Quick Search across all 24 views */}
+        {isHoverExpanded && (
+          <div className="px-3 py-2 border-b border-gt-border/80 animate-fade-in">
             <div className="relative flex items-center">
-              <Search className="w-3.5 h-3.5 text-slate-500 absolute left-2.5 pointer-events-none" />
+              <Search className="w-3.5 h-3.5 text-gt-text-secondary absolute left-2.5 pointer-events-none" />
               <input
                 type="text"
-                placeholder="Search modules..."
+                placeholder="Search views..."
                 value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                className="w-full bg-autoverse-elevated border border-autoverse-border/80 rounded pl-8 pr-7 py-1 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-gt-obsidian border border-gt-border rounded-md pl-8 pr-7 py-1 text-xs text-gt-text-primary placeholder:text-gt-text-secondary focus:outline-none focus:border-gt-accent font-sans"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-2 text-slate-400 hover:text-slate-200"
+                  className="absolute right-2 text-gt-text-secondary hover:text-white"
                 >
                   <X className="w-3 h-3" />
                 </button>
               )}
             </div>
           </div>
+        )}
 
-          {/* Scrollable Navigation Menu */}
-          <nav className="flex-1 overflow-y-auto p-2 md:p-3 space-y-4">
-            {filteredSections.map(section => (
-              <div key={section.title} className="space-y-1">
-                <h3 className="hidden md:block px-2 text-[10px] font-mono uppercase tracking-wider text-autoverse-muted">
-                  {section.title}
-                </h3>
-                {section.items.map(item => {
-                  const Icon = item.icon;
-                  const isActive = activeView === item.id;
-                  return (
-                    <button
-                      key={item.id}
-                      onClick={() => setActiveView(item.id)}
-                      title={item.label}
-                      aria-label={item.label}
-                      className={`w-full flex items-center justify-center md:justify-between px-2 md:px-2.5 py-1.5 rounded text-xs font-medium transition-all duration-150 ${
-                        isActive
-                          ? 'bg-autoverse-elevated text-slate-100 border border-cyan-800/80 shadow-sm'
-                          : 'text-slate-400 hover:text-slate-200 hover:bg-autoverse-elevated/50 border border-transparent'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <span className={`${isActive ? 'text-autoverse-cyan' : 'text-slate-400'}`}>
-                          <Icon className="w-4 h-4 shrink-0" />
-                        </span>
-                        <span className="hidden md:inline truncate">{item.label}</span>
-                      </div>
-                      {item.badge && (
-                        <span className="hidden md:inline text-[10px] font-mono px-1.5 py-0.2 rounded bg-autoverse-overlay text-slate-400">
-                          {item.badge}
-                        </span>
-                      )}
-                      {isActive && !item.badge && (
-                        <div className="hidden md:block w-1.5 h-1.5 rounded-full bg-autoverse-cyan" />
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            ))}
-          </nav>
+        {/* Navigation Item Rail */}
+        <nav className="flex-1 overflow-y-auto p-2 space-y-1">
+          {visibleItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeView === item.id;
+
+            return (
+              <button
+                key={item.id}
+                onClick={() => handleItemClick(item)}
+                title={item.label}
+                aria-label={item.label}
+                className={`w-full flex items-center ${
+                  isHoverExpanded ? 'justify-between px-3' : 'justify-center px-0'
+                } py-2 rounded-md text-xs font-medium transition-all duration-150 cursor-pointer ${
+                  isActive
+                    ? 'bg-gradient-to-r from-red-950/80 to-gt-graphite text-white border border-red-600/60 shadow-sm'
+                    : 'text-gt-text-secondary hover:text-gt-text-primary hover:bg-white/[0.04] border border-transparent'
+                }`}
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <Icon
+                    className={`w-4 h-4 shrink-0 transition-transform ${
+                      isActive ? 'text-gt-accent scale-110' : 'text-gt-text-secondary'
+                    }`}
+                  />
+                  {isHoverExpanded && <span className="truncate">{item.label}</span>}
+                </div>
+
+                {isHoverExpanded && item.badge && (
+                  <span className="font-mono text-[9px] px-1.5 py-0.2 rounded bg-black/40 text-gt-text-secondary border border-white/10 shrink-0">
+                    {item.badge}
+                  </span>
+                )}
+
+                {isActive && !isHoverExpanded && (
+                  <span className="absolute right-1 w-1.5 h-1.5 rounded-full bg-gt-accent" />
+                )}
+              </button>
+            );
+          })}
+        </nav>
+      </div>
+
+      {/* Bottom Rail Footer */}
+      <div className="p-2 border-t border-gt-border shrink-0 flex items-center justify-center">
+        <div className="flex items-center gap-2 text-[10px] font-mono text-gt-text-secondary">
+          <div className="w-2 h-2 rounded-full bg-gt-ok" />
+          {isHoverExpanded && <span>READY</span>}
         </div>
-
-        {/* Active Vehicle Status Footer */}
-        <div className="hidden md:block p-3 border-t border-autoverse-border bg-autoverse-elevated/40 shrink-0">
-          <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 mb-1 flex items-center justify-between">
-            <span>Active Spec</span>
-            {isDirty && (
-              <span className="text-autoverse-amber font-mono font-medium flex items-center gap-1">
-                ● Modified
-              </span>
-            )}
-          </div>
-          <div
-            onClick={() => setActiveView('library')}
-            className="p-2.5 rounded bg-autoverse-elevated border border-autoverse-border hover:border-cyan-800/70 cursor-pointer transition-colors"
-          >
-            <div className="flex items-center justify-between">
-              <h4 className="text-xs font-semibold text-slate-200 truncate" title={activeModel?.displayName || activeFile}>
-                {activeModel?.displayName || activeFile.replace('.json', '')}
-              </h4>
-              <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-            </div>
-            <div className="flex items-center justify-between mt-1 text-[11px] text-slate-400">
-              <span className="truncate">{activeModel?.manufacturer || 'Vehicle'}</span>
-              <span className="font-mono text-[10px] text-autoverse-cyan shrink-0">
-                {activeModel ? toHex32(activeModel.hash) : '0x00'}
-              </span>
-            </div>
-          </div>
-        </div>
-      </aside>
-
-      {/* Mobile Top Navigation Bar (<640px) */}
-      <nav className="sm:hidden fixed top-0 left-0 right-0 h-12 bg-autoverse-surface/95 backdrop-blur-md border-b border-autoverse-border z-40 flex items-center justify-around px-2 text-slate-400">
-        <button
-          onClick={() => setActiveView('studio')}
-          aria-label="3D Studio"
-          className={`p-2 rounded-lg transition-colors ${activeView === 'studio' ? 'text-autoverse-cyan' : 'text-slate-400 hover:text-white'}`}
-        >
-          <Box className="w-5 h-5" />
-        </button>
-        <button
-          onClick={() => setActiveView('componentEditor')}
-          aria-label="Parametric Editor"
-          className={`p-2 rounded-lg transition-colors ${activeView === 'componentEditor' ? 'text-autoverse-cyan' : 'text-slate-400 hover:text-white'}`}
-        >
-          <Sliders className="w-5 h-5" />
-        </button>
-        <button
-          onClick={() => setActiveView('aeroStudio')}
-          aria-label="Aero Studio"
-          className={`p-2 rounded-lg transition-colors ${activeView === 'aeroStudio' ? 'text-autoverse-cyan' : 'text-slate-400 hover:text-white'}`}
-        >
-          <Wind className="w-5 h-5" />
-        </button>
-        <button
-          onClick={() => setActiveView('cfdLab')}
-          aria-label="CFD Lab"
-          className={`p-2 rounded-lg transition-colors ${activeView === 'cfdLab' ? 'text-autoverse-cyan' : 'text-slate-400 hover:text-white'}`}
-        >
-          <Cpu className="w-5 h-5" />
-        </button>
-        <button
-          onClick={() => setActiveView('dashboard')}
-          aria-label="Dashboard"
-          className={`p-2 rounded-lg transition-colors ${activeView === 'dashboard' ? 'text-autoverse-cyan' : 'text-slate-400 hover:text-white'}`}
-        >
-          <LayoutDashboard className="w-5 h-5" />
-        </button>
-      </nav>
-    </>
+      </div>
+    </aside>
   );
 };

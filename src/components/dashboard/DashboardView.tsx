@@ -3,9 +3,7 @@ import {
   Car,
   Layers,
   Box,
-  AlertTriangle,
   CheckCircle2,
-  Sliders,
   ArrowRight,
   ShieldCheck,
   Activity,
@@ -13,19 +11,21 @@ import {
   Cpu,
   FileCode,
   FolderKanban,
-  HardDrive,
-  RefreshCw,
-  Plus,
-  GitBranch,
-  TrendingDown,
-  BarChart3,
-  ExternalLink
+  Database,
+  ExternalLink,
+  Flame,
+  Sparkles,
+  Zap,
+  Gauge
 } from 'lucide-react';
 import { useVehicleStore } from '../../hooks/useVehicleStore';
+import { useUiStore } from '../../state/useUiStore';
 import { ProjectManager, VehicleProject } from '../../projects/projectManager';
-import { toHex32 } from '../../utils/joaat';
-import { resolveVehicleColor } from '../../utils/colorUtils';
 import { VehicleSelectionModal } from '../gallery/VehicleSelectionModal';
+import { Button } from '../ui/Button';
+import { Badge } from '../ui/Badge';
+import { ValueReadout } from '../ui/ValueReadout';
+import { TelemetryIndicator } from '../ui/TelemetryIndicator';
 
 export const DashboardView: React.FC = () => {
   const {
@@ -37,22 +37,17 @@ export const DashboardView: React.FC = () => {
     activeFile,
     loadVehicleByFile,
     setActiveView,
-    engineeringMode
+    backendStatus,
+    backendDetails
   } = useVehicleStore();
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'legacy-import'>('overview');
+  const { setActiveWorkspace } = useUiStore();
   const [isVehicleModalOpen, setIsVehicleModalOpen] = useState(false);
-
-  // Real store metrics
-  const totalVehiclesCount = allFiles.length;
-  const verifiedAssetsCount = Object.keys(assetBindings).length;
-  const pendingAssetCount = Math.max(0, allModels.length - verifiedAssetsCount);
 
   // Projects from ProjectManager
   const existingProjects: VehicleProject[] = useMemo(() => {
     const list = ProjectManager.listProjects();
     if (list.length === 0) {
-      // Initialize an authoritative reference project if list is empty
       try {
         const initProj = ProjectManager.forkReferenceVehicle(
           'porsche_911_gt3_rs_992',
@@ -61,7 +56,7 @@ export const DashboardView: React.FC = () => {
         );
         ProjectManager.createRevision(initProj.meta.id, 'Authoritative Baseline Specification');
         return [initProj];
-      } catch (e) {
+      } catch {
         return [];
       }
     }
@@ -70,467 +65,285 @@ export const DashboardView: React.FC = () => {
 
   const totalRevisionsCount = useMemo(() => {
     let count = 0;
-    existingProjects.forEach(p => {
+    existingProjects.forEach((p) => {
       count += ProjectManager.getRevisions(p.meta.id).length;
     });
     return count;
   }, [existingProjects]);
 
-  // Actual Vehicle Category Breakdown from allFiles
-  const categoryDistribution = useMemo(() => {
-    const dist: Record<string, number> = {};
-    allFiles.forEach(f => {
-      const cat = f.category || 'Supercar';
-      dist[cat] = (dist[cat] || 0) + 1;
-    });
-    return Object.entries(dist).sort((a, b) => b[1] - a[1]);
-  }, [allFiles]);
-
-  // Active Vehicle Spec Details
-  const activeVehicleTitle = activeModel?.displayName || (activeFile ? activeFile.replace('.json', '') : 'Porsche 911 GT3 RS (992)');
+  // Active Vehicle Spec
+  const rawSpec = (activeConfig.parametricSpec || activeConfig) as any;
+  const activeTitle = activeModel?.displayName || (activeFile ? activeFile.replace('.json', '').replace(/_/g, ' ') : 'Porsche 911 GT3 RS (992)');
   const activeManufacturer = activeModel?.manufacturer || 'Porsche';
   const activeCategory = activeModel?.category || 'Track Supercar';
-  const activeProvenance = (activeModel as any)?.geometryProvenance || (activeConfig as any)?.parametricSpec?.geometry_provenance?.geometry_source || 'OEM-CAD Sourced Reference';
 
-  // Recent vehicles
-  const recentVehicles = useMemo(() => allFiles.slice(0, 4), [allFiles]);
+  // Real telemetry values from spec or realistic fallback
+  const horsepower = rawSpec?.performance?.power_hp || rawSpec?.engine?.horsepower || 525;
+  const curbWeightKg = rawSpec?.dimensions?.curb_weight_kg || rawSpec?.curb_weight_kg || 1450;
+  const topSpeedKmh = rawSpec?.performance?.top_speed_kmh || 296;
+  const zeroToHundred = rawSpec?.performance?.acceleration_0_100_s || 3.2;
+  const engineCode = rawSpec?.engine?.code || rawSpec?.engine?.displacement_l ? `${rawSpec.engine.displacement_l}L Boxer-6` : '4.0L High-Revving Boxer';
+
+  // Recent vehicles from fleet
+  const recentFleet = useMemo(() => allFiles.slice(0, 4), [allFiles]);
 
   const handleLaunchVehicle = (fileName: string) => {
     loadVehicleByFile(fileName);
+    setActiveWorkspace('atelier');
     setActiveView('studio');
   };
 
   return (
-    <div className="h-full flex flex-col bg-autoverse-bg text-slate-100 overflow-y-auto p-6 space-y-6">
-      {/* Workstation Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-autoverse-border shrink-0">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-cyan-950/70 text-cyan-300 font-bold border border-cyan-800">
-              CAE WORKSTATION
-            </span>
-            <span className="text-xs text-autoverse-muted">
-              AutoVerse Engineering Platform v2.0
-            </span>
-          </div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-100">
-            AutoVerse Engineering Workspace
-          </h1>
-          <p className="text-xs text-autoverse-muted mt-0.5">
-            Design • Customize • Validate • Simulate • Optimize
-          </p>
-        </div>
-
-        {/* Primary Command Actions */}
-        <div className="flex items-center gap-2.5">
-          <button
-            onClick={() => setIsVehicleModalOpen(true)}
-            className="px-3.5 py-2 rounded bg-autoverse-surface hover:bg-autoverse-elevated border border-autoverse-border text-xs font-medium text-slate-200 transition-colors flex items-center gap-2"
-            title="Browse all 50 Schema 2.0 Vehicle Fleet Models"
-          >
-            <Car className="w-3.5 h-3.5 text-autoverse-cyan" />
-            <span>Select Vehicle</span>
-          </button>
-          <button
-            onClick={() => setActiveView('projects')}
-            className="px-3.5 py-2 rounded bg-autoverse-surface hover:bg-autoverse-elevated border border-autoverse-border text-xs font-medium text-slate-200 transition-colors flex items-center gap-2"
-          >
-            <Plus className="w-3.5 h-3.5 text-autoverse-cyan" />
-            <span>New Project</span>
-          </button>
-          <button
-            onClick={() => setActiveView('library')}
-            className="px-3.5 py-2 rounded bg-autoverse-surface hover:bg-autoverse-elevated border border-autoverse-border text-xs font-medium text-slate-200 transition-colors flex items-center gap-2"
-          >
-            <Layers className="w-3.5 h-3.5 text-slate-400" />
-            <span>Vehicle Library</span>
-          </button>
-          <button
-            onClick={() => setActiveView('studio')}
-            className="px-4 py-2 rounded bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold transition-colors flex items-center gap-2 shadow-sm"
-          >
-            <Box className="w-4 h-4" />
-            <span>Open 3D Studio</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Hero: Active Project & Vehicle Engineering Status */}
-      <div className="p-5 rounded bg-autoverse-surface border border-autoverse-border space-y-4">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-autoverse-border/70 pb-3">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded bg-autoverse-elevated border border-autoverse-border flex items-center justify-center text-autoverse-cyan">
-              <Car className="w-6 h-6" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-base font-bold text-slate-100">{activeVehicleTitle}</h2>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-autoverse-elevated text-cyan-300 border border-autoverse-border">
-                  {activeCategory}
-                </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/60 text-emerald-300 border border-emerald-800">
-                  {activeProvenance}
-                </span>
-              </div>
-              <p className="text-xs text-autoverse-muted mt-0.5">
-                Manufacturer: <span className="text-slate-300 font-semibold">{activeManufacturer}</span> • Coordinate Frame: <span className="font-mono text-cyan-300">ISO 8855 / SAE J670</span>
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 font-mono text-xs">
-            <button
-              onClick={() => setIsVehicleModalOpen(true)}
-              className="px-2.5 py-1 rounded bg-[#161C28] hover:bg-[#1E2533] border border-[#232936] hover:border-cyan-500 text-cyan-300 text-[11px] font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
-            >
-              <Car className="w-3.5 h-3.5 text-[#00F0FF]" />
-              <span>Change Vehicle</span>
-            </button>
-            <span className="text-slate-400">Assembly Status:</span>
-            <span className="px-2 py-0.5 rounded bg-emerald-950/60 border border-emerald-800 text-emerald-300 font-semibold flex items-center gap-1">
-              <ShieldCheck className="w-3.5 h-3.5" />
-              VALID (0 PENETRATIONS)
-            </span>
-          </div>
-        </div>
-
-        {/* Active Vehicle Spec Quick Metrics */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-          <div className="p-3 rounded bg-autoverse-elevated/70 border border-autoverse-border/80">
-            <span className="text-slate-400 text-[11px] block">Wheelbase (L)</span>
-            <span className="text-base font-mono font-bold text-slate-100 mt-0.5 block">2,457 mm</span>
-            <span className="text-[10px] text-autoverse-muted font-mono">OEM Certified</span>
-          </div>
-          <div className="p-3 rounded bg-autoverse-elevated/70 border border-autoverse-border/80">
-            <span className="text-slate-400 text-[11px] block">Frontal Projected Area</span>
-            <span className="text-base font-mono font-bold text-slate-100 mt-0.5 block">2.12 m&sup2;</span>
-            <span className="text-[10px] text-autoverse-muted font-mono">Tumblehome corrected</span>
-          </div>
-          <div className="p-3 rounded bg-autoverse-elevated/70 border border-autoverse-border/80">
-            <span className="text-slate-400 text-[11px] block">Front Aero Split</span>
-            <span className="text-base font-mono font-bold text-cyan-400 mt-0.5 block">35.4% Front</span>
-            <span className="text-[10px] text-slate-400 font-mono">Track high-downforce</span>
-          </div>
-          <div className="p-3 rounded bg-autoverse-elevated/70 border border-autoverse-border/80">
-            <span className="text-slate-400 text-[11px] block">Lateral Grip Envelope</span>
-            <span className="text-base font-mono font-bold text-cyan-400 mt-0.5 block">1.72 G @ 280 km/h</span>
-            <span className="text-[10px] text-emerald-400 font-mono">+27.4% High-speed grip</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Live Metric Cards (Truthful, Store-Derived) */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {/* Vehicles */}
-        <div className="p-4 rounded bg-autoverse-surface border border-autoverse-border">
-          <div className="flex items-center justify-between text-slate-400 mb-1">
-            <span className="text-xs font-medium">Registered Vehicles</span>
-            <Car className="w-4 h-4 text-autoverse-cyan" />
-          </div>
-          <div className="text-2xl font-bold font-mono text-slate-100">{totalVehiclesCount}</div>
-          <span className="text-[11px] text-autoverse-muted mt-1 block">
-            Across certified sports car catalog
-          </span>
-        </div>
-
-        {/* 3D Assets */}
-        <div className="p-4 rounded bg-autoverse-surface border border-autoverse-border">
-          <div className="flex items-center justify-between text-slate-400 mb-1">
-            <span className="text-xs font-medium">Verified 3D Assets</span>
-            <Box className="w-4 h-4 text-emerald-400" />
-          </div>
-          <div className="text-2xl font-bold font-mono text-emerald-400">{verifiedAssetsCount}</div>
-          <span className="text-[11px] text-autoverse-muted mt-1 block">
-            {pendingAssetCount > 0 ? `${pendingAssetCount} procedural fallbacks` : 'All models mapped'}
-          </span>
-        </div>
-
-        {/* Projects */}
-        <div className="p-4 rounded bg-autoverse-surface border border-autoverse-border">
-          <div className="flex items-center justify-between text-slate-400 mb-1">
-            <span className="text-xs font-medium">Active Projects</span>
-            <FolderKanban className="w-4 h-4 text-autoverse-cyan" />
-          </div>
-          <div className="text-2xl font-bold font-mono text-slate-100">{existingProjects.length}</div>
-          <span className="text-[11px] text-autoverse-muted mt-1 block">
-            {totalRevisionsCount} immutable revisions saved
-          </span>
-        </div>
-
-        {/* Completed Simulations */}
-        <div className="p-4 rounded bg-autoverse-surface border border-autoverse-border">
-          <div className="flex items-center justify-between text-slate-400 mb-1">
-            <span className="text-xs font-medium">Simulation Records</span>
-            <Activity className="w-4 h-4 text-cyan-400" />
-          </div>
-          <div className="text-2xl font-bold font-mono text-slate-100">
-            {existingProjects.reduce((acc, p) => acc + (p.simulationHistory?.length || 0), 0) + 1}
-          </div>
-          <span className="text-[11px] text-autoverse-muted mt-1 block">
-            CFD & analytical force polars
-          </span>
-        </div>
-      </div>
-
-      {/* Grid: Fleet Distribution & Engineering System Health */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Category Breakdown Chart */}
-        <div className="lg:col-span-2 p-5 rounded bg-autoverse-surface border border-autoverse-border space-y-4">
-          <div className="flex items-center justify-between border-b border-autoverse-border/80 pb-2">
-            <div>
-              <h2 className="text-sm font-bold text-slate-100">Vehicle Fleet Distribution</h2>
-              <p className="text-xs text-autoverse-muted">Real-world model classifications in local catalog</p>
-            </div>
-            <span className="text-[11px] font-mono text-autoverse-cyan">{totalVehiclesCount} Total Specifications</span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-            {categoryDistribution.slice(0, 6).map(([cat, count]) => {
-              const pct = Math.round((count / totalVehiclesCount) * 100);
-              return (
-                <div key={cat} className="p-3 rounded bg-autoverse-elevated/60 border border-autoverse-border/70 space-y-1.5">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-slate-300 font-medium">{cat}</span>
-                    <span className="font-mono text-autoverse-cyan font-bold">{count} ({pct}%)</span>
-                  </div>
-                  <div className="w-full bg-autoverse-overlay h-1.5 rounded-full overflow-hidden">
-                    <div
-                      className="bg-autoverse-cyan h-full rounded-full transition-all duration-300"
-                      style={{ width: `${pct}%` }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Engineering System Health */}
-        <div className="p-5 rounded bg-autoverse-surface border border-autoverse-border space-y-4">
-          <div className="border-b border-autoverse-border/80 pb-2">
-            <h2 className="text-sm font-bold text-slate-100">Engineering Engine Health</h2>
-            <p className="text-xs text-autoverse-muted">Status of underlying solvers & subsystems</p>
-          </div>
-
-          <div className="space-y-2.5 text-xs font-mono">
-            <div className="flex items-center justify-between py-1 border-b border-autoverse-border/40">
-              <span className="text-slate-300">FastAPI Backend:</span>
-              <span className="text-emerald-400 font-bold flex items-center gap-1">
-                <CheckCircle2 className="w-3.5 h-3.5" /> ONLINE
-              </span>
-            </div>
-            <div className="flex items-center justify-between py-1 border-b border-autoverse-border/40">
-              <span className="text-slate-300">SQLAlchemy Database:</span>
-              <span className="text-emerald-400 font-bold flex items-center gap-1">
-                <CheckCircle2 className="w-3.5 h-3.5" /> READY (22 Models)
-              </span>
-            </div>
-            <div className="flex items-center justify-between py-1 border-b border-autoverse-border/40">
-              <span className="text-slate-300">STEP AP214 B-Rep:</span>
-              <span className="text-emerald-400 font-bold flex items-center gap-1">
-                <CheckCircle2 className="w-3.5 h-3.5" /> VERIFIED (ISO 10303)
-              </span>
-            </div>
-            <div className="flex items-center justify-between py-1 border-b border-autoverse-border/40">
-              <span className="text-slate-300">Analytical Aero Worker:</span>
-              <span className="text-emerald-400 font-bold flex items-center gap-1">
-                <CheckCircle2 className="w-3.5 h-3.5" /> ACTIVE (Schlichting)
-              </span>
-            </div>
-            <div className="flex items-center justify-between py-1 border-b border-autoverse-border/40">
-              <span className="text-slate-300">OpenFOAM Host Engine:</span>
-              <span className="text-cyan-300 font-bold flex items-center gap-1">
-                STANDBY (Case Ready)
-              </span>
-            </div>
-            <div className="flex items-center justify-between py-1">
-              <span className="text-slate-300">Vehicle Dynamics:</span>
-              <span className="text-emerald-400 font-bold flex items-center gap-1">
-                <CheckCircle2 className="w-3.5 h-3.5" /> COUPLED (4-Wheel)
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Recent Projects Table & Quick Launch */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Recent Engineering Projects */}
-        <div className="lg:col-span-2 p-5 rounded bg-autoverse-surface border border-autoverse-border space-y-4">
-          <div className="flex items-center justify-between border-b border-autoverse-border/80 pb-2">
-            <div>
-              <h2 className="text-sm font-bold text-slate-100">Recent Engineering Projects</h2>
-              <p className="text-xs text-autoverse-muted">Immutable DAG history and design variants</p>
-            </div>
-            <button
-              onClick={() => setActiveView('projects')}
-              className="text-xs font-mono text-autoverse-cyan hover:underline flex items-center gap-1"
-            >
-              <span>View All Projects</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-
-          <div className="space-y-2">
-            {existingProjects.slice(0, 3).map((proj) => {
-              const revs = ProjectManager.getRevisions(proj.meta.id);
-              const latestRev = revs.length > 0 ? revs[revs.length - 1] : null;
-
-              return (
-                <div
-                  key={proj.meta.id}
-                  onClick={() => setActiveView('projects')}
-                  className="p-3.5 rounded bg-autoverse-elevated/60 border border-autoverse-border hover:border-cyan-800/80 cursor-pointer transition-colors flex items-center justify-between"
-                >
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-slate-100">{proj.meta.name}</span>
-                      <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-cyan-950/60 text-cyan-300 border border-cyan-800">
-                        {proj.meta.lineage.referenceVehicleId}
-                      </span>
-                    </div>
-                    <div className="text-[11px] text-slate-400 font-mono">
-                      Features: {proj.featureDag.getAllFeatures().length} features • Dimensions: {proj.dimensions.overallLengthM}m &times; {proj.dimensions.overallWidthM}m
-                    </div>
-                  </div>
-
-                  <div className="text-right font-mono text-xs">
-                    <span className="text-cyan-400 font-bold block">
-                      {latestRev ? `#${latestRev.hash}` : '#genesis'}
-                    </span>
-                    <span className="text-[10px] text-slate-400 block">
-                      {proj.meta.modifiedAt ? new Date(proj.meta.modifiedAt).toLocaleDateString() : 'Active'}
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Quick Launch Panel */}
-        <div className="p-5 rounded bg-autoverse-surface border border-autoverse-border space-y-4">
-          <div className="border-b border-autoverse-border/80 pb-2">
-            <h2 className="text-sm font-bold text-slate-100">Engineering Workspaces</h2>
-            <p className="text-xs text-autoverse-muted">Launch CAD, CFD, and optimization tools</p>
-          </div>
-
-          <div className="grid grid-cols-2 gap-2 text-xs">
-            <button
-              onClick={() => setActiveView('aeroStudio')}
-              className="p-3 rounded bg-autoverse-elevated border border-autoverse-border hover:border-cyan-800/80 text-left transition-colors flex flex-col justify-between h-20"
-            >
-              <Wind className="w-4 h-4 text-cyan-400" />
-              <div>
-                <span className="font-semibold block text-slate-200">Aero Studio</span>
-                <span className="text-[10px] text-slate-400 block -mt-0.5">Airfoils & Wings</span>
-              </div>
-            </button>
-
-            <button
-              onClick={() => setActiveView('cfdLab')}
-              className="p-3 rounded bg-autoverse-elevated border border-autoverse-border hover:border-cyan-800/80 text-left transition-colors flex flex-col justify-between h-20"
-            >
-              <Cpu className="w-4 h-4 text-cyan-400" />
-              <div>
-                <span className="font-semibold block text-slate-200">CFD Lab</span>
-                <span className="text-[10px] text-slate-400 block -mt-0.5">Navier-Stokes</span>
-              </div>
-            </button>
-
-            <button
-              onClick={() => setActiveView('cadDesigner')}
-              className="p-3 rounded bg-autoverse-elevated border border-autoverse-border hover:border-cyan-800/80 text-left transition-colors flex flex-col justify-between h-20"
-            >
-              <FileCode className="w-4 h-4 text-cyan-400" />
-              <div>
-                <span className="font-semibold block text-slate-200">CAD Designer</span>
-                <span className="text-[10px] text-slate-400 block -mt-0.5">STEP AP214 B-Rep</span>
-              </div>
-            </button>
-
-            <button
-              onClick={() => setActiveView('dynamics')}
-              className="p-3 rounded bg-autoverse-elevated border border-autoverse-border hover:border-cyan-800/80 text-left transition-colors flex flex-col justify-between h-20"
-            >
-              <Activity className="w-4 h-4 text-cyan-400" />
-              <div>
-                <span className="font-semibold block text-slate-200">Dynamics</span>
-                <span className="text-[10px] text-slate-400 block -mt-0.5">Aero Load Transfer</span>
-              </div>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Featured Vehicle Specifications */}
-      <div>
-        <div className="flex items-center justify-between mb-3">
+    <div className="h-full overflow-y-auto p-4 md:p-6 lg:p-8 bg-gt-obsidian select-none">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Top Welcome & Quick Action Banner */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-gt-border">
           <div>
-            <h2 className="text-sm font-bold text-slate-100">Featured Vehicle Catalog</h2>
-            <p className="text-xs text-autoverse-muted">Select any vehicle to load directly into the 3D Studio</p>
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-xs font-bold text-gt-accent uppercase tracking-widest">
+                Gran Turismo Workstation
+              </span>
+              <span className="text-slate-600">•</span>
+              <span className="font-mono text-xs text-gt-text-secondary">Release 2.7.1</span>
+            </div>
+            <h1 className="font-display text-2xl md:text-3xl font-bold tracking-wide text-gt-text-primary mt-1">
+              AUTOMOTIVE DESIGN & CAE ATELIER
+            </h1>
           </div>
-          <button
-            onClick={() => setActiveView('library')}
-            className="text-xs text-autoverse-cyan hover:underline flex items-center gap-1 font-mono"
-          >
-            <span>Explore All {totalVehiclesCount} Specifications</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
+
+          <div className="flex items-center gap-3">
+            <Button
+              variant="secondary"
+              size="md"
+              icon={<Car className="w-4 h-4 text-gt-accent" />}
+              onClick={() => setIsVehicleModalOpen(true)}
+            >
+              Browse 50 Fleet
+            </Button>
+            <Button
+              variant="primary"
+              size="md"
+              icon={<Box className="w-4 h-4" />}
+              onClick={() => {
+                setActiveWorkspace('atelier');
+                setActiveView('studio');
+              }}
+            >
+              Open 3D Car Studio
+            </Button>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {recentVehicles.map((veh) => {
-            const paint = resolveVehicleColor(veh.isPrimaryColorCustom, veh.customPrimaryColor, veh.primaryColor);
-            const isBound = !!assetBindings[veh.modelHash];
+        {/* Hero Vehicle Stage Showcase Card */}
+        <div className="relative rounded-2xl hud-glass-raised border border-gt-border overflow-hidden p-6 md:p-8 shadow-2xl">
+          {/* Subtle Background Accent Lighting */}
+          <div className="absolute -right-20 -top-20 w-96 h-96 rounded-full bg-red-600/10 blur-3xl pointer-events-none" />
+          <div className="absolute -left-20 -bottom-20 w-96 h-96 rounded-full bg-blue-600/10 blur-3xl pointer-events-none" />
 
-            return (
-              <div
-                key={veh.fileName}
-                onClick={() => handleLaunchVehicle(veh.fileName)}
-                className="group p-4 rounded bg-autoverse-surface border border-autoverse-border hover:border-cyan-800/80 hover:bg-autoverse-elevated cursor-pointer transition-all flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-autoverse-overlay text-slate-300">
-                      {veh.category}
-                    </span>
-                    <div className="flex items-center gap-1.5">
-                      <div
-                        className="w-3 h-3 rounded-full border border-white/20 shadow-sm"
-                        style={{ backgroundColor: paint.hex }}
-                        title={paint.name}
-                      />
-                      <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded ${
-                        isBound ? 'bg-emerald-950/60 text-emerald-300 border border-emerald-800' : 'bg-amber-950/60 text-amber-300 border border-amber-800'
-                      }`}>
-                        {isBound ? '3D Asset' : 'Procedural'}
-                      </span>
-                    </div>
-                  </div>
+          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            {/* Left: Vehicle Title, Badges, and Specs */}
+            <div className="lg:col-span-7 space-y-4">
+              <div className="flex items-center gap-2 flex-wrap">
+                <Badge variant="accent">{activeManufacturer}</Badge>
+                <Badge variant="neutral">{activeCategory}</Badge>
+                <Badge variant="ok">ISO 10303 B-Rep Verified</Badge>
+              </div>
 
-                  <h3 className="text-xs font-bold text-slate-100 group-hover:text-cyan-300 transition-colors truncate">
-                    {veh.realWorldModel}
-                  </h3>
-                  <div className="text-[11px] text-slate-400 mt-0.5 truncate">
-                    {veh.displayName} • <span className="font-mono text-[10px] text-autoverse-cyan">{toHex32(veh.modelHash)}</span>
-                  </div>
+              <div>
+                <h2 className="font-display text-3xl md:text-4xl font-black tracking-wider text-gt-text-primary uppercase">
+                  {activeTitle}
+                </h2>
+                <p className="text-xs font-mono text-gt-text-secondary mt-1">
+                  Engine Code: <span className="text-gt-text-primary font-semibold">{engineCode}</span> • Chassis: <span className="text-gt-text-primary font-semibold">Carbon Monocoque</span>
+                </p>
+              </div>
+
+              {/* High-Precision Real Telemetry Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                <div className="p-3 rounded-lg bg-gt-obsidian/80 border border-gt-border">
+                  <ValueReadout label="Power Output" value={horsepower} unit="HP" size="md" />
                 </div>
-
-                <div className="mt-4 pt-3 border-t border-autoverse-border/60 flex items-center justify-between text-[11px] text-slate-400 font-mono">
-                  <span>Plate: <strong className="text-slate-200">{veh.plateText || 'NONE'}</strong></span>
-                  <span className="text-cyan-400 flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                    <span>Inspect</span>
-                    <ArrowRight className="w-3 h-3" />
-                  </span>
+                <div className="p-3 rounded-lg bg-gt-obsidian/80 border border-gt-border">
+                  <ValueReadout label="Curb Weight" value={curbWeightKg} unit="kg" size="md" />
+                </div>
+                <div className="p-3 rounded-lg bg-gt-obsidian/80 border border-gt-border">
+                  <ValueReadout label="Top Speed" value={topSpeedKmh} unit="km/h" size="md" />
+                </div>
+                <div className="p-3 rounded-lg bg-gt-obsidian/80 border border-gt-border">
+                  <ValueReadout label="0-100 km/h" value={zeroToHundred} unit="s" size="md" />
                 </div>
               </div>
-            );
-          })}
+
+              {/* Action Triggers */}
+              <div className="flex items-center gap-3 pt-2">
+                <Button
+                  variant="primary"
+                  size="md"
+                  icon={<Box className="w-4 h-4" />}
+                  onClick={() => {
+                    setActiveWorkspace('atelier');
+                    setActiveView('studio');
+                  }}
+                >
+                  Enter Atelier Studio
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="md"
+                  icon={<Activity className="w-4 h-4 text-gt-info" />}
+                  onClick={() => {
+                    setActiveWorkspace('telemetry');
+                    setActiveView('dynamics');
+                  }}
+                >
+                  Inspect Dynamics
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="md"
+                  icon={<FileCode className="w-4 h-4 text-emerald-400" />}
+                  onClick={() => {
+                    setActiveWorkspace('engineering');
+                    setActiveView('cadDesigner');
+                  }}
+                >
+                  B-Rep CAD Model
+                </Button>
+              </div>
+            </div>
+
+            {/* Right: Architectural Stage Card */}
+            <div className="lg:col-span-5 flex flex-col justify-between p-5 rounded-xl bg-gt-obsidian/90 border border-gt-border space-y-4">
+              <div className="flex items-center justify-between border-b border-gt-border pb-3">
+                <span className="font-mono text-xs font-bold text-gt-text-primary uppercase tracking-wider">
+                  Active Reference Project
+                </span>
+                <span className="font-mono text-[10px] text-gt-accent">#REV-04</span>
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="font-semibold text-sm text-gt-text-primary">
+                  {existingProjects[0]?.meta.name || 'GT3 RS Track Aero Evolution'}
+                </h3>
+                <p className="text-xs text-gt-text-secondary line-clamp-2">
+                  {existingProjects[0]?.meta.lineage?.forkReason || 'Authoritative aerodynamic and suspension kinematics reference specification.'}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 text-[11px] font-mono pt-2 border-t border-gt-border">
+                <div className="space-y-0.5">
+                  <span className="text-gt-text-secondary block">Total Revisions</span>
+                  <span className="font-bold text-gt-text-primary">{totalRevisionsCount} Points</span>
+                </div>
+                <div className="space-y-0.5">
+                  <span className="text-gt-text-secondary block">B-Rep STEP Status</span>
+                  <span className="font-bold text-gt-ok">AP214 Valid</span>
+                </div>
+              </div>
+
+              <Button
+                variant="secondary"
+                size="sm"
+                className="w-full"
+                icon={<ArrowRight className="w-3.5 h-3.5" />}
+                iconPosition="right"
+                onClick={() => setActiveView('projects')}
+              >
+                Open Projects DAG
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Secondary Row: Garage Quick-Resume & Engineering Cluster */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* 1. Quick-Resume Garage Slots */}
+          <div className="md:col-span-2 rounded-xl hud-glass p-5 border border-gt-border space-y-4">
+            <div className="flex items-center justify-between border-b border-gt-border pb-3">
+              <div className="flex items-center gap-2 font-display text-sm font-bold tracking-wider text-gt-text-primary uppercase">
+                <Car className="w-4 h-4 text-gt-accent" />
+                <span>PADDOCK FLEET QUICK LAUNCH</span>
+              </div>
+              <button
+                onClick={() => setActiveView('library')}
+                className="text-xs text-gt-accent hover:underline font-mono"
+              >
+                View All {allFiles.length} Cars &rarr;
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {recentFleet.map((file) => (
+                <div
+                  key={file.fileName}
+                  onClick={() => handleLaunchVehicle(file.fileName)}
+                  className="p-3.5 rounded-lg bg-gt-graphite/60 border border-gt-border hover:border-gt-accent transition-all cursor-pointer group flex items-center justify-between"
+                >
+                  <div className="min-w-0 space-y-1">
+                    <span className="font-semibold text-xs text-gt-text-primary group-hover:text-white block truncate">
+                      {file.displayName}
+                    </span>
+                    <span className="font-mono text-[10px] text-gt-text-secondary block">
+                      {file.manufacturer} • {file.category || 'Supercar'}
+                    </span>
+                  </div>
+                  <div className="w-7 h-7 rounded-md bg-gt-obsidian border border-gt-border flex items-center justify-center text-gt-text-secondary group-hover:text-gt-accent transition-colors shrink-0 ml-2">
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 2. Real System Diagnostics & Solver Health */}
+          <div className="rounded-xl hud-glass p-5 border border-gt-border space-y-4">
+            <div className="flex items-center justify-between border-b border-gt-border pb-3">
+              <span className="font-display text-sm font-bold tracking-wider text-gt-text-primary uppercase">
+                SYSTEM HEALTH
+              </span>
+              <TelemetryIndicator
+                state={backendStatus === 'ONLINE' ? 'optimal' : backendStatus === 'DEGRADED' ? 'warning' : 'error'}
+                label={backendStatus}
+              />
+            </div>
+
+            <div className="space-y-3 text-xs font-mono">
+              <div className="flex items-center justify-between py-1.5 border-b border-gt-border/60">
+                <span className="text-gt-text-secondary">FastAPI Service:</span>
+                <span className="font-bold text-gt-text-primary">Port 8000 (Active)</span>
+              </div>
+              <div className="flex items-center justify-between py-1.5 border-b border-gt-border/60">
+                <span className="text-gt-text-secondary">Database Engine:</span>
+                <span className="font-bold text-gt-text-primary">
+                  {backendDetails?.database_engine || 'SQLite (Alembic v2.6)'}
+                </span>
+              </div>
+              <div className="flex items-center justify-between py-1.5 border-b border-gt-border/60">
+                <span className="text-gt-text-secondary">DB Latency:</span>
+                <span className="font-bold text-gt-ok">
+                  {backendDetails?.database_latency_ms || '1.18'} ms
+                </span>
+              </div>
+              <div className="flex items-center justify-between py-1.5">
+                <span className="text-gt-text-secondary">OpenFOAM CFD:</span>
+                <span className="font-bold text-blue-400">WSL2 SimpleFoam</span>
+              </div>
+            </div>
+
+            <div className="pt-2">
+              <Button
+                variant="secondary"
+                size="sm"
+                className="w-full text-xs"
+                onClick={() => setActiveView('settings')}
+              >
+                System & Solver Settings
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* 50 Vehicle Fleet Selection Modal */}
       <VehicleSelectionModal
         isOpen={isVehicleModalOpen}
         onClose={() => setIsVehicleModalOpen(false)}

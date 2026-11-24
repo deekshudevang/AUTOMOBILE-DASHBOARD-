@@ -3,8 +3,9 @@ import { NavigationSidebar } from './components/sidebar/NavigationSidebar';
 import { DashboardView } from './components/dashboard/DashboardView';
 import { VehicleLibraryView } from './components/library/VehicleLibraryView';
 import { StudioView } from './components/studio/StudioView';
-import { TopContextBar } from './components/shell/TopContextBar';
-import { EngineeringStatusBar } from './components/shell/EngineeringStatusBar';
+import { GranTurismoHeader } from './components/shell/GranTurismoHeader';
+import { CommandPalette } from './components/navigation/CommandPalette';
+import { ShortcutHelpModal } from './components/navigation/ShortcutHelpModal';
 import { EngineeringModuleLoader } from './components/shell/EngineeringModuleLoader';
 import { useVehicleStore } from './hooks/useVehicleStore';
 
@@ -26,7 +27,7 @@ const LearningCentreView = lazy(() => import('./components/views/LearningCentreV
 const AssetManagerView = lazy(() => import('./components/assetManager/AssetManagerView').then(m => ({ default: m.AssetManagerView })));
 const SettingsView = lazy(() => import('./components/settings/SettingsView').then(m => ({ default: m.SettingsView })));
 
-// Legacy / Specialized Tool Views
+// Specialized / Direct Tool Views
 const CustomizationPanel = lazy(() => import('./components/customizer/CustomizationPanel').then(m => ({ default: m.CustomizationPanel })));
 const ComparisonView = lazy(() => import('./components/comparison/ComparisonView').then(m => ({ default: m.ComparisonView })));
 const JsonExplorerView = lazy(() => import('./components/explorer/JsonExplorerView').then(m => ({ default: m.JsonExplorerView })));
@@ -37,17 +38,17 @@ export const App: React.FC = () => {
   const { activeView } = useVehicleStore();
 
   return (
-    <div className="flex w-screen h-screen bg-autoverse-bg text-slate-100 overflow-hidden font-sans">
-      {/* 19-Module Navigation Sidebar with Search & Dynamic Badges */}
+    <div className="flex w-full h-[100dvh] bg-gt-obsidian text-gt-text-primary overflow-hidden font-sans">
+      {/* 24-Module Navigation Rail with Workspace Filters & Quick Search */}
       <NavigationSidebar />
 
-      {/* Main Dynamic Viewport Container with Context Header & Engineering Status Bar */}
-      <div className="flex-1 flex flex-col h-screen overflow-hidden relative">
-        <TopContextBar />
+      {/* Main Dynamic Viewport Container with Merged Gran Turismo Header */}
+      <div className="flex-1 flex flex-col h-[100dvh] overflow-hidden relative">
+        <GranTurismoHeader />
 
         <main className="flex-1 overflow-hidden relative">
           <Suspense fallback={<EngineeringModuleLoader label="Loading Module" moduleName={activeView} />}>
-            {/* Core Workstation Views (Fast Path) */}
+            {/* Core Workstation Views */}
             {activeView === 'dashboard' && <DashboardView />}
             {activeView === 'library' && <VehicleLibraryView />}
             {activeView === 'studio' && <StudioView />}
@@ -76,7 +77,7 @@ export const App: React.FC = () => {
             {activeView === 'assetManager' && <AssetManagerView />}
             {activeView === 'settings' && <SettingsView />}
 
-            {/* Legacy / Direct Tool Views */}
+            {/* Specialized / Direct Tool Views */}
             {activeView === 'customizer' && <CustomizationPanel />}
             {activeView === 'comparison' && <ComparisonView />}
             {activeView === 'explorer' && <JsonExplorerView />}
@@ -84,9 +85,13 @@ export const App: React.FC = () => {
             {activeView === 'export' && <ExportCenterView />}
           </Suspense>
         </main>
-
-        <EngineeringStatusBar />
       </div>
+
+      {/* Global Command Dispatcher (Ctrl+K) */}
+      <CommandPalette />
+
+      {/* Global Keyboard Shortcut Help Modal (?) */}
+      <ShortcutHelpModal />
     </div>
   );
 };
