@@ -38,7 +38,7 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 ```bash
 npm test
 ```
-Runs 56 test files and 373 unit/integration tests (plus 3 test files and 16 Pytest backend tests in `tests_python/`).
+Runs 55 test files and 363 unit/integration tests (plus 3 test files and 16 Pytest backend tests in `tests_python/`).
 
 ### 3. Run Aerodynamic Benchmarks
 ```bash
@@ -59,24 +59,26 @@ npm run build
 ## Engineering Documentation
 
 - [System Architecture](ARCHITECTURE.md)
+- [Installation Guide](INSTALLATION.md)
+- [Documentation Index](docs/README.md)
 - [Design System Master (UI/UX Pro Max)](design-system/autoverse/MASTER.md)
 - [Whole Repository Audit](docs/product/WHOLE_REPOSITORY_AUDIT.md)
 - [Engineering Truth Matrix](docs/engineering/ENGINEERING_TRUTH_MATRIX.md)
 - [Visual QA Transformation Report](docs/qa/VISUAL_REGRESSION_REPORT.md)
-- [Engineering Tasks Ledger](ENGINEERING_TASKS.md)
-- [Engineering Decisions (ADRs)](ENGINEERING_DECISIONS.md)
-- [Repository Audit](REPOSITORY_AUDIT.md)
-- [Upstream Version Lock](UPSTREAM_LOCK.md)
-- [Component System Standard](COMPONENT_SYSTEM.md)
-- [Geometry & Coordinate Standard](GEOMETRY_STANDARD.md)
-- [Assembly Standard](ASSEMBLY_STANDARD.md)
-- [Database Schema Specification](DATABASE_SCHEMA.md)
-- [REST API Documentation](API_DOCUMENTATION.md)
+- [Engineering Tasks Ledger](docs/ENGINEERING_TASKS.md)
+- [Engineering Decisions (ADRs)](docs/ENGINEERING_DECISIONS.md)
+- [Repository Audit](docs/REPOSITORY_AUDIT.md)
+- [Upstream Version Lock](docs/UPSTREAM_LOCK.md)
+- [Component System Standard](docs/COMPONENT_SYSTEM.md)
+- [Geometry & Coordinate Standard](docs/GEOMETRY_STANDARD.md)
+- [Assembly Standard](docs/ASSEMBLY_STANDARD.md)
+- [Database Schema Specification](docs/DATABASE_SCHEMA.md)
+- [REST API Documentation](docs/API_DOCUMENTATION.md)
 - [Aerodynamic Benchmark Report (ANALYTIC)](docs/CFD_VALIDATION_REPORT.md)
 - [DrivAer Benchmark Report (ANALYTIC)](docs/DRIVAER_VALIDATION_REPORT.md)
 - [Security Policy](SECURITY.md)
 - [Owner Actions & Host Setup](docs/OWNER_ACTIONS.md)
-- [Licence & Attribution](LICENCE_AND_ATTRIBUTION.md)
+- [Licence & Attribution](docs/LICENCE_AND_ATTRIBUTION.md)
 
 ---
 
