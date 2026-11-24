@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AEGIS Integrity Report</title>
+<style>
+  body {font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+         margin: 0; padding: 0; background: #f5f7fa; color: #2c3e50;}
+  .container {max-width: 1100px; margin: 0 auto; padding: 24px;}
+  h1 {font-size: 1.8rem; margin-bottom: 4px;}
+  h2 {font-size: 1.2rem; border-bottom: 2px solid #ecf0f1; padding-bottom: 6px;
+       margin-top: 32px;}
+  .badge {display: inline-block; padding: 6px 18px; border-radius: 20px;
+           color: #fff; font-weight: 700; font-size: 1.1rem;
+           background: #27ae60;}
+  .meta {color: #7f8c8d; font-size: 0.85rem; margin-bottom: 20px;}
+  .scores {display: flex; gap: 16px; flex-wrap: wrap; margin: 16px 0;}
+  .score-card {background: #fff; border-radius: 8px; padding: 14px 20px;
+               box-shadow: 0 1px 4px rgba(0,0,0,.08); min-width: 140px;}
+  .score-card .label {font-size: 0.75rem; color: #7f8c8d; text-transform: uppercase;}
+  .score-card .value {font-size: 1.5rem; font-weight: 700;}
+  .flags {background: #fef9e7; border-left: 4px solid #f39c12;
+           padding: 12px 16px; border-radius: 4px; margin: 16px 0;}
+  .flags ul {margin: 0; padding-left: 20px;}
+  table {width: 100%; border-collapse: collapse; font-size: 0.87rem;
+          background: #fff; border-radius: 8px; overflow: hidden;
+          box-shadow: 0 1px 4px rgba(0,0,0,.08);}
+  th {background: #2c3e50; color: #fff; padding: 10px 12px; text-align: left;}
+  td {padding: 8px 12px; border-bottom: 1px solid #ecf0f1; vertical-align: top;}
+  tr:last-child td {border-bottom: none;}
+  tr:hover td {background: #f8f9fa;}
+  .verdict {display: inline-block; padding: 2px 8px; border-radius: 10px;
+             color: #fff; font-size: 0.78rem; font-weight: 600;}
+  details summary {cursor: pointer; font-weight: 600; padding: 8px 0; color: #2980b9;}
+  .section {background: #fff; border-radius: 8px; padding: 18px 20px;
+             box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-top: 12px;}
+  .no-data {color: #95a5a6; font-style: italic;}
+  footer {margin-top: 40px; color: #bdc3c7; font-size: 0.78rem; text-align: center;}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>AEGIS Academic Integrity Report</h1>
+  <div class="meta">
+    Generated: 2026-11-24T15:47:44.657615+00:00 &nbsp;|&nbsp;
+    File: <code>AutoVerse_3D_Project_Report.pdf</code> &nbsp;|&nbsp;
+    Analysis time: 44.91s
+  </div>
+  <div class="meta">Document content was processed locally and never transmitted anywhere. Citation metadata (titles, authors, DOIs) was sent to: <strong>Crossref, OpenAlex</strong> for online verification.</div>
+
+  <span class="badge">Overall Risk: LOW</span>
+
+  <div class="scores">
+    <div class="score-card"><div class="label">Plagiarism</div><div class="value">0.00</div></div>
+    <div class="score-card"><div class="label">AI Content</div><div class="value">0.00</div></div>
+    <div class="score-card"><div class="label">Citation Issues</div><div class="value">0%</div></div>
+    <div class="score-card"><div class="label">Style Inconsistency</div><div class="value">0.00</div></div>
+    <div class="score-card"><div class="label">Self-Recycling</div><div class="value">0.0%</div></div>
+  </div>
+
+  <div class="flags">
+    <strong>Flags:</strong>
+    <ul><li>[Citation Network] 75% of references lack a DOI. High rate is consistent with LLM-hallucinated bibliographies.</li><li>Citation assessment: INCONCLUSIVE (20 reference(s), 5% verified) -- too few references or too little verification coverage for a percentage-based citation risk to be meaningful; citation findings are not factored into the overall risk level.</li><li>[Math] Duplicate equation number(s) found: [4].</li></ul>
+  </div>
+
+  <!-- N-gram similarity -->
+  <h2>N-Gram Similarity (MinHash LSH)</h2>
+  <div class="section">
+    <p class='no-data'>No significant n-gram matches found.</p>
+  </div>
+
+  <!-- Semantic similarity -->
+  <h2>Semantic Similarity (SBERT Dense Retrieval)</h2>
+  <div class="section">
+    <p class='no-data'>No semantic paraphrase matches found.</p>
+  </div>
+
+  <!-- AI detection -->
+  <h2>AI Content Detection</h2>
+  <div class="section"><p class='no-data'>AI detection was skipped or unavailable.</p></div>
+
+  <!-- Citation integrity -->
+  <h2>Citation Integrity (Crossref Verification)</h2>
+  <div class="section">
+    <table><thead><tr><th>Key</th><th>Verdict</th><th>DOI</th><th>Issues</th><th>Claimed title</th></tr></thead><tbody><tr><td>ref_0</td><td><span class="verdict" style="background:#95a5a6">NO_DOI</span></td><td><small>N/A</small></td><td><small>HTTP 429</small></td><td><small></small></td></tr><tr><td>ref_1</td><td><span class="verdict" style="background:#95a5a6">NO_DOI</span></td><td><small>N/A</small></td><td><small>Title-based lookup found dissimilar result (sim=0.42)</small></td><td><small></small></td></tr><tr><td>ref_2</td><td><span class="verdict" style="background:#95a5a6">UNAVAILABLE</span></td><td><small>10.4271/840300</small></td><td><small>Verification service unavailable: Crossref HTTP 429 (rate-limited or down)</small></td><td><small></small></td></tr><tr><td>ref_3</td><td><span class="verdict" style="background:#95a5a6">NO_DOI</span></td><td><small>N/A</small></td><td><small>HTTP 429</small></td><td><small></small></td></tr><tr><td>ref_4</td><td><span class="verdict" style="background:#95a5a6">NO_DOI</span></td><td><small>N/A</small></td><td><small>HTTP 429</small></td><td><small></small></td></tr><tr><td>ref_5</td><td><span class="verdict" style="background:#95a5a6">NO_DOI</span></td><td><small>N/A</small></td><td><small>Title-based lookup found dissimilar result (sim=0.14)</small></td><td><small></small></td></tr><tr><td>ref_6</td><td><span class="verdict" style="background:#95a5a6">NO_DOI</span></td><td><small>N/A</small></td><td><small>HTTP 429</small></td><td><small></small></td></tr><tr><td>ref_7</td><td><span class="verdict" style="background:#95a5a6">NO_DOI</span></td><td><small>N/A</small></td><td><small>HTTP 429</small></td><td><small></small></td></tr><tr><td>ref_8</td><td><span class="verdict" style="background:#95a5a6">NO_DOI</span></td><td><small>N/A</small></td><td><small>HTTP 429</small></td><td><small></small></td></tr><tr><td>ref_9</td><td><span class="verdict" style="background:#95a5a6">NO_DOI</span></td><td><small>N/A</small></td><td><small>No DOI found; cannot verify against Crossref</small></td><td><small></small></td></tr><tr><td>ref_10</td><td><span class="verdict" style="background:#27ae60">VALID</span></td><td><small>10.1007/978-3-642-59223-2</small></td><td><small>None</small></td><td><small>Tiller, The NURBS Book, 2nd ed., Springer-Verlag, Berlin, Heidelberg, 1997</small></td></tr><tr><td>ref_11</td><td><span class="verdict" style="background:#95a5a6">NO_DOI</span></td><td><small>N/A</small></td><td><small>HTTP 429</small></td><td><small></small></td></tr><tr><td>ref_12</td><td><span class="verdict" style="background:#95a5a6">UNAVAILABLE</span></td><td><small>10.1017/s0001924000034187</small></td><td><small>Verification service unavailable: Crossref HTTP 429 (rate-limited or down)</small></td><td><small>Fluid-Dynamic Drag: Practical Information on Aerodynamic Drag and Hydrodynamic R</small></td></tr><tr><td>ref_13</td><td><span class="verdict" style="background:#95a5a6">NO_DOI</span></td><td><small>N/A</small></td><td><small>HTTP 429</small></td><td><small></small></td></tr><tr><td>ref_14</td><td><span class="verdict" style="background:#95a5a6">NO_DOI</span></td><td><small>N/A</small></td><td><small>HTTP 429</small></td><td><small></small></td></tr><tr><td>ref_15</td><td><span class="verdict" style="background:#95a5a6">NO_DOI</span></td><td><small>N/A</small></td><td><small>HTTP 429</small></td><td><small></small></td></tr><tr><td>ref_16</td><td><span class="verdict" style="background:#95a5a6">UNAVAILABLE</span></td><td><small>10.17487/RFC8446</small></td><td><small>Verification service unavailable: Crossref HTTP 429 (rate-limited or down)</small></td><td><small></small></td></tr><tr><td>ref_17</td><td><span class="verdict" style="background:#95a5a6">UNAVAILABLE</span></td><td><small>10.1145/357401.357402</small></td><td><small>Verification service unavailable: Crossref HTTP 429 (rate-limited or down)</small></td><td><small></small></td></tr><tr><td>ref_18</td><td><span class="verdict" style="background:#95a5a6">NO_DOI</span></td><td><small>N/A</small></td><td><small>HTTP 429</small></td><td><small></small></td></tr><tr><td>ref_19</td><td><span class="verdict" style="background:#95a5a6">NO_DOI</span></td><td><small>N/A</small></td><td><small>HTTP 429</small></td><td><small></small></td></tr></tbody></table>
+  </div>
+
+  <!-- Citation network -->
+  <h2>Citation Network Analysis (Self-Citation, Predatory Venues, Clustering)</h2>
+  <div class="section"><p>Overall risk: <span class="verdict" style="background:#27ae60">LOW</span></p><p>References: 20 &nbsp;|&nbsp; Self-citation rate: 0.0% (0 refs) &nbsp;|&nbsp; Predatory journal matches: 0 &nbsp;|&nbsp; Missing-DOI rate: 75.0%</p><p>Year span: 1984&ndash;2025 &nbsp;|&nbsp; Venue concentration (Herfindahl): 1.000 &nbsp;|&nbsp; OpenAlex queried: Yes</p><ul><li><strong>MISSING_DOI</strong> (MEDIUM): 75% of references lack a DOI. High rate is consistent with LLM-hallucinated bibliographies.</li><li><strong>VENUE_CONCENTRATION</strong> (LOW): Reference list is highly concentrated (Herfindahl index 1.00). Possible narrow scope or fabricated list.</li></ul></div>
+
+  <!-- Target-publisher verification -->
+  <h2>Target-Publisher Verification (IEEE / ACM / Elsevier / IET / IETE / BCS)</h2>
+  <div class="section"><p>Overall risk: <span class="verdict" style="background:#27ae60">LOW</span> &nbsp; Target publishers checked: IEEE, ACM, Elsevier, IET, IETE, BCS &nbsp;|&nbsp; Crossref queried: Yes</p><p>Verified citations by publisher: Elsevier: 0 &nbsp;|&nbsp; BCS: 0 &nbsp;|&nbsp; ACM: 0 &nbsp;|&nbsp; IET: 0 &nbsp;|&nbsp; IEEE: 0 &nbsp;|&nbsp; IETE: 0</p><p><strong>Duplicate / prior-publication search:</strong></p><p>No near-duplicate titles found under the target publishers.</p><p>No target-publisher flags.</p></div>
+
+  <!-- Stylometric -->
+  <h2>Stylometric Analysis (Authorship Consistency)</h2>
+  <div class="section"><p>Consistent: <strong>Yes</strong> (score: 1.000) &nbsp;|&nbsp; Author deviation: N/A</p><p>Document profile &mdash; Avg sentence length: 47.22, TTR: 0.2894, FK Grade: 27.92, Passive ratio: 0.119, Hedge density: 0.05, Yule K: 40.77</p><p>No style flags.</p><details><summary>Segment change points</summary><table><thead><tr><th>Segment</th><th>Delta</th><th>Flagged</th><th>Preview</th></tr></thead><tbody><tr><td>Seg 0</td><td>0.055</td><td>No</td><td><small>VISVESVARAYA TECHNOLOGICAL UNIVERSITY “JNANA SANGAMA”, BELAGAVI – 590 018 PROJECT REPORT ON “AUTOVER</small></td></tr><tr><td>Seg 1</td><td>0.083</td><td>No</td><td><small>that the Project entitled “AUTOVERSE 3D: HIGH-FIDELITY WEB-BASED 3D AUTO- MOTIVE DESIGN, PARAMETRIC </small></td></tr><tr><td>Seg 2</td><td>0.062</td><td>No</td><td><small>friends for their camaraderie and assistance. Finally, it is our pleasure to extend our appreciation</small></td></tr><tr><td>Seg 3</td><td>0.072</td><td>No</td><td><small>Cloud Persistence: The simulation kernel computes aerodynamic coefficients (Cd, Cl) and vehicle down</small></td></tr><tr><td>Seg 4</td><td>0.083</td><td>No</td><td><small>. . . 1 1.3 Scope of the Project . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .</small></td></tr><tr><td>Seg 5</td><td>0.127</td><td>No</td><td><small>. . . . . . . . . . . . . . . . . . . . . . 5 2.2 Comparative Analysis . . . . . . . . . . . . . . .</small></td></tr><tr><td>Seg 6</td><td>0.116</td><td>No</td><td><small>. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 7 3.3 Non-Functional Requireme</small></td></tr><tr><td>Seg 7</td><td>0.089</td><td>No</td><td><small>. . . . . . . . . . 10 4.1 Development Environments. . . . . . . . . . . . . . . . . . . . . . . . .</small></td></tr><tr><td>Seg 8</td><td>0.087</td><td>No</td><td><small>Parametric Feature DAG and Geometry Pipeline . . . . . . . . . . . . . . . . . . . . . . . . 13 5.3 </small></td></tr><tr><td>Seg 9</td><td>0.113</td><td>No</td><td><small>. . . . . . . . . . . 17 6.1.1 Parametric Coachwork Lofting Engine . . . . . . . . . . . . . . . . .</small></td></tr><tr><td>Seg 10</td><td>0.103</td><td>No</td><td><small>. . 23 7.4 Performance and Rendering Metrics . . . . . . . . . . . . . . . . . . . . . . . . . . . .</small></td></tr><tr><td>Seg 11</td><td>0.126</td><td>No</td><td><small>Ge- ometric Continuity Diagnostics (G0 Positional Gap, G1 Tangent Deviation, G2 Curvature Jump). . .</small></td></tr><tr><td>Seg 12</td><td>0.149</td><td>No</td><td><small>. . . . . . . . . . . . 19 Figure 6.2: Porsche 911 GT3 RS: V2 Coachwork Studio Viewport with “Proced</small></td></tr><tr><td>Seg 13</td><td>0.074</td><td>No</td><td><small>. . . . . 21 Figure 6.9: Nissan GT-R R35: High-waistline quad taillight profile and vented hood . . </small></td></tr><tr><td>Seg 14</td><td>0.062</td><td>No</td><td><small>configuration on high-performance compute clusters. On the consumer and enthusiast front, web-based </small></td></tr><tr><td>Seg 15</td><td>0.042</td><td>No</td><td><small>or fabricate realistic-looking aerody- namic data without disclosing true mathematical origins or ad</small></td></tr><tr><td>Seg 16</td><td>0.045</td><td>No</td><td><small>We- bGL can rapidly cause GPU texture and geometry buffer leaks, requiring rigorous disposal of Thre</small></td></tr><tr><td>Seg 17</td><td>0.053</td><td>No</td><td><small>aging [2]. While these tools provide micro-millimeter precision and non-uniform rational B-spline (N</small></td></tr><tr><td>Seg 18</td><td>0.053</td><td>No</td><td><small>NURBS curves Static pre-rendered meshes Pre-meshed volume grid Parametric B-Rep coachwork lofting Si</small></td></tr><tr><td>Seg 19</td><td>0.051</td><td>No</td><td><small>cloud compute (e.g., single vCPU instance or local server) with zero operational cost during develop</small></td></tr><tr><td>Seg 20</td><td>0.069</td><td>No</td><td><small>clearcoat paint, metallic flakes, roughness, carbon fiber patterns, and window tint adjustments. 6. </small></td></tr><tr><td>Seg 21</td><td>0.169</td><td>No</td><td><small>Ryzen 7 or Apple M-series RAM 4 GB minimum (8 GB recommended) 16 GB minimum (32 GB recommended) Grap</small></td></tr><tr><td>Seg 22</td><td>0.042</td><td>No</td><td><small>Boundary: To eliminate mobile black-screen defects, the canvas is wrapped in a dedicated React Error</small></td></tr><tr><td>Seg 23</td><td>0.078</td><td>No</td><td><small>BACKEND ARCHITECTURE AND PERSISTENCE The backend service (services/api/main.py) exposes RESTful endp</small></td></tr><tr><td>Seg 24</td><td>0.055</td><td>No</td><td><small>3D 5.2 PARAMETRIC FEATURE DAG AND GEOMETRY PIPELINE The construction of a 3D vehicle follows a direc</small></td></tr><tr><td>Seg 25</td><td>0.049</td><td>No</td><td><small>Multi-Format CAD Asset Serialization spec telemetry build data binary CAD files Figure 5.5: Data Flo</small></td></tr><tr><td>Seg 26</td><td>0.063</td><td>No</td><td><small>6.1 – Parametric Coachwork Lofting and Watertight Mesh Generation 6.1.2 Aerodynamic Drag Buildup Sol</small></td></tr><tr><td>Seg 27</td><td>0.057</td><td>No</td><td><small>camber, maintaining exact tire contact at ground plane y = 0. 4. Real-Time Aerodynamic Evaluation: A</small></td></tr><tr><td>Seg 28</td><td>0.046</td><td>No</td><td><small>6.7: BMW M4 CSL: Muscular front- engine GT proportions and twin kidney grille Dept. of CSE, GEC, Has</small></td></tr><tr><td>Seg 29</td><td>0.039</td><td>No</td><td><small>suite execution. Table 7.1: Automated Verification Test Suite Results Test Tier Framework Result Sco</small></td></tr><tr><td>Seg 30</td><td>0.077</td><td>No</td><td><small>the project resolves the long-standing divide between aesthetic creativity and engineering rigor. Th</small></td></tr><tr><td>Seg 31</td><td>0.076</td><td>No</td><td><small>Foley, A. van Dam, S. K. Feiner and J. F. Hughes, Computer Graphics: Principles and Practice, 3rd ed</small></td></tr></tbody></table></details></div>
+
+  <!-- Semantic coherence -->
+  <h2>Semantic Coherence Analysis (AI-Polish Detection)</h2>
+  <div class="section"><p>Verdict: <span class="verdict" style="background:#95a5a6">HUMAN_LIKE</span> &nbsp; Score: 0.027 &nbsp; Confidence: 0.97</p><p>Discourse connector density: 0.01 &nbsp;|&nbsp; Sentence length CV: 1.087 &nbsp;|&nbsp; MTLD: 8.50</p><p>Hedging density: 0.03 &nbsp;|&nbsp; Section template match: 13%</p><p>No coherence flags.</p></div>
+
+  <!-- Self-plagiarism -->
+  <h2>Self-Plagiarism / Text Recycling</h2>
+  <div class="section"><p class='no-data'>Self-plagiarism check was skipped or no prior works were provided.</p></div>
+
+  <!-- IEEE plagiarism level -->
+  <h2>IEEE Plagiarism Level (PSPB 8.2.4.D)</h2>
+  <div class="section"><p><strong>No IEEE plagiarism level indicated</strong> &nbsp; <span class="verdict" style="background:#27ae60">LOW</span></p><p>Uncredited verbatim: 0.0% &nbsp; credited without quotation marks: 0.0% &nbsp; uncredited close paraphrase: 0.0%</p><p><em>Guidance:</em> No IEEE plagiarism level indicated by the supplied corpus. This is only as complete as the comparison corpus; it is not a clearance.</p><p><small>Indicative only; levels are set by adjudication. Basis: IEEE PSPB Operations Manual, amended 25 June 2026 (260625).</small></p></div>
+
+  <!-- Watermark analysis -->
+  <h2>LLM Watermark Analysis</h2>
+  <div class="section"><p><span class="verdict" style="background:#f39c12">EXPERIMENTAL</span> Mode: <strong>experimental</strong> &nbsp; Status: completed &nbsp; Verdict: <span class="verdict" style="background:#27ae60">NO_STATISTICAL_ANOMALY</span></p><p>Affects overall risk score: <strong>No</strong> &nbsp;|&nbsp; Scheme: N/A &nbsp;|&nbsp; Tokenizer: hash-approximation (not a real LLM tokenizer)</p><p>Tokens evaluated: 4641 (minimum required: 200) &nbsp;|&nbsp; z-score: 1.5561 &nbsp;|&nbsp; p-value: 0.05983818</p><p><em>Experimental token-distribution analysis found no statistical anomaly.</em> This heuristic does not affect the overall integrity risk score.</p><details><summary>Limitations</summary><ul><li>This is a keyless heuristic. It does not know the real watermark key, seeding scheme, or tokenizer used by any LLM provider.</li><li>A flagged anomaly is not proof that the document is AI-generated or watermarked -- repetitive technical vocabulary (common in academic writing) can also elevate the score.</li><li>The z &gt; 4.0 / z &gt; 2.5 thresholds are theoretical bounds under the heuristic's own fabricated null distribution, not an empirically measured false-positive rate on real documents.</li><li>This result does not affect the overall integrity risk score.</li></ul></details></div>
+
+  <!-- Math + grammar compliance (informational -- never affects overall risk) -->
+  <h2>Mathematical Formula Check <small style="font-weight:400;color:#7f8c8d;">(compliance signal, not misconduct)</small></h2>
+  <div class="section"><p>Equations found: <strong>3</strong> (extraction method: text_heuristic)</p><table><thead><tr><th>Category</th><th>Severity</th><th>Issue</th><th>Source</th></tr></thead><tbody><tr><td>numbering</td><td>MEDIUM</td><td>Duplicate equation number(s) found: [4].</td><td><small>IEEE Editorial Style Manual for Authors (2024), p.24: &quot;should not have repeats or missing numbers&quot;</small></td></tr></tbody></table><details><summary>Limitations</summary><ul><li>Equations were located via text-pattern heuristics, not native math markup -- numbering/reference checks are best-effort and may miss equations that a PDF extractor rendered without a clean trailing number, or equations delivered as images.</li></ul></details></div>
+
+  <h2>Grammar &amp; Language Convention Check <small style="font-weight:400;color:#7f8c8d;">(compliance signal, not misconduct)</small></h2>
+  <div class="section"><p>Word count: 6181 &nbsp;|&nbsp; Avg. sentence length: 72.5 words &nbsp;|&nbsp; NLP backend: regex_only</p><p>Spelling variant detected: <strong>US</strong> (UK: 0, US: 30) &nbsp;|&nbsp; Quality score: 0.66</p><table><thead><tr><th>Category</th><th>Severity</th><th>Count</th><th>Issue</th></tr></thead><tbody><tr><td>style</td><td>LOW</td><td>42</td><td>42 sentence(s) exceed 45 words; consider splitting for readability.</td></tr><tr><td>usage</td><td>LOW</td><td>10</td><td>10 immediately-repeated word(s) found (e.g. &quot;the the&quot;).</td></tr></tbody></table></div>
+
+  <!-- Per-venue guideline compliance -->
+  <h2>Publisher Guideline Compliance (IEEE / ACM / BCS / IET / ISACA / Elsevier, checked separately)</h2>
+  <div class="section"><p class='no-data'>Guideline compliance was not requested for this run (opt-in per venue: IEEE, ACM, BCS, IET, ISACA, Elsevier).</p></div>
+
+  <footer>AEGIS Academic Integrity Tool v3.5.2 &mdash; open-source</footer>
+</div>
+</body>
+</html>

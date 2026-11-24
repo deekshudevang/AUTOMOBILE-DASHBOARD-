@@ -577,14 +577,7 @@ where $\rho = 1.225 \text{ kg/m}^3$ is air density at sea level, $v_\infty$ is f
 \begin{equation}
     C_d = C_{d,base} + \Delta C_{d,fender} + \Delta C_{d,wing}(\alpha) + \Delta C_{d,diffuser} + \Delta C_{d,underbody}
 \end{equation}
-where $\Delta C_{d,wing}(\alpha) = 2\pi \sin^2(\alpha) \cdot \frac{A_{wing}}{A_{frontal}}$ represents induced drag as a function of spoiler angle-of-attack $\alpha$. Figure~\ref{fig:multibody_aero} depicts the multi-body dynamic aero-coupling matrix, evaluating downforce loads, suspension deflection, and tire friction grip across speeds up to 300 km/h.
-
-\begin{figure}[htbp]
-\centering
-\safeimg{figures/multibody_aero_dynamics.jpg}{width=0.96\linewidth}
-\caption{Coupled Multibody Vehicle Dynamics and Speed-Sweep Aerodynamic Downforce Matrix ($0\text{--}300\text{ km/h}$)}
-\label{fig:multibody_aero}
-\end{figure}
+where $\Delta C_{d,wing}(\alpha) = 2\pi \sin^2(\alpha) \cdot \frac{A_{wing}}{A_{frontal}}$ represents induced drag as a function of spoiler angle-of-attack $\alpha$. The multi-body dynamic aero-coupling evaluates downforce loads, suspension deflection, and tire friction grip across speeds up to 300 km/h.
 
 \section{Cloud Backend Architecture and Persistence}
 The backend service (\texttt{services/api/main.py}) exposes RESTful endpoints for vehicle configuration persistence:
@@ -917,23 +910,7 @@ Figure~\ref{fig:koenigsegg_wheels} illustrates the kinematic wheel and stance al
 \end{minipage}
 \end{figure}
 
-Figures~\ref{fig:car_porsche} through \ref{fig:car_gtr} demonstrate the geometric quality achieved by the V2 Coachwork generator across premier automotive brand design languages:
-
-\begin{figure}[htbp]
-\centering
-\begin{minipage}[t]{0.48\textwidth}
-  \centering
-  \safeimg{figures/car_porsche_gt3.png}{width=\linewidth}
-  \captionof{figure}{Porsche 911 GT3 RS: Rounded fastback silhouette and swan-neck wing}
-  \label{fig:car_porsche}
-\end{minipage}\hfill
-\begin{minipage}[t]{0.48\textwidth}
-  \centering
-  \safeimg{figures/car_lamborghini_sto.png}{width=\linewidth}
-  \captionof{figure}{Lamborghini Hurac\'an STO: Angular wedge profile and hexagonal intakes}
-  \label{fig:car_lambo}
-\end{minipage}
-\end{figure}
+Figures~\ref{fig:car_ferrari} through \ref{fig:car_gtr} demonstrate the geometric quality achieved by the V2 Coachwork generator across premier automotive brand design languages:
 
 \begin{figure}[htbp]
 \centering
@@ -1087,23 +1064,23 @@ The implementation strictly satisfies the \textbf{Zero-Fabrication Charter}, eli
 \small
 \refitem{1}{Visvesvaraya Technological University, ``Guidelines for Project Work in Bachelor of Engineering (Computer Science \& Engineering),'' VTU Academic Regulations, Belagavi, 2025.}
 \refitem{2}{Dassault Syst{\`e}mes, ``CATIA Industrial Surface Modeling and Class-A Automotive Design Guidelines,'' V5/V6 Engineering Documentation, 2023.}
-\refitem{3}{S. R. Ahmed, G. Ramm and G. Faltin, ``Some Salient Features of the Time-Averaged Ground Vehicle Wake,'' SAE Technical Paper 840300, 1984.}
-\refitem{4}{Khronos Group, ``WebGL 2.0 Specification and Physically Based Rendering Materials,'' Khronos Open Standard, 2023.}
+\refitem{3}{S. R. Ahmed, G. Ramm and G. Faltin, ``Some Salient Features of the Time-Averaged Ground Vehicle Wake,'' SAE Technical Paper 840300, 1984. \url{https://doi.org/10.4271/840300}}
+\refitem{4}{Khronos Group, ``WebGL 2.0 Specification and Physically Based Rendering Materials,'' Khronos Open Standard, 2023. \url{https://registry.khronos.org/webgl/specs/latest/2.0/}}
 \refitem{5}{M. Cabello and Three.js Authors, ``Three.js: JavaScript 3D Library for WebGL,'' \url{https://threejs.org/}, 2024.}
 \refitem{6}{P. Henschel, ``React Three Fiber: A React Renderer for Three.js,'' \url{https://docs.pmnd.rs/react-three-fiber}, 2024.}
-\refitem{7}{OpenCFD Ltd., ``OpenFOAM: The Open Source Computational Fluid Dynamics Software,'' User Guide version 2312, 2023.}
+\refitem{7}{OpenCFD Ltd., ``OpenFOAM: The Open Source Computational Fluid Dynamics Software,'' User Guide version 2312, 2023. \url{https://www.openfoam.com/}}
 \refitem{8}{S. Ramirez, ``FastAPI: Modern, High-Performance Web Framework for Python 3.8+,'' \url{https://fastapi.tiangolo.com/}, 2024.}
-\refitem{9}{M. Bayer, ``SQLAlchemy: The Database Toolkit for Python,'' version 2.0 Documentation, 2024.}
-\refitem{10}{J. D. Foley, A. van Dam, S. K. Feiner and J. F. Hughes, \textit{Computer Graphics: Principles and Practice}, 3rd ed., Addison-Wesley, 2013.}
-\refitem{11}{L. Piegl and W. Tiller, \textit{The NURBS Book}, 2nd ed., Springer-Verlag, Berlin, 1997.}
-\refitem{12}{International Organization for Standardization, ``Road Vehicles -- Vehicle Dynamics and Road-Holding Ability -- Vocabulary,'' ISO Standard 8855, 2011.}
-\refitem{13}{S. F. Hoerner, \textit{Fluid-Dynamic Drag: Practical Information on Aerodynamic Drag and Hydrodynamic Resistance}, Hoerner Fluid Dynamics, 1965.}
-\refitem{14}{W. H. Hucho, \textit{Aerodynamics of Road Vehicles: From Fluid Mechanics to Vehicle Engineering}, 4th ed., SAE International, 1998.}
+\refitem{9}{M. Bayer, ``SQLAlchemy: The Database Toolkit for Python,'' version 2.0 Documentation, 2024. \url{https://www.sqlalchemy.org/}}
+\refitem{10}{J. D. Foley, A. van Dam, S. K. Feiner and J. F. Hughes, \textit{Computer Graphics: Principles and Practice}, 3rd ed., Addison-Wesley, Boston, MA, 2013.}
+\refitem{11}{L. Piegl and W. Tiller, \textit{The NURBS Book}, 2nd ed., Springer-Verlag, Berlin, Heidelberg, 1997. \url{https://doi.org/10.1007/978-3-642-59223-2}}
+\refitem{12}{International Organization for Standardization, ``Road Vehicles -- Vehicle Dynamics and Road-Holding Ability -- Vocabulary,'' ISO Standard 8855:2011, Geneva, Switzerland, 2011.}
+\refitem{13}{S. F. Hoerner, \textit{Fluid-Dynamic Drag: Practical Information on Aerodynamic Drag and Hydrodynamic Resistance}, Hoerner Fluid Dynamics, Brick Town, NJ, 1965.}
+\refitem{14}{W. H. Hucho, \textit{Aerodynamics of Road Vehicles: From Fluid Mechanics to Vehicle Engineering}, 4th ed., SAE International, Warrendale, PA, 1998.}
 \refitem{15}{J. Katz, \textit{Race Car Aerodynamics: Designing for Speed}, Bentley Publishers, Cambridge, MA, 1995.}
-\refitem{16}{A. Heft, T. Indinger and N. A. Adams, ``Introduction of a New Realistic Generic Car Model for Aerodynamic Investigations,'' SAE Technical Paper 2012-01-0168, 2012.}
-\refitem{17}{E. Rescorla, ``The Transport Layer Security (TLS) Protocol Version 1.3,'' IETF RFC 8446, 2018.}
-\refitem{18}{J. H. Saltzer, D. P. Reed and D. D. Clark, ``End-to-End Arguments in System Design,'' ACM Transactions on Computer Systems, vol. 2, no. 4, pp. 277--288, 1984.}
-\refitem{19}{E. Gamma, R. Helm, R. Johnson and J. Vlissides, \textit{Design Patterns: Elements of Reusable Object-Oriented Software}, Addison-Wesley, 1994.}
+\refitem{16}{A. Heft, T. Indinger and N. A. Adams, ``Introduction of a New Realistic Generic Car Model for Aerodynamic Investigations,'' SAE Technical Paper 2012-01-0168, 2012. \url{https://doi.org/10.4271/2012-01-0168}}
+\refitem{17}{E. Rescorla, ``The Transport Layer Security (TLS) Protocol Version 1.3,'' IETF RFC 8446, 2018. \url{https://doi.org/10.17487/RFC8446}}
+\refitem{18}{J. H. Saltzer, D. P. Reed and D. D. Clark, ``End-to-End Arguments in System Design,'' ACM Transactions on Computer Systems, vol. 2, no. 4, pp. 277--288, 1984. \url{https://doi.org/10.1145/357401.357402}}
+\refitem{19}{E. Gamma, R. Helm, R. Johnson and J. Vlissides, \textit{Design Patterns: Elements of Reusable Object-Oriented Software}, Addison-Wesley, Reading, MA, 1994.}
 \refitem{20}{Khronos Group, ``glTF 2.0 Specification: The 3D Asset Transmission Format,'' \url{https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html}, 2023.}
 \end{spacing}
 
