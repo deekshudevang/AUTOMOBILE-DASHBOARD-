@@ -173,6 +173,7 @@ export const CustomizationPanel: React.FC = () => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
   const [isVehicleModalOpen, setIsVehicleModalOpen] = useState(false);
+  const [mobileDrawerHeight, setMobileDrawerHeight] = useState<'collapsed' | 'half' | 'expanded'>('half');
 
   // Expanded component groups state
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
@@ -212,12 +213,25 @@ export const CustomizationPanel: React.FC = () => {
     };
   }, [schema2Spec]);
 
-  // Keyboard navigation & shortcuts (Ctrl+Z, Ctrl+Y, 1-8 presets)
+  // Keyboard navigation & shortcuts (Ctrl+Z, Ctrl+Y, Escape, Arrow tabs, 1-8 presets)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.target as HTMLElement)?.tagName === 'INPUT') return;
 
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+      if (e.key === 'Escape') {
+        selectComponent(null);
+        setIsVehicleModalOpen(false);
+        setIsGalleryOpen(false);
+        setIsBuildsModalOpen(false);
+      } else if (e.key === 'ArrowRight' && (document.activeElement?.getAttribute('role') === 'tab')) {
+        const curIdx = CATEGORY_TABS.findIndex(t => t.id === activeCategory);
+        const nextIdx = (curIdx + 1) % CATEGORY_TABS.length;
+        setActiveCategory(CATEGORY_TABS[nextIdx].id);
+      } else if (e.key === 'ArrowLeft' && (document.activeElement?.getAttribute('role') === 'tab')) {
+        const curIdx = CATEGORY_TABS.findIndex(t => t.id === activeCategory);
+        const prevIdx = (curIdx - 1 + CATEGORY_TABS.length) % CATEGORY_TABS.length;
+        setActiveCategory(CATEGORY_TABS[prevIdx].id);
+      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
         e.preventDefault();
         if (e.shiftKey) redo();
         else undo();
@@ -238,7 +252,7 @@ export const CustomizationPanel: React.FC = () => {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [undo, redo, toggleWireframe, setCameraPreset, capabilities.interior]);
+  }, [undo, redo, toggleWireframe, setCameraPreset, capabilities.interior, activeCategory]);
 
   // Fullscreen toggle
   const toggleFullscreen = () => {
@@ -804,28 +818,70 @@ export const CustomizationPanel: React.FC = () => {
           </div>
         </main>
 
-        {/* 3.3 RIGHT CONFIGURATION PANEL: Capability-Driven Categories & Inspector (Mobile Bottom Sheet) */}
+        {/* 3.3 RIGHT CONFIGURATION PANEL: Capability-Driven Categories & Inspector (Responsive Mobile Bottom Sheet) */}
         {presentationMode !== 'showroom' && (
-          <aside className="w-full md:w-88 lg:w-96 h-1/2 md:h-full bg-[#0D1017] border-t md:border-t-0 md:border-l border-[#1E2533] flex flex-col shrink-0 z-10 overflow-hidden">
-          {/* Category Tabs Header */}
-          <div className="p-2 border-b border-[#1E2533] bg-[#11141C] flex items-center gap-1 overflow-x-auto shrink-0 scrollbar-none">
-            {CATEGORY_TABS.map(tab => (
+          <aside
+            aria-label="Vehicle Customization Inspector"
+            className={`w-full md:w-88 lg:w-96 transition-all duration-300 ease-in-out bg-[#0D1017] border-t md:border-t-0 md:border-l border-[#1E2533] flex flex-col shrink-0 z-10 overflow-hidden ${
+              mobileDrawerHeight === 'collapsed'
+                ? 'h-12 md:h-full'
+                : mobileDrawerHeight === 'expanded'
+                ? 'h-[82vh] md:h-full'
+                : 'h-[46vh] md:h-full'
+            }`}
+          >
+            {/* Mobile Bottom Sheet Grab Handle & Status Pill */}
+            <div className="md:hidden flex items-center justify-between px-3 py-1.5 bg-[#11141C] border-b border-[#1E2533] shrink-0">
               <button
-                key={tab.id}
-                onClick={() => setActiveCategory(tab.id)}
-                className={`px-2.5 py-1 rounded text-[11px] font-medium whitespace-nowrap transition-colors ${
-                  activeCategory === tab.id
-                    ? 'bg-[#00F0FF] text-black font-semibold'
-                    : 'bg-[#161C28] text-slate-400 hover:text-slate-200 hover:bg-[#1E2533] border border-[#1E2533]'
-                }`}
+                onClick={() =>
+                  setMobileDrawerHeight(prev =>
+                    prev === 'collapsed' ? 'half' : prev === 'half' ? 'expanded' : 'collapsed'
+                  )
+                }
+                className="w-full flex flex-col items-center justify-center gap-1 py-0.5 cursor-pointer"
+                aria-label={`Toggle mobile bottom sheet height. Currently ${mobileDrawerHeight}. Click to cycle.`}
               >
-                {tab.label}
+                <div className="w-10 h-1 bg-slate-500 rounded-full" />
+                <div className="flex items-center justify-between w-full text-[10px] text-slate-300 font-mono">
+                  <span>DRAWER: {mobileDrawerHeight.toUpperCase()}</span>
+                  <span className="text-[#00F0FF] font-semibold">{activeCategory.toUpperCase()}</span>
+                </div>
               </button>
-            ))}
-          </div>
+            </div>
 
-          {/* Configuration Body */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 text-xs">
+            {/* Category Tabs Header */}
+            <div
+              role="tablist"
+              aria-label="Customization Categories"
+              className="p-2 border-b border-[#1E2533] bg-[#11141C] flex items-center gap-1 overflow-x-auto shrink-0 scrollbar-none"
+            >
+              {CATEGORY_TABS.map(tab => (
+                <button
+                  key={tab.id}
+                  id={`category-tab-${tab.id}`}
+                  role="tab"
+                  aria-selected={activeCategory === tab.id}
+                  aria-controls={`category-panel-${tab.id}`}
+                  tabIndex={activeCategory === tab.id ? 0 : -1}
+                  onClick={() => setActiveCategory(tab.id)}
+                  className={`px-2.5 py-1 rounded text-[11px] font-medium whitespace-nowrap transition-colors ${
+                    activeCategory === tab.id
+                      ? 'bg-[#00F0FF] text-black font-semibold'
+                      : 'bg-[#161C28] text-slate-400 hover:text-slate-200 hover:bg-[#1E2533] border border-[#1E2533]'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Configuration Body */}
+            <div
+              id={`category-panel-${activeCategory}`}
+              role="tabpanel"
+              aria-labelledby={`category-tab-${activeCategory}`}
+              className="flex-1 overflow-y-auto p-4 space-y-4 text-xs"
+            >
             {/* Rule 1.1 Non-negotiable 3: Capability Check */}
             {!capabilities[activeCategory] ? (
               <div className="p-4 rounded-lg bg-[#161C28]/80 border border-amber-900/40 text-slate-400 space-y-2">
@@ -939,6 +995,11 @@ export const CustomizationPanel: React.FC = () => {
                     </div>
                     <input
                       type="range"
+                      aria-label="X Lateral Offset Axis"
+                      aria-valuemin={-1.5}
+                      aria-valuemax={1.5}
+                      aria-valuenow={activeOverride?.position?.[0] ?? selectedComponent.transform.position[0]}
+                      aria-valuetext={`${((activeOverride?.position?.[0] ?? selectedComponent.transform.position[0])).toFixed(3)} meters`}
                       min={-1.5}
                       max={1.5}
                       step={0.01}
@@ -971,6 +1032,11 @@ export const CustomizationPanel: React.FC = () => {
                     </div>
                     <input
                       type="range"
+                      aria-label="Y Height Offset Axis"
+                      aria-valuemin={-0.5}
+                      aria-valuemax={2.0}
+                      aria-valuenow={activeOverride?.position?.[1] ?? selectedComponent.transform.position[1]}
+                      aria-valuetext={`${((activeOverride?.position?.[1] ?? selectedComponent.transform.position[1])).toFixed(3)} meters`}
                       min={-0.5}
                       max={2.0}
                       step={0.01}
@@ -1003,6 +1069,11 @@ export const CustomizationPanel: React.FC = () => {
                     </div>
                     <input
                       type="range"
+                      aria-label="Z Longitudinal Offset Axis"
+                      aria-valuemin={-2.5}
+                      aria-valuemax={2.5}
+                      aria-valuenow={activeOverride?.position?.[2] ?? selectedComponent.transform.position[2]}
+                      aria-valuetext={`${((activeOverride?.position?.[2] ?? selectedComponent.transform.position[2])).toFixed(3)} meters`}
                       min={-2.5}
                       max={2.5}
                       step={0.01}
@@ -1043,6 +1114,11 @@ export const CustomizationPanel: React.FC = () => {
                     </div>
                     <input
                       type="range"
+                      aria-label="Pitch Angle of Attack"
+                      aria-valuemin={-45}
+                      aria-valuemax={45}
+                      aria-valuenow={((activeOverride?.rotation?.[0] ?? selectedComponent.transform.rotation[0]) * 180) / Math.PI}
+                      aria-valuetext={`${(((activeOverride?.rotation?.[0] ?? selectedComponent.transform.rotation[0]) * 180) / Math.PI).toFixed(1)} degrees`}
                       min={-45}
                       max={45}
                       step={1}
@@ -1075,6 +1151,11 @@ export const CustomizationPanel: React.FC = () => {
                     </div>
                     <input
                       type="range"
+                      aria-label="Yaw Rotation Angle"
+                      aria-valuemin={-45}
+                      aria-valuemax={45}
+                      aria-valuenow={((activeOverride?.rotation?.[1] ?? selectedComponent.transform.rotation[1]) * 180) / Math.PI}
+                      aria-valuetext={`${(((activeOverride?.rotation?.[1] ?? selectedComponent.transform.rotation[1]) * 180) / Math.PI).toFixed(1)} degrees`}
                       min={-45}
                       max={45}
                       step={1}
@@ -1107,6 +1188,11 @@ export const CustomizationPanel: React.FC = () => {
                     </div>
                     <input
                       type="range"
+                      aria-label="Roll Rotation Angle"
+                      aria-valuemin={-45}
+                      aria-valuemax={45}
+                      aria-valuenow={((activeOverride?.rotation?.[2] ?? selectedComponent.transform.rotation[2]) * 180) / Math.PI}
+                      aria-valuetext={`${(((activeOverride?.rotation?.[2] ?? selectedComponent.transform.rotation[2]) * 180) / Math.PI).toFixed(1)} degrees`}
                       min={-45}
                       max={45}
                       step={1}
@@ -1140,8 +1226,11 @@ export const CustomizationPanel: React.FC = () => {
                   </div>
                   <input
                     type="range"
-                    min={0.5}
-                    max={2.0}
+                    aria-label="Component Uniform Scale Factor"
+                    aria-valuemin={0.5}
+                    aria-valuemax={2.0}
+                    aria-valuenow={activeOverride?.scale?.[0] ?? selectedComponent.transform.scale[0]}
+                    aria-valuetext={`${(activeOverride?.scale?.[0] ?? selectedComponent.transform.scale[0]).toFixed(2)} times`}
                     step={0.05}
                     value={activeOverride?.scale?.[0] ?? selectedComponent.transform.scale[0]}
                     onChange={e => {
@@ -1192,14 +1281,18 @@ export const CustomizationPanel: React.FC = () => {
                       {QUICK_COLORS.map(color => (
                         <button
                           key={color.hex}
+                          role="button"
+                          aria-label={`Select ${color.name} (${color.hex})`}
+                          tabIndex={0}
                           onClick={() => updateComponentOverride(selectedComponent.id, { customColorHex: color.hex }, true)}
                           style={{ backgroundColor: color.hex }}
-                          className="w-5 h-5 rounded-full border border-black/40 hover:scale-110 transition-transform"
+                          className="w-5 h-5 rounded-full border border-black/40 hover:scale-110 transition-transform cursor-pointer"
                           title={color.name}
                         />
                       ))}
                       <input
                         type="color"
+                        aria-label="Custom color picker hex"
                         value={activeOverride?.customColorHex || '#00F0FF'}
                         onChange={e => updateComponentOverride(selectedComponent.id, { customColorHex: e.target.value }, true)}
                         className="w-6 h-6 rounded cursor-pointer bg-transparent border-0"
@@ -1255,6 +1348,9 @@ export const CustomizationPanel: React.FC = () => {
                           {QUICK_COLORS.map(color => (
                             <button
                               key={color.hex}
+                              role="button"
+                              aria-label={`Apply all body panels color ${color.name} (${color.hex})`}
+                              tabIndex={0}
                               onClick={() => {
                                 const bodyComps = schema2Spec?.components.filter(c => c.group === 'body_panels') || [];
                                 for (const comp of bodyComps) {
@@ -1265,7 +1361,7 @@ export const CustomizationPanel: React.FC = () => {
                                 }
                               }}
                               style={{ backgroundColor: color.hex }}
-                              className="w-6 h-6 rounded-full border border-black/40 hover:scale-110 transition-transform shadow"
+                              className="w-6 h-6 rounded-full border border-black/40 hover:scale-110 transition-transform shadow cursor-pointer"
                               title={color.name}
                             />
                           ))}
@@ -1387,6 +1483,11 @@ export const CustomizationPanel: React.FC = () => {
                         </div>
                         <input
                           type="range"
+                          aria-label="Wheel Spacers Track Poke"
+                          aria-valuemin={0}
+                          aria-valuemax={50}
+                          aria-valuenow={componentOverrides['wheel_fl']?.wheelSpacerMm ?? 0}
+                          aria-valuetext={`+${componentOverrides['wheel_fl']?.wheelSpacerMm ?? 0} millimeters`}
                           min={0}
                           max={50}
                           step={2}
@@ -1420,6 +1521,11 @@ export const CustomizationPanel: React.FC = () => {
                         </div>
                         <input
                           type="range"
+                          aria-label="Front Wheel Camber Angle"
+                          aria-valuemin={-7.0}
+                          aria-valuemax={1.0}
+                          aria-valuenow={componentOverrides['wheel_fl']?.wheelCamberDeg ?? componentOverrides['wheel_fl']?.contextSettings?.camberDeg ?? -3.5}
+                          aria-valuetext={`${(componentOverrides['wheel_fl']?.wheelCamberDeg ?? componentOverrides['wheel_fl']?.contextSettings?.camberDeg ?? -3.5).toFixed(1)} degrees`}
                           min={-7.0}
                           max={1.0}
                           step={0.1}
@@ -1448,6 +1554,11 @@ export const CustomizationPanel: React.FC = () => {
                         </div>
                         <input
                           type="range"
+                          aria-label="Rear Wheel Camber Angle"
+                          aria-valuemin={-7.0}
+                          aria-valuemax={1.0}
+                          aria-valuenow={componentOverrides['wheel_rl']?.wheelCamberDeg ?? -2.5}
+                          aria-valuetext={`${(componentOverrides['wheel_rl']?.wheelCamberDeg ?? -2.5).toFixed(1)} degrees`}
                           min={-7.0}
                           max={1.0}
                           step={0.1}

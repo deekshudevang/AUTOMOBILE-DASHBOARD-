@@ -37,7 +37,7 @@ export const VehicleAccessPanel: React.FC = () => {
   } = useVehicleStore();
 
   const rawSpec = (activeConfig.parametricSpec || activeConfig) as any;
-  const isSchema2 = rawSpec?.schemaVersion === '2.0';
+  const isSchema2 = Number(rawSpec?.schemaVersion) === 2 || rawSpec?.schemaVersion === '2.0';
 
   const [isAnimating, setIsAnimating] = useState<'opening' | 'closing' | null>(null);
   const animFrameRef = useRef<number | null>(null);

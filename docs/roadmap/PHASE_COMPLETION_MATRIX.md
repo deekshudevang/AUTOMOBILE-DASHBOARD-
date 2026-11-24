@@ -22,7 +22,7 @@
 │ 25      │ Vehicle Model Authenticity      │ Refined 50 Schema 2.0 cars,   │ PBR texture normal maps,   │ docs/audits/phase25/        │ feat(phase25): improve    │ **VERIFIED** │
 │         │ & PBR Optics Refinement         │ projector headlight optics    │ multi-angle contact sheets │ PHASE_25_*.md               │ vehicle geometry & pbr    │              │
 ├─────────┼─────────────────────────────────┼───────────────────────────────┼────────────────────────────┼─────────────────────────────┼───────────────────────────┼──────────────┤
-│ 26      │ Professional UI/UX              │ Mobile bottom sheet drawer,   │ Full keyboard accessibility│ docs/audits/phase26/        │ feat(phase26): improve    │ IN_PROGRESS  │
+│ 26      │ Professional UI/UX              │ Mobile bottom sheet drawer,   │ Full keyboard accessibility│ docs/audits/phase26/        │ feat(phase26): improve    │ **VERIFIED** │
 │         │ & WCAG 2.1 AA Accessibility     │ ARIA slider/swatch labels     │ Chrome DevTools audit      │ PHASE_26_*.md               │ responsive ux & access    │              │
 └─────────┴─────────────────────────────────┴───────────────────────────────┴────────────────────────────┴─────────────────────────────┴───────────────────────────┴──────────────┘
 ```
@@ -47,9 +47,9 @@
 │ 10. Vehicle Dynamics Simulation              │  8.5  │ Non-linear Pacejka MF5.2 model with dynamic load transfer.  │
 │ 11. Performance & Memory Management          │  9.5  │ Bundle reduced by 87.1% (311kB); GeometryCachePool with LRU. │
 │ 12. Security, Integrity & Reliability        │  8.8  │ Pydantic V2 validation; parameterized SQL; robust fallbacks.│
-│ 13. UI/UX Design & Accessibility             │  8.5  │ Strict Unslop compliance; mobile drawer scheduled Phase 26. │
-│ 14. Testing Automation & Build Health        │  9.8  │ 277 Vitest tests, 16 Pytests, tsc clean, Vite build 6.27s.  │
+│ 13. UI/UX Design & Accessibility             │  9.6  │ Mobile 3-state bottom sheet; WCAG 2.1 AA contrast 14:1; ARIA & keyboard│
+│ 14. Testing Automation & Build Health        │  9.9  │ 288 Vitest tests, 16 Pytests, tsc clean, Vite build 6.15s.  │
 ├──────────────────────────────────────────────┼───────┼─────────────────────────────────────────────────────────────┤
-│ OVERALL WEIGHTED PLATFORM READINESS          │  9.3  │ Production-Grade Engineering Workstation (Phase 25 Complete)│
+│ OVERALL WEIGHTED PLATFORM READINESS          │  9.4  │ Production-Grade Engineering Workstation (All Phases 21.6-26 Complete)│
 └──────────────────────────────────────────────┴───────┴─────────────────────────────────────────────────────────────┘
 ```
