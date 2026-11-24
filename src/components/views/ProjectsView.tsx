@@ -4,9 +4,17 @@ import {
   GitBranch,
   Plus,
   Clock,
-  CheckCircle2
+  CheckCircle2,
+  GitCommit,
+  Layers,
+  ArrowRight,
+  ShieldCheck,
+  FileCode,
+  Copy,
+  Sparkles
 } from 'lucide-react';
 import { useVehicleStore } from '../../hooks/useVehicleStore';
+import { BrandBadge } from '../ui/BrandBadge';
 
 export interface ProjectRevision {
   hash: string;
@@ -28,7 +36,7 @@ export interface UiVehicleProject {
 }
 
 export const ProjectsView: React.FC = () => {
-  const { engineeringMode, activeModel, activeFile } = useVehicleStore();
+  const { engineeringMode, activeModel, activeFile, setActiveView } = useVehicleStore();
 
   const [projects, setProjects] = useState<UiVehicleProject[]>([
     {
@@ -80,23 +88,28 @@ export const ProjectsView: React.FC = () => {
           author: 'Aero Specialist',
           componentChangesCount: 0,
           verifiedManifold: true
+        },
+        {
+          hash: 'e5f12a88',
+          timestamp: '2026-11-18T10:20:00Z',
+          message: 'Front dive plane add-ons and splitter stiffener mount',
+          author: 'Aero Specialist',
+          componentChangesCount: 3,
+          verifiedManifold: true
         }
       ]
     }
   ]);
 
-  const [selectedProjectId, setSelectedProjectId] = useState<string>('proj_gt3rs_aero_01');
-  const [newProjectName, setNewProjectName] = useState<string>('');
-  const [isCreating, setIsCreating] = useState<boolean>(false);
-
-  const activeProject = projects.find(p => p.id === selectedProjectId) || projects[0];
+  const [newProjectName, setNewProjectName] = useState('');
+  const [showNewModal, setShowNewModal] = useState(false);
 
   const handleCreateProject = () => {
     if (!newProjectName.trim()) return;
     const newProj: UiVehicleProject = {
       id: `proj_${Date.now()}`,
       name: newProjectName.trim(),
-      targetVehicleHash: activeModel?.hash || 706080074,
+      targetVehicleHash: activeModel?.hash || 0,
       targetVehicleName: activeModel?.displayName || activeFile,
       createdAt: new Date().toISOString(),
       activeBranch: 'main',
@@ -104,200 +117,171 @@ export const ProjectsView: React.FC = () => {
         {
           hash: Math.random().toString(16).substring(2, 10),
           timestamp: new Date().toISOString(),
-          message: 'Initial commit from current vehicle state',
-          author: engineeringMode === 'student' ? 'Student Engineer' : 'Lead Aerodynamicist',
+          message: 'Initial project baseline snapshot',
+          author: 'AutoVerse Engineer',
           componentChangesCount: 0,
           verifiedManifold: true
         }
       ]
     };
     setProjects([newProj, ...projects]);
-    setSelectedProjectId(newProj.id);
     setNewProjectName('');
-    setIsCreating(false);
+    setShowNewModal(false);
   };
 
   return (
-    <div className="h-full flex flex-col bg-autoverse-bg text-slate-100 p-6 overflow-y-auto">
-      {/* Header */}
-      <div className="flex items-center justify-between pb-4 border-b border-autoverse-border">
-        <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-xl font-bold tracking-tight">Project Workspace</h1>
-            <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-autoverse-elevated border border-autoverse-border text-autoverse-cyan">
-              IMMUTABLE DAG
-            </span>
-            {engineeringMode === 'student' && (
-              <span className="text-[11px] font-medium px-2 py-0.5 rounded bg-emerald-950/60 border border-emerald-800 text-emerald-300">
-                Student Mode Active
-              </span>
-            )}
+    <div className="h-full flex flex-col bg-gt-obsidian text-zinc-100 overflow-hidden select-none font-sans">
+      {/* 1. Header Toolbar */}
+      <header className="h-14 px-6 bg-gt-basalt/80 border-b border-gt-border backdrop-blur-xl flex items-center justify-between shrink-0 z-10">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-gt-accent/15 border border-gt-accent/30 flex items-center justify-center text-gt-accent">
+            <FolderKanban className="w-4 h-4" />
           </div>
-          <p className="text-xs text-autoverse-muted mt-1">
-            Non-destructive engineering revisions, branching history, and parametric component lineages.
-          </p>
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-sm font-heading font-bold text-white tracking-wide">
+                PROJECTS & REVISION WORKSPACES
+              </h1>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-black/60 border border-gt-border text-gt-accent font-bold">
+                {projects.length} ACTIVE PROJECTS
+              </span>
+            </div>
+            <p className="text-[11px] font-mono text-zinc-400">
+              Audit revision control • Branching automotive studies • Collaborative engineering snapshots
+            </p>
+          </div>
         </div>
 
         <button
-          onClick={() => setIsCreating(true)}
-          className="flex items-center gap-2 px-3 py-1.5 rounded bg-autoverse-cyan hover:bg-cyan-500 text-slate-950 font-semibold text-xs transition-colors"
+          onClick={() => setShowNewModal(true)}
+          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-gt-accent hover:bg-gt-accent/90 text-white text-xs font-mono font-bold shadow-lg shadow-gt-accent/20 transition-all cursor-pointer"
         >
-          <Plus className="w-4 h-4" />
-          <span>New Project</span>
+          <Plus className="w-3.5 h-3.5" />
+          <span>NEW PROJECT</span>
         </button>
-      </div>
+      </header>
 
-      {/* Creation Modal / Inline Form */}
-      {isCreating && (
-        <div className="mt-4 p-4 rounded bg-autoverse-surface border border-autoverse-borderLight space-y-3">
-          <h3 className="text-sm font-semibold text-slate-200">Create New Engineering Project</h3>
-          <p className="text-xs text-autoverse-muted">
-            Forks current vehicle geometry (<span className="text-slate-300 font-mono">{activeModel?.displayName || activeFile}</span>) into an isolated parametric branch.
-          </p>
-          <div className="flex items-center gap-3">
-            <input
-              type="text"
-              placeholder="e.g. Porsche 911 High-Downforce Sprint Setup"
-              value={newProjectName}
-              onChange={e => setNewProjectName(e.target.value)}
-              className="flex-1 bg-autoverse-elevated border border-autoverse-border rounded px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-autoverse-cyan"
-            />
-            <button
-              onClick={handleCreateProject}
-              className="px-4 py-2 rounded bg-autoverse-cyan text-slate-950 font-semibold text-xs hover:bg-cyan-400"
+      {/* 2. Main Workstation Body */}
+      <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          {projects.map(proj => (
+            <div
+              key={proj.id}
+              className="rounded-2xl bg-gt-basalt/60 border border-gt-border p-5 space-y-4 shadow-xl flex flex-col justify-between"
             >
-              Fork & Initialize
-            </button>
-            <button
-              onClick={() => setIsCreating(false)}
-              className="px-3 py-2 rounded bg-autoverse-elevated text-slate-400 hover:text-slate-200 text-xs"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Main Layout Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-        {/* Project Selector List */}
-        <div className="lg:col-span-1 space-y-3">
-          <h2 className="text-xs font-mono uppercase tracking-wider text-autoverse-muted">
-            Active Projects ({projects.length})
-          </h2>
-
-          <div className="space-y-2">
-            {projects.map(proj => {
-              const isSelected = proj.id === selectedProjectId;
-              return (
-                <div
-                  key={proj.id}
-                  onClick={() => setSelectedProjectId(proj.id)}
-                  className={`p-3.5 rounded cursor-pointer transition-all border ${
-                    isSelected
-                      ? 'bg-autoverse-elevated border-autoverse-cyan/60 shadow-sm'
-                      : 'bg-autoverse-surface border-autoverse-border hover:border-autoverse-borderLight'
-                  }`}
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-2">
-                      <FolderKanban className={`w-4 h-4 ${isSelected ? 'text-autoverse-cyan' : 'text-slate-400'}`} />
-                      <h3 className="text-xs font-semibold text-slate-100">{proj.name}</h3>
-                    </div>
-                    <span className="text-[10px] font-mono text-slate-400 flex items-center gap-1">
-                      <GitBranch className="w-3 h-3 text-autoverse-cyan" />
-                      {proj.activeBranch}
+              <div>
+                {/* Top Row: Target Vehicle & Branch */}
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <div className="flex items-center gap-2">
+                    <BrandBadge
+                      manufacturer={proj.targetVehicleName.split(' ')[0]}
+                      size="sm"
+                      showWordmark={false}
+                    />
+                    <span className="text-xs font-mono text-zinc-400 truncate max-w-[240px]">
+                      {proj.targetVehicleName}
                     </span>
                   </div>
 
-                  <p className="text-[11px] text-autoverse-muted mt-2 truncate">
-                    Base: {proj.targetVehicleName}
-                  </p>
-
-                  <div className="flex items-center justify-between mt-3 pt-2 border-t border-autoverse-border/50 text-[10px] text-slate-400 font-mono">
-                    <span>{proj.revisions.length} revisions</span>
-                    <span>{new Date(proj.createdAt).toLocaleDateString()}</span>
+                  <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-black/50 border border-gt-border text-[10px] font-mono text-zinc-300">
+                    <GitBranch className="w-3 h-3 text-gt-accent" />
+                    <span>{proj.activeBranch}</span>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        </div>
 
-        {/* Selected Project Revision History & DAG */}
-        <div className="lg:col-span-2 space-y-4">
-          <div className="p-4 rounded bg-autoverse-surface border border-autoverse-border space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-sm font-bold text-slate-100">{activeProject.name}</h2>
-                <p className="text-xs text-autoverse-muted mt-0.5">
-                  Target Vehicle: <span className="text-slate-300 font-medium">{activeProject.targetVehicleName}</span>
-                </p>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-mono px-2 py-1 rounded bg-autoverse-elevated text-autoverse-cyan border border-autoverse-border">
-                  Branch: {activeProject.activeBranch}
-                </span>
-              </div>
-            </div>
+                {/* Project Title */}
+                <h3 className="text-base font-heading font-bold text-white mb-3">
+                  {proj.name}
+                </h3>
 
-            {/* Revision Timeline */}
-            <div className="space-y-3 pt-2">
-              <h3 className="text-xs font-mono uppercase tracking-wider text-autoverse-muted">
-                Append-Only Revision History
-              </h3>
+                {/* Chronological Commit Tree */}
+                <div className="space-y-2 border-l-2 border-gt-border pl-4 my-4 font-mono">
+                  {proj.revisions.map((rev, idx) => (
+                    <div key={rev.hash} className="relative group">
+                      {/* Node Bullet */}
+                      <div
+                        className={`absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full border-2 ${
+                          idx === proj.revisions.length - 1
+                            ? 'bg-gt-accent border-gt-obsidian ring-2 ring-gt-accent/40'
+                            : 'bg-zinc-600 border-gt-obsidian'
+                        }`}
+                      />
 
-              <div className="relative pl-6 space-y-4 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-autoverse-border">
-                {activeProject.revisions.map((rev: ProjectRevision, idx: number) => (
-                  <div key={rev.hash} className="relative group">
-                    {/* DAG Node Indicator */}
-                    <div className="absolute -left-6 top-1 w-3.5 h-3.5 rounded-full bg-autoverse-surface border-2 border-autoverse-cyan flex items-center justify-center">
-                      <div className="w-1.5 h-1.5 rounded-full bg-autoverse-cyan" />
-                    </div>
-
-                    <div className="p-3 rounded bg-autoverse-elevated border border-autoverse-border hover:border-autoverse-borderLight transition-colors">
                       <div className="flex items-center justify-between text-xs">
-                        <span className="font-semibold text-slate-200">{rev.message}</span>
-                        <span className="font-mono text-[11px] text-autoverse-cyan px-1.5 py-0.5 rounded bg-autoverse-overlay border border-autoverse-border">
-                          {rev.hash}
+                        <span className="font-bold text-zinc-200 group-hover:text-white transition-colors">
+                          {rev.message}
                         </span>
+                        <span className="text-[10px] text-gt-accent font-bold">{rev.hash}</span>
                       </div>
 
-                      <div className="flex items-center gap-4 mt-2 text-[11px] text-slate-400">
-                        <span className="flex items-center gap-1">
-                          <Clock className="w-3 h-3 text-slate-500" />
-                          {new Date(rev.timestamp).toLocaleString()}
+                      <div className="flex items-center gap-3 text-[10px] text-zinc-500 mt-0.5">
+                        <span>{rev.author}</span>
+                        <span>•</span>
+                        <span>{new Date(rev.timestamp).toLocaleDateString()}</span>
+                        <span>•</span>
+                        <span className="text-emerald-400 flex items-center gap-1">
+                          <ShieldCheck className="w-3 h-3" />
+                          <span>Watertight B-Rep</span>
                         </span>
-                        <span>Author: {rev.author}</span>
-                        {rev.verifiedManifold && (
-                          <span className="flex items-center gap-1 text-emerald-400">
-                            <CheckCircle2 className="w-3 h-3" />
-                            Manifold 2-BRep
-                          </span>
-                        )}
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
+              </div>
+
+              {/* Bottom Card Actions */}
+              <div className="pt-3 border-t border-gt-border flex items-center justify-between gap-3 text-xs font-mono">
+                <button
+                  onClick={() => setActiveView('studio')}
+                  className="flex-1 py-2 rounded-xl bg-gt-accent hover:bg-gt-accent/90 text-white font-bold flex items-center justify-center gap-1.5 shadow-md shadow-gt-accent/15 transition-all cursor-pointer"
+                >
+                  <ArrowRight className="w-3.5 h-3.5" />
+                  <span>OPEN IN STUDIO</span>
+                </button>
+
+                <button
+                  onClick={() => alert(`Forked branch created from ${proj.name}!`)}
+                  className="px-3 py-2 rounded-xl bg-gt-basalt hover:bg-gt-graphite border border-gt-border text-zinc-300 hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer"
+                >
+                  <Copy className="w-3.5 h-3.5" />
+                  <span>Fork</span>
+                </button>
               </div>
             </div>
+          ))}
+        </div>
+      </div>
 
-            {/* Action Bar */}
-            <div className="pt-4 border-t border-autoverse-border flex items-center justify-between text-xs">
-              <div className="text-autoverse-muted">
-                {engineeringMode === 'student' ? (
-                  <span>💡 Tip: Revisions cannot be overwritten, guaranteeing complete auditability.</span>
-                ) : (
-                  <span className="font-mono text-[11px]">Strict linear append-only DAG with SHA-256 geometry digests.</span>
-                )}
-              </div>
-              <button className="px-3 py-1.5 rounded bg-autoverse-elevated hover:bg-autoverse-overlay text-slate-300 border border-autoverse-border text-xs">
-                Export Project Bundle (.zip)
+      {/* New Project Modal */}
+      {showNewModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+          <div className="bg-gt-basalt border border-gt-border rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl text-xs font-mono">
+            <h3 className="text-sm font-heading font-bold text-white">Create New Engineering Project</h3>
+            <input
+              type="text"
+              value={newProjectName}
+              onChange={e => setNewProjectName(e.target.value)}
+              placeholder="e.g. Aerodynamic Downforce Optimization Study"
+              className="w-full p-2.5 rounded-lg bg-black/50 border border-gt-border text-white font-mono text-xs focus:outline-none focus:border-gt-accent"
+              autoFocus
+            />
+            <div className="flex justify-end gap-2 pt-2 border-t border-gt-border">
+              <button
+                onClick={() => setShowNewModal(false)}
+                className="px-4 py-2 rounded-lg bg-gt-graphite text-zinc-300 hover:text-white cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleCreateProject}
+                className="px-4 py-2 rounded-lg bg-gt-accent text-white font-bold cursor-pointer"
+              >
+                Create Project
               </button>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
