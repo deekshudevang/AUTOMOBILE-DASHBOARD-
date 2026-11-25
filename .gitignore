@@ -16,3 +16,4 @@ coverage/
 *.lot 
 *.lof 
 *.out 
+*.synctex.gz
