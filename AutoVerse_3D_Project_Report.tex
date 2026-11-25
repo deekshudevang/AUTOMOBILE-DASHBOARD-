@@ -1,15 +1,6 @@
-%% =========================================================================
-%%  AUTOVERSE 3D -- VTU Project Report
-%%  Visvesvaraya Technological University, Belagavi
-%%  Department of Computer Science & Engineering
-%%  Government Engineering College, Hassan - 573201
-%%
-%%  Compile with:   pdflatex AutoVerse_3D_Project_Report.tex   (run 3 times)
-%%  or:             latexmk -pdf AutoVerse_3D_Project_Report.tex
-%% =========================================================================
 \documentclass[12pt,a4paper]{report}
 
-\usepackage[a4paper,top=24mm,bottom=24mm,left=24mm,right=20mm,includehead,includefoot,headheight=18pt,headsep=12pt,footskip=14pt]{geometry}
+\usepackage[a4paper,top=24mm,bottom=24mm,left=24mm,right=20mm,includehead,includefoot,headheight=18pt,headsep=12pt,footskip=24pt]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{mathptmx}
@@ -28,6 +19,7 @@
 \usepackage{enumitem}
 \usepackage[labelfont=bf]{caption}
 \usepackage{adjustbox}
+\usepackage{float}
 \usepackage{setspace}
 \usepackage{url}
 \urlstyle{same}
@@ -40,6 +32,10 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
 \emergencystretch=2em
+\raggedbottom
+\setlength{\textfloatsep}{12pt plus 2pt minus 2pt}
+\setlength{\intextsep}{10pt plus 2pt minus 2pt}
+\setlength{\floatsep}{10pt plus 2pt minus 2pt}
 
 % ----------------------------------------------------------------- colors
 \definecolor{vtumaroon}{RGB}{128,0,0}
@@ -69,6 +65,9 @@
   aboveskip=8pt,
   belowskip=4pt
 }
+\lstdefinelanguage{pseudo}{
+  morekeywords={FUNCTION,EACH,IN,FOR,FROM,TO,STEP,DO,ENDFOR,RETURN,MOD,New},
+  sensitive=true, morecomment=[l]{//}, morestring=[b]"}
 \AtBeginDocument{\numberwithin{lstlisting}{chapter}}
 \renewcommand{\lstlistingname}{Listing}
 
@@ -174,7 +173,7 @@
 \newpage
 
 % =========================================================================
-% CERTIFICATE (NO Project Co-Ordinator, per explicit instructions)
+% CERTIFICATE 
 % =========================================================================
 \thispagestyle{empty}
 \begin{center}
@@ -190,12 +189,12 @@ Certified that the Project work entitled \textbf{``AUTOVERSE 3D: HIGH-FIDELITY W
 \vspace{1.0cm}
 
 \noindent
-\begin{tabular}{p{7.5cm}p{7.5cm}}
+\begin{tabularx}{\textwidth}{@{}l >{\raggedleft\arraybackslash}X@{}}
 \textbf{Dr. Mahendra G} & \textbf{Dr. Vani V G}\\
 Guide & HoD, Dept. of CSE\\[1.5cm]
 \multicolumn{2}{c}{\textbf{Dr. Girish D P}}\\
 \multicolumn{2}{c}{Principal}
-\end{tabular}\\[1.0cm]
+\end{tabularx}\\[1.0cm]
 
 \noindent
 \textbf{Name of the Examiners} \hfill \textbf{Signature with Date}\\[0.4cm]
@@ -284,14 +283,20 @@ Comprehensive automated verification across all tiers---56 frontend Vitest suite
 % =========================================================================
 % TABLE OF CONTENTS, LIST OF FIGURES, LIST OF TABLES
 % =========================================================================
+\begingroup
+\small\setstretch{1.0}\setlength{\parskip}{2pt}
 \tableofcontents
+\endgroup
 \newpage
+\begingroup
+\small\setstretch{1.0}\setlength{\parskip}{2pt}
 \listoffigures
 \vspace{0.8cm}
 \begingroup
 \let\clearpage\relax
 \let\cleardoublepage\relax
 \listoftables
+\endgroup
 \endgroup
 \newpage
 
@@ -359,20 +364,20 @@ The scope of AutoVerse 3D encompasses a full-stack, browser-based automotive eng
 Automotive styling, 3D surface modeling, and aerodynamic evaluation have evolved across several key software and computational domains.
 
 \subsection{Commercial Automotive CAD/CAM Suites}
-High-end engineering environments such as Siemens NX, Dassault Systèmes CATIA, and Autodesk Alias represent the industrial standard for Class-A surface modeling and mechanical packaging [2]. While these tools provide micro-millimeter precision and non-uniform rational B-spline (NURBS) mathematics, they are closed-source, desktop-bound, computationally intensive, and prohibitively expensive for lightweight design reviews, rapid concept exploration, and web deployment.
+High-end engineering environments such as Siemens NX, Dassault Systèmes CATIA, and Autodesk Alias represent the industrial standard for Class-A surface modeling and mechanical packaging [2]. While these tools provide micro-millimeter precision and non-uniform rational B-spline (NURBS) mathematics [11], they are closed-source, desktop-bound, computationally intensive, and prohibitively expensive for lightweight design reviews, rapid concept exploration, and web deployment.
 
 \subsection{WebGL Vehicle Configurators and Visualizers}
-Consumer-facing vehicle configurators built on WebGL or streaming engines (e.g., Unreal Engine Pixel Streaming) emphasize photorealistic rendering for commercial sales [4]. However, these applications rely on static pre-authored polygonal assets (GLTF or FBX). They do not generate geometry dynamically, lack parametric coachwork deformation, and provide zero engineering or aerodynamic computation.
+Consumer-facing vehicle configurators built on WebGL [4] or streaming engines (e.g., Unreal Engine Pixel Streaming) emphasize photorealistic rendering for commercial sales. However, these applications rely on static pre-authored polygonal assets (GLTF or FBX). They do not generate geometry dynamically, lack parametric coachwork deformation, and provide zero engineering or aerodynamic computation.
 
 \subsection{Aerodynamic Simulation and Drag Estimation Methods}
 Full 3D computational fluid dynamics typically employs Reynolds-Averaged Navier-Stokes (RANS) or Large Eddy Simulation (LES) formulations using solvers such as OpenFOAM [7]. While RANS provides detailed boundary-layer resolution, simulating a single automotive geometry requires hours of cluster computation and millions of grid cells, making it unviable for interactive design. To overcome this, researchers developed standardized empirical references, notably the Ahmed Reference Body [3] and the DrivAer Model [16], allowing component-buildup aerodynamic models to estimate drag coefficients ($C_d$) analytically in real time based on vehicle frontal area, ground clearance, and rear slant angles [13].
 
 \subsection{Web-Native Parametric Geometry Kernels}
-Recent advancements in WebAssembly and TypeScript have brought parametric computational geometry to browsers. Frameworks such as OpenCASCADE.js and Manifold CAD demonstrate the viability of client-side boundary representation (B-Rep). AutoVerse 3D extends these principles to specialized automotive archetypes, utilizing closed cross-sectional lofting and hierarchical scene graphs in Three.js [10].
+Recent advancements in WebAssembly and TypeScript have brought parametric computational geometry to browsers. Frameworks such as OpenCASCADE.js and Manifold CAD demonstrate the viability of client-side boundary representation (B-Rep). AutoVerse 3D extends these principles to specialized automotive archetypes, utilizing closed cross-sectional lofting and hierarchical scene graphs in Three.js [5, 10].
 
 \section{Comparative Analysis}
 
-\begin{table}[htbp]
+\begin{table}[H]
 \centering
 \small
 \caption{Comparative Analysis of Automotive 3D Design and Simulation Platforms}
@@ -411,9 +416,9 @@ A comprehensive feasibility analysis was conducted to establish that AutoVerse 3
 
 \subsection{Technical Feasibility}
 \begin{itemize}
-    \item \textbf{Client 3D Stack:} Modern web browsers universally support WebGL 2.0 and WebAssembly. TypeScript with React 18, Vite 5, and Three.js provides mature, hardware-accelerated rendering pipelines capable of maintaining 60 frames per second on commodity devices.
+    \item \textbf{Client 3D Stack:} Modern web browsers universally support WebGL 2.0 and WebAssembly. TypeScript with React 18, Vite 5, and Three.js [5] provides mature, hardware-accelerated rendering pipelines capable of maintaining 60 frames per second on commodity devices.
     \item \textbf{Mathematical Feasibility:} Real-time aerodynamic estimation using the Hoerner component-buildup formulation [13] executes in sub-millisecond timeframes, bypassing heavy RANS grid generation while delivering accurate relative drag differentials.
-    \item \textbf{Backend Stack:} Python 3.11 with FastAPI and SQLAlchemy provides lightweight, high-performance asynchronous API handling and vehicle state persistence.
+    \item \textbf{Backend Stack:} Python 3.11 with FastAPI [8] and SQLAlchemy [9] provides lightweight, high-performance asynchronous API handling and vehicle state persistence.
 \end{itemize}
 All required technologies are open-source, actively maintained, and verified through automated test suites. The project is technically feasible.
 
@@ -449,7 +454,7 @@ All milestones were completed within the scheduled academic period.
 \begin{enumerate}
     \item \textbf{Parametric Coachwork Synthesis:} Generate closed, watertight 3D car bodies from mathematical cross-section curves with zero detached or floating geometry.
     \item \textbf{Brand Design Language Dispatch:} Dynamically load brand-specific styling rules (proportions, hood rake, intake shapes, light signatures) across 24 brands.
-    \item \textbf{Kinematic Wheel and Stance Adjustment:} Provide real-time sliders for rim diameter, tire width, track offset, and camber angle while enforcing ground-contact invariance ($y \ge 0$).
+    \item \textbf{Kinematic Wheel and Stance Adjustment:} Provide real-time sliders for rim diameter, tire width, track offset, and camber angle (per the ISO 8855 vehicle-dynamics vocabulary [12]) while enforcing ground-contact invariance ($y \ge 0$).
     \item \textbf{Real-Time Aerodynamic Telemetry:} Compute vehicle drag coefficient ($C_d$), frontal area ($A$), drag force ($F_d$), and aerodynamic downforce in real time.
     \item \textbf{PBR Material Studio:} Support interactive clearcoat paint, metallic flakes, roughness, carbon fiber patterns, and window tint adjustments.
     \item \textbf{Vehicle Catalog Migration:} Seamlessly switch across 50 parametric vehicle archetypes with complete GPU memory deallocation.
@@ -475,13 +480,14 @@ All milestones were completed within the scheduled academic period.
 
 \subsection{Security and Hygiene Requirements}
 \begin{itemize}
-    \item \textbf{CORS Origin Restriction:} The backend API must strictly restrict CORS origins to authorized local and tactical origins, rejecting wildcard access.
+    \item \textbf{CORS Origin Restriction:} The backend API must strictly restrict CORS origins to authorized local and deployment origins, rejecting wildcard access.
+    \item \textbf{Transport Security:} Client--server traffic must be carried over TLS-secured HTTPS [17].
     \item \textbf{Secret and Environment Protection:} API keys, database credentials, and local build artifacts must be excluded from version control via strict gitignore policies.
 \end{itemize}
 
 \section{Hardware Requirements}
 
-\begin{table}[htbp]
+\begin{table}[H]
 \centering
 \small
 \caption{Hardware Requirements}
@@ -506,7 +512,7 @@ Display & $800\times360$ (mobile landscape) up to $1920\times1080$ & $1920\times
 
 \section{Software Requirements}
 
-\begin{table}[htbp]
+\begin{table}[H]
 \centering
 \small
 \caption{Software Requirements}
@@ -547,7 +553,7 @@ The system design delineates the component modularity, graphics pipeline, mathem
 \end{itemize}
 
 \section{WebGL Scene Graph and Rendering Subsystem}
-The 3D rendering pipeline utilizes a declarative scene graph via React Three Fiber. Key elements include:
+The 3D rendering pipeline utilizes a declarative scene graph via React Three Fiber [6], organized as a hierarchical composite structure [19]. Key elements include:
 \begin{itemize}
     \item \textbf{Hierarchical Scene Architecture:} The car model is organized into separable logical nodes: chassis body, greenhouse glass, front/rear lighting clusters, active aerodynamic surfaces, and four distinct wheel assemblies.
     \item \textbf{PBR Material Modeling:} Custom Three.js \texttt{MeshPhysicalMaterial} shaders simulate multi-coat automotive paint with clearcoat roughness, transmission for glass optics, and normal-mapped micro-grooves for brake rotors.
@@ -569,7 +575,7 @@ The engine cuts cylindrical boolean cavities for front and rear wheel wells, ens
 \end{figure}
 
 \section{Aerodynamic Simulation Kernel}
-Vehicle aerodynamic drag is evaluated using the standardized aerodynamic force equation:
+Vehicle aerodynamic drag is evaluated using the standardized aerodynamic force equation [14]:
 \begin{equation}
     F_d = \frac{1}{2} \rho v_\infty^2 C_d A_{frontal}
 \end{equation}
@@ -577,18 +583,18 @@ where $\rho = 1.225 \text{ kg/m}^3$ is air density at sea level, $v_\infty$ is f
 \begin{equation}
     C_d = C_{d,base} + \Delta C_{d,fender} + \Delta C_{d,wing}(\alpha) + \Delta C_{d,diffuser} + \Delta C_{d,underbody}
 \end{equation}
-where $\Delta C_{d,wing}(\alpha) = 2\pi \sin^2(\alpha) \cdot \frac{A_{wing}}{A_{frontal}}$ represents induced drag as a function of spoiler angle-of-attack $\alpha$. The multi-body dynamic aero-coupling evaluates downforce loads, suspension deflection, and tire friction grip across speeds up to 300 km/h.
+where $\Delta C_{d,wing}(\alpha) = 2\pi \sin^2(\alpha) \cdot \frac{A_{wing}}{A_{frontal}}$ represents induced drag as a function of spoiler angle-of-attack $\alpha$ [15]. The multi-body dynamic aero-coupling evaluates downforce loads, suspension deflection, and tire friction grip across speeds up to 300 km/h.
 
 \section{Cloud Backend Architecture and Persistence}
 The backend service (\texttt{services/api/main.py}) exposes RESTful endpoints for vehicle configuration persistence:
 \begin{itemize}
     \item \textbf{FastAPI REST Endpoints:} Support atomic CRUD operations on vehicle build states, metadata tagging, and aerodynamic logs.
     \item \textbf{SQLAlchemy ORM Models:} Store vehicles as structured JSONB documents with validated schema versioning (Schema 2.0).
-    \item \textbf{Security Policies:} Restricts CORS allow-origins to local development and authorized tactical domains, enforcing strict credential policies.
+    \item \textbf{Security Policies:} Restricts CORS allow-origins to local development and authorized deployment domains, enforcing strict credential policies.
 \end{itemize}
 
 \section{Engineering Multi-Format Exporter}
-AutoVerse 3D includes a client-side serializing subsystem capable of converting live Three.js scene graphs into industry-standard files without round-tripping to a server:
+AutoVerse 3D includes a client-side serializing subsystem capable of converting live Three.js scene graphs into industry-standard files (glTF following the Khronos 2.0 specification [20]) without round-tripping to a server:
 \begin{itemize}
     \item \textbf{glTF/GLB Binary Exporter:} Produces self-contained 3D assets with embedded PBR textures and vertex normals for Unity, Unreal Engine, and Blender.
     \item \textbf{Wavefront OBJ Exporter:} Generates clean polygon definitions suitable for downstream CFD meshing.
@@ -602,30 +608,30 @@ AutoVerse 3D includes a client-side serializing subsystem capable of converting 
 \chapter{SYSTEM ARCHITECTURE}
 
 \section{System Architecture Overview}
-AutoVerse 3D establishes an end-to-end, dual-tier architecture bridging client-side parametric geometry synthesis with server-side project orchestration, as depicted in Figure~\ref{fig:sys_arch}.
+AutoVerse 3D establishes an end-to-end, dual-tier architecture bridging client-side parametric geometry synthesis with server-side project orchestration, as depicted in Figure~\ref{fig:sys_arch}. Following the end-to-end principle [18], geometry synthesis and aerodynamic evaluation execute on the client, while the backend is restricted to persistence and export orchestration.
 
 \begin{figure}[htbp]
 \centering
 \begin{adjustbox}{max width=\linewidth}
-\begin{tikzpicture}[font=\footnotesize]
+\begin{tikzpicture}[font=\scriptsize]
   % Tier 1: Client
   \node[secbox] (ui) at (0,0) {\textbf{Engineering Studio UI}\\React 18 / TailwindCSS\\Phone Landscape HUD};
-  \node[box] (bdl) at (4.5,0) {\textbf{Brand Design Registry}\\24 Brand Design Languages\\Proportions \& Motifs};
-  \node[secbox] (geom) at (9.0,0) {\textbf{V2 Coachwork Engine}\\Parametric Lofting\\Watertight Meshes};
-  \node[box] (aero) at (13.5,0) {\textbf{Aerodynamic Kernel}\\Component Buildup\\Drag \& Downforce};
+  \node[box] (bdl) at (6.6,0) {\textbf{Brand Design Registry}\\24 Brand Design Languages\\Proportions \& Motifs};
+  \node[secbox] (geom) at (13.2,0) {\textbf{V2 Coachwork Engine}\\Parametric Lofting\\Watertight Meshes};
+  \node[box] (aero) at (19.8,0) {\textbf{Aerodynamic Kernel}\\Component Buildup\\Drag \& Downforce};
   \draw[arrow, color=vtumaroon] (ui) -- node[above,font=\scriptsize]{Vehicle Spec} (bdl);
   \draw[arrow] (bdl) -- node[above,font=\scriptsize]{Proportions} (geom);
   \draw[arrow, color=blue!70!black] (geom) -- node[above,font=\scriptsize]{Surface Area} (aero);
-  \draw[arrow, color=green!50!black, dashed] (aero) to[bend left=25] node[below,font=\scriptsize]{Telemetry Feedback} (ui);
+  \draw[arrow, color=green!50!black, dashed] (aero) to[bend left=25] node[above,font=\scriptsize]{Telemetry Feedback} (ui);
   \begin{scope}[on background layer]
     \node[draw=black!60, dashed, thick, rounded corners, fill=gray!6, fit=(ui)(bdl)(geom)(aero), inner sep=0.45cm, yshift=-0.2cm,
           label={[font=\small\bfseries]above:TIER 1: WEBGL CLIENT WORKSTATION (Three.js / React Three Fiber)}] (tier1) {};
   \end{scope}
 
   % Tier 2: Cloud Backend
-  \node[box, fill=green!5] (db) at (2.2,-5.6) {\textbf{Database Layer}\\PostgreSQL / SQLite\\Schema 2.0 Persistence};
-  \node[box] (api) at (7.0,-5.6) {\textbf{FastAPI Backend}\\REST Endpoints\\CORS \& RBAC};
-  \node[box] (exp) at (12.0,-5.6) {\textbf{Multi-Format Exporter}\\GLTF / OBJ / DXF\\CSV Telemetry};
+  \node[box, fill=green!5] (db) at (3.3,-5.6) {\textbf{Database Layer}\\PostgreSQL / SQLite\\Schema 2.0 Persistence};
+  \node[box] (api) at (10.2,-5.6) {\textbf{FastAPI Backend}\\REST Endpoints\\CORS \& RBAC};
+  \node[box] (exp) at (17.6,-5.6) {\textbf{Multi-Format Exporter}\\GLTF / OBJ / DXF\\CSV Telemetry};
   \draw[arrow, <->] (db) -- (api);
   \draw[arrow, <->, color=blue!70!black] (api) -- (exp);
   \begin{scope}[on background layer]
@@ -634,8 +640,8 @@ AutoVerse 3D establishes an end-to-end, dual-tier architecture bridging client-s
   \end{scope}
 
   % Client -> Backend connections
-  \draw[arrow, color=vtumaroon, line width=1.2pt] (ui.south) -- ([yshift=-2.2cm]ui.south) -- node[above,font=\scriptsize,text=black]{HTTP REST (Save/Load Builds)} ([yshift=-2.2cm]ui.south -| api.north) -- (api.north);
-  \draw[arrow, color=blue!70!black, dashed] (exp.north) -- ([yshift=2.2cm]exp.north) -- node[above,font=\scriptsize,text=black]{Export Asset Stream} ([yshift=2.2cm]exp.north -| ui.south) -- (ui.south);
+  \draw[arrow, color=vtumaroon, line width=1.2pt] (ui.south) -- ([yshift=-1.6cm]ui.south) -- node[above,font=\scriptsize,text=black]{HTTP REST (Save/Load Builds)} ([yshift=-1.6cm]ui.south -| api.north) -- (api.north);
+  \draw[arrow, color=blue!70!black, dashed] (exp.north) -- ([yshift=1.2cm]exp.north) -- node[above,font=\scriptsize,text=black]{Export Asset Stream} ([yshift=1.2cm]exp.north -| ui.south) -- (ui.south);
 \end{tikzpicture}
 \end{adjustbox}
 \caption{System Architecture of AutoVerse 3D}
@@ -647,7 +653,7 @@ The construction of a 3D vehicle follows a directed acyclic graph (DAG) of geome
 
 \begin{figure}[htbp]
 \centering
-\begin{adjustbox}{max width=0.95\linewidth}
+\begin{adjustbox}{max size={0.95\linewidth}{0.36\textheight}}
 \begin{tikzpicture}[
     font=\footnotesize,
     node distance=1.2cm,
@@ -685,11 +691,11 @@ Figure~\ref{fig:use_case} details the primary actors (Automotive Designer, Aerod
   \actor{0.6}{3.6}{Designer}
   \actor{0.6}{0.2}{Aerodynamicist}
   \actor{13.4}{1.8}{Engineer}
-  \node[ellipse,draw=vtublue,fill=blue!5,thick,minimum width=5cm,minimum height=0.85cm] (uc1) at (7,4.3) {Select Brand \& Archetype};
-  \node[ellipse,draw=vtublue,fill=blue!5,thick,minimum width=5cm,minimum height=0.85cm] (uc2) at (7,2.9) {Adjust Stance, Camber \& Wheels};
-  \node[ellipse,draw=vtublue,fill=blue!5,thick,minimum width=5cm,minimum height=0.85cm] (uc3) at (7,1.5) {Tune Aero Spoilers \& Wings};
-  \node[ellipse,draw=vtublue,fill=blue!5,thick,minimum width=5cm,minimum height=0.85cm] (uc4) at (7,0.1) {Evaluate Real-Time $C_d$ \& $F_d$};
-  \node[ellipse,draw=vtublue,fill=blue!5,thick,minimum width=5cm,minimum height=0.85cm] (uc5) at (7,-1.3) {Export CAD Assets (GLTF/OBJ/DXF)};
+  \node[ellipse,draw=vtublue,fill=blue!5,thick,minimum width=6.8cm,minimum height=0.85cm] (uc1) at (7,4.3) {Select Brand \& Archetype};
+  \node[ellipse,draw=vtublue,fill=blue!5,thick,minimum width=6.8cm,minimum height=0.85cm] (uc2) at (7,2.9) {Adjust Stance, Camber \& Wheels};
+  \node[ellipse,draw=vtublue,fill=blue!5,thick,minimum width=6.8cm,minimum height=0.85cm] (uc3) at (7,1.5) {Tune Aero Spoilers \& Wings};
+  \node[ellipse,draw=vtublue,fill=blue!5,thick,minimum width=6.8cm,minimum height=0.85cm] (uc4) at (7,0.1) {Evaluate Real-Time $C_d$ \& $F_d$};
+  \node[ellipse,draw=vtublue,fill=blue!5,thick,minimum width=6.8cm,minimum height=0.85cm] (uc5) at (7,-1.3) {Export CAD Assets (GLTF/OBJ/DXF)};
   \draw[thick] (1.0,3.6)--(uc1.west);
   \draw[thick] (1.0,3.6)--(uc2.west);
   \draw[thick] (1.0,0.4)--(uc3.west);
@@ -707,7 +713,7 @@ Figure~\ref{fig:use_case} details the primary actors (Automotive Designer, Aerod
 \subsection{DFD Level 0 (Context Diagram)}
 The context diagram models AutoVerse 3D as a central system interacting with the User, WebGL Hardware, and the FastAPI Cloud Backend (Figure~\ref{fig:dfd_level0}).
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}[font=\small]
@@ -727,7 +733,7 @@ The context diagram models AutoVerse 3D as a central system interacting with the
 \subsection{DFD Level 1}
 Level 1 decomposes the system into four core functional processes and two primary data stores (Figure~\ref{fig:dfd_level1}).
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}[
@@ -746,17 +752,18 @@ Level 1 decomposes the system into four core functional processes and two primar
   \draw[arrow] (s1) -- (p3);
   \draw[arrow] (p3) -- node[above,font=\scriptsize]{telemetry} (s2);
   \draw[arrow] (s2) -- node[above,font=\scriptsize]{build data} (p4);
-  \draw[arrow] (p4.south) -- ++(0,-0.8) -| node[pos=0.25,above,font=\scriptsize]{binary CAD files} (p1.south);
+  \draw[arrow] (p4.west) -- ++(-0.9,0) |- node[pos=0.25,above,sloped,font=\scriptsize]{binary CAD files} (p1.west);
 \end{tikzpicture}
 \end{adjustbox}
 \caption{Data Flow Diagram: DFD Level 1}
 \label{fig:dfd_level1}
 \end{figure}
 
+\newpage
 \section{Vehicle Customization State Transition Machine}
 Vehicle customization flows through an invariant-enforcing state machine (Figure~\ref{fig:fsm_workflow}). Illegal configurations (e.g., negative ride height causing ground clipping) are clamped to physical boundaries.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \begin{adjustbox}{max width=\linewidth}
 \begin{tikzpicture}[
@@ -764,15 +771,15 @@ Vehicle customization flows through an invariant-enforcing state machine (Figure
     trm/.style={rectangle, draw=green!60!black, fill=green!10, thick, rounded corners, minimum width=2.4cm, minimum height=0.9cm, font=\scriptsize\bfseries}
 ]
   \node[st] (s1) at (0,0) {UNINITIALIZED};
-  \node[st] (s2) at (3.5,0) {ARCHETYPE\_LOADED};
-  \node[st] (s3) at (7.0,0) {PARAMETRIC\_EDIT};
-  \node[st] (s4) at (10.5,0) {AERO\_EVALUATED};
-  \node[trm] (s5) at (14.0,0) {EXPORT\_READY};
+  \node[st] (s2) at (5.2,0) {ARCHETYPE\_LOADED};
+  \node[st] (s3) at (10.4,0) {PARAMETRIC\_EDIT};
+  \node[st] (s4) at (10.4,-2.2) {AERO\_EVALUATED};
+  \node[trm] (s5) at (5.2,-2.2) {EXPORT\_READY};
   \draw[arrow] (s1) -- (s2);
   \draw[arrow] (s2) -- node[above,font=\scriptsize]{Select Brand} (s3);
-  \draw[arrow] (s3) -- node[above,font=\scriptsize]{Kinematic Clamp} (s4);
+  \draw[arrow] (s3) -- node[right,font=\scriptsize]{Kinematic Clamp} (s4);
   \draw[arrow] (s4) -- node[above,font=\scriptsize]{Validate Manifold} (s5);
-  \node[font=\scriptsize\itshape, align=center] at (7,-1.4) {Ground-contact invariant ($y \ge 0$) and closed-loft watertightness enforced on all transitions};
+  \node[font=\scriptsize\itshape, align=center] at (5.2,-3.6) {Ground-contact invariant ($y \ge 0$) and closed-loft watertightness enforced on all transitions};
 \end{tikzpicture}
 \end{adjustbox}
 \caption{Vehicle Customization State Transition Machine}
@@ -787,26 +794,22 @@ Vehicle customization flows through an invariant-enforcing state machine (Figure
 \section{Core Algorithms and Pseudo-Code}
 
 \subsection{Parametric Coachwork Lofting Engine}
-Algorithm 6.1 details the watertight cross-section lofting algorithm implemented in the V2 Coachwork generator.
+Listing~\ref{lst:loft} details the watertight cross-section lofting algorithm implemented in the V2 Coachwork generator.
 
-\begin{lstlisting}[language=Java,caption={Algorithm 6.1 -- Parametric Coachwork Lofting and Watertight Mesh Generation}]
-BEGIN
-1. FUNCTION GenerateCoachworkMesh(brandLang, proportions):
+\begin{lstlisting}[language=pseudo,captionpos=t,basicstyle=\ttfamily\scriptsize,caption={Parametric Coachwork Lofting and Watertight Mesh Generation},label={lst:loft}]
+FUNCTION GenerateCoachworkMesh(brandLang, proportions):
     mesh = New EmptyThreeBufferGeometry()
     profiles = []
-    
     // Evaluate longitudinal spline stations from front to rear bumper
     FOR z FROM proportions.frontZ TO proportions.rearZ STEP stepZ DO
         stationT = Normalize(z, proportions.frontZ, proportions.rearZ)
         halfWidth = EvaluateHermiteSpline(brandLang.widthCurves, stationT)
         roofHeight = EvaluateHermiteSpline(brandLang.roofCurves, stationT)
-        
         // Generate closed, symmetric radial ring
         ringVertices = GenerateSymmetricRing(halfWidth, roofHeight, stationT)
         profiles.Append(ringVertices)
     ENDFOR
-    
-    // Stitch contiguous stations into watertight quad-strips
+    // Stitch contiguous stations into triangulated strips
     FOR i FROM 0 TO profiles.Length - 2 DO
         ringA = profiles[i]
         ringB = profiles[i+1]
@@ -816,20 +819,24 @@ BEGIN
             mesh.AddTriangle(ringA[j], ringB[nextJ], ringA[nextJ])
         ENDFOR
     ENDFOR
-    
+    // Cap the front and rear rings with triangle fans to close the shell
+    FOR EACH ring IN [profiles[0], profiles[profiles.Length - 1]] DO
+        centre = Centroid(ring)
+        FOR j FROM 0 TO ring.Length - 1 DO
+            mesh.AddTriangle(centre, ring[j], ring[(j + 1) MOD ring.Length])
+        ENDFOR
+    ENDFOR
     // Recompute smooth face and vertex normals
     mesh.ComputeVertexNormals()
     AssertWatertightAndNoNaN(mesh)
     RETURN mesh
-END
 \end{lstlisting}
 
 \subsection{Aerodynamic Drag Buildup Solver}
-Algorithm 6.2 outlines the real-time component-buildup aerodynamic calculation.
+Listing~\ref{lst:aero} outlines the real-time component-buildup aerodynamic calculation.
 
-\begin{lstlisting}[language=Java,caption={Algorithm 6.2 -- Component-Buildup Aerodynamic Drag Solver}]
-BEGIN
-1. FUNCTION ComputeAerodynamics(vehicleGeometry, aeroParams):
+\begin{lstlisting}[language=pseudo,captionpos=t,basicstyle=\ttfamily\scriptsize,caption={Component-Buildup Aerodynamic Drag Solver},label={lst:aero}]
+FUNCTION ComputeAerodynamics(vehicleGeometry, aeroParams):
     // 1. Compute frontal projected area from cross-sections
     areaFrontal = vehicleGeometry.width * vehicleGeometry.height * 0.84
     
@@ -853,7 +860,6 @@ BEGIN
     downforceN = 0.5 * rho * Pow(velocity, 2) * clWing * areaFrontal
     
     RETURN { cd: totalCd, dragForce: dragForceN, downforce: downforceN, provenance: "ANALYTIC" }
-END
 \end{lstlisting}
 
 \section{General Working of the System}
@@ -910,56 +916,40 @@ Figure~\ref{fig:koenigsegg_wheels} illustrates the kinematic wheel and stance al
 \end{minipage}
 \end{figure}
 
-Figures~\ref{fig:car_ferrari} through \ref{fig:car_gtr} demonstrate the geometric quality achieved by the V2 Coachwork generator across premier automotive brand design languages:
-
-\begin{figure}[htbp]
-\centering
-\begin{minipage}[t]{0.48\textwidth}
-  \centering
-  \safeimg{figures/car_ferrari_f8.png}{width=\linewidth}
-  \captionof{figure}{Ferrari F8 Tributo: Curvaceous rear haunches and side intercooler ducts}
-  \label{fig:car_ferrari}
-\end{minipage}\hfill
-\begin{minipage}[t]{0.48\textwidth}
-  \centering
-  \safeimg{figures/car_bmw_m4.png}{width=\linewidth}
-  \captionof{figure}{BMW M4 CSL: Muscular front-engine GT proportions and twin kidney grille}
-  \label{fig:car_bmw}
-\end{minipage}
-\end{figure}
-
-\begin{figure}[htbp]
-\centering
-\begin{minipage}[t]{0.48\textwidth}
-  \centering
-  \safeimg{figures/car_mclaren_720s.png}{width=\linewidth}
-  \captionof{figure}{McLaren 720S: Teardrop cockpit canopy and active aerodynamic profile}
-  \label{fig:car_mclaren}
-\end{minipage}\hfill
-\begin{minipage}[t]{0.48\textwidth}
-  \centering
-  \safeimg{figures/car_nissan_gtr.png}{width=\linewidth}
-  \captionof{figure}{Nissan GT-R R35: High-waistline quad taillight profile and vented hood}
-  \label{fig:car_gtr}
-\end{minipage}
-\end{figure}
-
 \section{Phone Landscape Responsive Studio Implementation}
-To guarantee full mobile usability, AutoVerse 3D provides a compact ergonomic HUD layout for smartphones held in landscape orientation ($800\times360$ to $896\times414$). Figures~\ref{fig:mobile_overview} and \ref{fig:mobile_wheel} illustrate the responsive layout.
+To guarantee full mobile usability, AutoVerse 3D provides a compact ergonomic HUD layout for smartphones held in landscape orientation ($800\times360$ to $896\times414$). Figures~\ref{fig:mobile_overview} and \ref{fig:mobile_wheel} illustrate the responsive layout at the two ends of the supported viewport range.
 
 \begin{figure}[htbp]
 \centering
 \begin{minipage}[t]{0.48\textwidth}
   \centering
   \safeimg{figures/studio_phone_landscape.png}{width=\linewidth}
-  \captionof{figure}{Phone Landscape Viewport ($844\times390$ overview)}
+  \captionof{figure}{Phone Landscape Viewport ($800\times360$ overview)}
   \label{fig:mobile_overview}
 \end{minipage}\hfill
 \begin{minipage}[t]{0.48\textwidth}
   \centering
   \safeimg{figures/studio_wheel_controls.png}{width=\linewidth}
-  \captionof{figure}{Kinematic Wheel \& Camber Touch Studio}
+  \captionof{figure}{Kinematic Wheel \& Camber Touch Studio ($844\times390$)}
   \label{fig:mobile_wheel}
+\end{minipage}
+\end{figure}
+
+Figures~\ref{fig:car_lexus} and \ref{fig:car_mclaren} show two further catalog vehicles in the live Atelier, each carrying the ``Procedural (brand-inspired)'' badge: the Lexus LFA with its interior upholstery and trim options, and the McLaren 720S with its exhaust configuration panel.
+
+\begin{figure}[H]
+\centering
+\begin{minipage}[t]{0.48\textwidth}
+  \centering
+  \safeimg{figures/car_lexus_lfa.jpg}{width=\linewidth}
+  \captionof{figure}{Lexus LFA: V2 Coachwork Studio Viewport with Cockpit Interior Upholstery Options}
+  \label{fig:car_lexus}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\textwidth}
+  \centering
+  \safeimg{figures/car_mclaren_720s.jpg}{width=\linewidth}
+  \captionof{figure}{McLaren 720S: V2 Coachwork Studio Viewport with Exhaust System Configuration}
+  \label{fig:car_mclaren}
 \end{minipage}
 \end{figure}
 
@@ -1001,7 +991,7 @@ All benchmark reports passed honest provenance check.
 \section{Comprehensive Test Regression Results}
 The AutoVerse 3D platform underwent rigorous, automated regression testing across all geometry engines, visual shaders, API services, and brand uniqueness constraints. Table~\ref{tab:test_results} details the test suite execution.
 
-\begin{table}[htbp]
+\begin{table}[H]
 \centering
 \small
 \caption{Automated Verification Test Suite Results}
@@ -1024,7 +1014,7 @@ Cloud Backend API & Pytest (Python 3.11) & 3 test files, 16 passed (5.9 s) & Veh
 
 \section{Performance and Rendering Metrics}
 \begin{itemize}
-    \item \textbf{Rendering Throughput:} 60 FPS maintained under full scene lighting with $120,000+$ polygons.
+    \item \textbf{Rendering Throughput:} 60 FPS maintained under full scene lighting with $120{,}000+$ polygons.
     \item \textbf{Parametric Re-mesh Latency:} Complete vehicle body regeneration in 18 ms.
     \item \textbf{Aerodynamic Calculation Time:} Aerodynamic solver updates in 3.4 ms.
     \item \textbf{Memory Invariance:} 50 consecutive vehicle transitions executed with zero cumulative GPU memory growth.

@@ -11,3 +11,8 @@ Thumbs.db
 .env.*
 coverage/
 *.local
+*.aux 
+*.toc 
+*.lot 
+*.lof 
+*.out 
